@@ -1,3 +1,6 @@
+using FlightBookingWeb.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace FlightBookingWeb
 {
     public class Program
@@ -10,6 +13,9 @@ namespace FlightBookingWeb
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
