@@ -37,7 +37,20 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<TicketClass> TicketClasses { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("DefaultConnection");
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+                .Build();
+
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            Console.WriteLine($"Chuỗi kết nối: {connectionString}");
+            optionsBuilder.UseSqlServer(connectionString);
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

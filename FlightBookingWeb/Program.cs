@@ -1,4 +1,4 @@
-using FlightBookingWeb.Data;
+﻿using FlightBookingWeb.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlightBookingWeb
@@ -12,9 +12,14 @@ namespace FlightBookingWeb
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            var app = builder.Build();
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            Console.WriteLine($"DefaultConnection: {connectionString}");
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(connectionString));
+
+            Console.WriteLine($"Môi trường hiện tại: {builder.Environment.EnvironmentName}");
+
+            var app = builder.Build();
 
 
             // Configure the HTTP request pipeline.
