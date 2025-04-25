@@ -27,15 +27,11 @@
                             <label asp-for="Gender" class="control-label"></label>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" asp-for="Gender" value="true" id="male">
-                                <label class="form-check-label" for="male">
-                                    Male
-                                </label>
+                                <label class="form-check-label" for="male">Male</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" asp-for="Gender" value="false" id="female">
-                                <label class="form-check-label" for="female">
-                                    Female
-                                </label>
+                                <label class="form-check-label" for="female">Female</label>
                             </div>
                             <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
@@ -83,7 +79,5 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

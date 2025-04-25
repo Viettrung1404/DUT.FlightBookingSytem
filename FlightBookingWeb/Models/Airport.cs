@@ -5,7 +5,7 @@ namespace FlightBookingWeb.Models;
 
 public partial class Airport
 {
-    public string AirportId { get; set; } = null!;
+    public int AirportId { get; set; }
 
     public string? AirportName { get; set; }
 

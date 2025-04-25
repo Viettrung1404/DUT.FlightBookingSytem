@@ -38,7 +38,7 @@ namespace FlightBookingWeb.Controllers
             if (user != null && BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
             {
                 // Lưu thông tin người dùng vào session
-                HttpContext.Session.SetString("UserId", user.AccountId);
+                HttpContext.Session.SetString("UserId", user.AccountId.ToString());
                 HttpContext.Session.SetString("Username", user.Username);
                 HttpContext.Session.SetString("Role", user.Role ?? "User");
 
@@ -58,36 +58,14 @@ namespace FlightBookingWeb.Controllers
             return View();
         }
 
-        private async Task<string> GenerateAccountIdAsync()
-        {
-            var lastAccount = await _context.Accounts
-                .OrderByDescending(a => a.AccountId)
-                .FirstOrDefaultAsync();
-
-            if (lastAccount == null)
-            {
-                return "ACC0001"; // Giá trị khởi đầu
-            }
-
-            // Tăng giá trị ID
-            int lastIdNumber = int.Parse(lastAccount.AccountId.Substring(3));
-            return $"ACC{(lastIdNumber + 1):D4}";
-        }
 
 
-        // POST: Register
+
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
-            }
-
-            // Kiểm tra mật khẩu có khớp không
-            if (model.Password != model.ConfirmPassword)
-            {
-                ModelState.AddModelError("", "Passwords do not match.");
                 return View(model);
             }
 
@@ -113,7 +91,6 @@ namespace FlightBookingWeb.Controllers
             // Tạo tài khoản mới
             var newUser = new Account
             {
-                AccountId = await GenerateAccountIdAsync(),
                 Username = model.Username,
                 Password = hashedPassword,
                 PhoneNumber = model.PhoneNumber,

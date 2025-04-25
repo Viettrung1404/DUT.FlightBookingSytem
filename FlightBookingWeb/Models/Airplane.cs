@@ -5,7 +5,7 @@ namespace FlightBookingWeb.Models;
 
 public partial class Airplane
 {
-    public string AirplaneId { get; set; } = null!;
+    public int AirplaneId { get; set; }
 
     public string? AirplaneName { get; set; }
 

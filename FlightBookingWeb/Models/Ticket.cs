@@ -5,19 +5,19 @@ namespace FlightBookingWeb.Models;
 
 public partial class Ticket
 {
-    public string TicketId { get; set; } = null!;
+    public int TicketId { get; set; }
 
     public string? SeatPosition { get; set; }
 
     public int? Price { get; set; }
 
-    public string? FlightId { get; set; }
+    public int? FlightId { get; set; }
 
-    public string? CustomerId { get; set; }
+    public int? CustomerId { get; set; }
 
-    public string? ClassId { get; set; }
+    public int? ClassId { get; set; }
 
-    public string? TransitAirportId { get; set; }
+    public int? TransitAirportId { get; set; }
 
     public virtual ICollection<Baggage> Baggages { get; set; } = new List<Baggage>();
 

@@ -5,13 +5,13 @@ namespace FlightBookingWeb.Models;
 
 public partial class Invoice
 {
-    public string InvoiceId { get; set; } = null!;
+    public int InvoiceId { get; set; }
 
-    public string? CustomerId { get; set; }
+    public int? CustomerId { get; set; }
 
     public string? IssueDate { get; set; }
 
-    public string? TicketId { get; set; }
+    public int? TicketId { get; set; }
 
     public virtual Account? Customer { get; set; }
 

@@ -5,7 +5,7 @@ namespace FlightBookingWeb.Models;
 
 public partial class TicketClass
 {
-    public string ClassId { get; set; } = null!;
+    public int ClassId { get; set; }
 
     public string? ClassName { get; set; }
 

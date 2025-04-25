@@ -5,11 +5,11 @@ namespace FlightBookingWeb.Models;
 
 public partial class Flight
 {
-    public string FlightId { get; set; } = null!;
+    public int FlightId { get; set; }
 
-    public string? RouteId { get; set; }
+    public int? RouteId { get; set; }
 
-    public string? AirplaneId { get; set; }
+    public int? AirplaneId { get; set; }
 
     public string? Status { get; set; }
 

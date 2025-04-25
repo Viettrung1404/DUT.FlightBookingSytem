@@ -5,11 +5,11 @@ namespace FlightBookingWeb.Models;
 
 public partial class Baggage
 {
-    public string BaggageId { get; set; } = null!;
+    public int BaggageId { get; set; }
 
-    public string? CustomerId { get; set; }
+    public int? CustomerId { get; set; }
 
-    public string? TicketId { get; set; }
+    public int? TicketId { get; set; }
 
     public int? ExtraFee { get; set; }
 
