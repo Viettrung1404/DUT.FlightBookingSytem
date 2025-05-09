@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace FlightBookingWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")] // Chỉ cho phép người dùng có vai trò Admin truy cập
     public class AccountController : Controller
     {
         private readonly AppDbContext _context;
@@ -20,18 +20,14 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         // GET: Admin/Account
         public async Task<IActionResult> Index()
         {
-            var accounts = await _context.Accounts.Include(a => a.Tickets).ToListAsync();
+            var accounts = await _context.Accounts.ToListAsync();
             return View(accounts);
         }
 
         // GET: Admin/Account/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var account = await _context.Accounts
-                .Include(a => a.Tickets)
-                .ThenInclude(t => t.Flight)
-                .FirstOrDefaultAsync(a => a.AccountId == id);
-
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountId == id);
             if (account == null)
             {
                 return NotFound();
@@ -121,7 +117,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         // GET: Admin/Account/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var account = await _context.Accounts.FindAsync(id);
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountId == id);
             if (account == null)
             {
                 return NotFound();
@@ -138,11 +134,6 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
             var account = await _context.Accounts.FindAsync(id);
             if (account != null)
             {
-                // Hạn chế tương tác đặt vé
-                var tickets = _context.Tickets.Where(t => t.CustomerId == id);
-                _context.Tickets.RemoveRange(tickets);
-
-                // Xóa tài khoản
                 _context.Accounts.Remove(account);
                 await _context.SaveChangesAsync();
             }
