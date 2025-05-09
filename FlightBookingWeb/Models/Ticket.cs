@@ -7,27 +7,25 @@ public partial class Ticket
 {
     public int TicketId { get; set; }
 
-    public string? SeatPosition { get; set; }
+    public int FlightId { get; set; }
 
-    public int? Price { get; set; }
+    public int AccountId { get; set; }
 
-    public int? FlightId { get; set; }
+    public int? SeatId { get; set; }
 
-    public int? CustomerId { get; set; }
+    public decimal Price { get; set; }
 
-    public int? ClassId { get; set; }
+    public DateTime? BookingDate { get; set; }
 
-    public int? TransitAirportId { get; set; }
+    public string? Status { get; set; }
+
+    public virtual Account Account { get; set; } = null!;
 
     public virtual ICollection<Baggage> Baggages { get; set; } = new List<Baggage>();
 
-    public virtual TicketClass? Class { get; set; }
+    public virtual Flight Flight { get; set; } = null!;
 
-    public virtual Account? Customer { get; set; }
+    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
-    public virtual Flight? Flight { get; set; }
-
-    public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
-
-    public virtual Airport? TransitAirport { get; set; }
+    public virtual Seat? Seat { get; set; }
 }

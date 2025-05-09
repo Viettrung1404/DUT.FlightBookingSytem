@@ -7,13 +7,15 @@ public partial class Airport
 {
     public int AirportId { get; set; }
 
-    public string? AirportName { get; set; }
+    public string AirportCode { get; set; } = null!;
 
-    public string? City { get; set; }
+    public string AirportName { get; set; } = null!;
 
-    public virtual ICollection<FlightRoute> FlightRouteArrivalAirports { get; set; } = new List<FlightRoute>();
+    public string City { get; set; } = null!;
 
-    public virtual ICollection<FlightRoute> FlightRouteDepartureAirports { get; set; } = new List<FlightRoute>();
+    public string Country { get; set; } = null!;
 
-    public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+    public virtual ICollection<Route> RouteArrivalAirports { get; set; } = new List<Route>();
+
+    public virtual ICollection<Route> RouteDepartureAirports { get; set; } = new List<Route>();
 }

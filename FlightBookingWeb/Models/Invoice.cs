@@ -7,13 +7,15 @@ public partial class Invoice
 {
     public int InvoiceId { get; set; }
 
-    public int? CustomerId { get; set; }
+    public int PaymentId { get; set; }
 
-    public string? IssueDate { get; set; }
+    public string InvoiceNumber { get; set; } = null!;
 
-    public int? TicketId { get; set; }
+    public DateTime? IssueDate { get; set; }
 
-    public virtual Account? Customer { get; set; }
+    public decimal TaxAmount { get; set; }
 
-    public virtual Ticket? Ticket { get; set; }
+    public decimal TotalAmount { get; set; }
+
+    public virtual Payment Payment { get; set; } = null!;
 }

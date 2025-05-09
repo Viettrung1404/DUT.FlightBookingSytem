@@ -7,15 +7,13 @@ public partial class Baggage
 {
     public int BaggageId { get; set; }
 
-    public int? CustomerId { get; set; }
+    public int TicketId { get; set; }
 
-    public int? TicketId { get; set; }
+    public decimal Weight { get; set; }
 
-    public int? ExtraFee { get; set; }
+    public decimal Fee { get; set; }
 
-    public int? Weight { get; set; }
+    public string? Status { get; set; }
 
-    public virtual Account? Customer { get; set; }
-
-    public virtual Ticket? Ticket { get; set; }
+    public virtual Ticket Ticket { get; set; } = null!;
 }
