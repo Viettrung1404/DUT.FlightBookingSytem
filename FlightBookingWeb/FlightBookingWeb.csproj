@@ -22,6 +22,8 @@
     <Folder Include="Areas\Employee\Controllers\" />
     <Folder Include="Areas\Employee\Models\" />
     <Folder Include="Areas\Employee\ViewModels\" />
+    <Folder Include="Data\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
