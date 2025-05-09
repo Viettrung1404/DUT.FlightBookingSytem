@@ -10,10 +10,6 @@
 </head>
 <body>
     <header>
-        @if (User.Identity.IsAuthenticated)
-        {
-            <a asp-action="ChangePassword" asp-controller="Account">Change Password</a>
-        }
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FlightBookingWeb</a>

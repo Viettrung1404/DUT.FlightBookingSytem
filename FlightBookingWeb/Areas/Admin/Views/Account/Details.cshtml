@@ -1,0 +1,45 @@
+﻿@model FlightBookingWeb.Models.Account
+
+@{
+    ViewData["Title"] = "Account Details";
+}
+
+<h2>Account Details</h2>
+
+<div>
+    <h4>@Model.Username</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Email</dt>
+        <dd class="col-sm-10">@Model.Email</dd>
+
+        <dt class="col-sm-2">Phone Number</dt>
+        <dd class="col-sm-10">@Model.PhoneNumber</dd>
+
+        <dt class="col-sm-2">Role</dt>
+        <dd class="col-sm-10">@Model.Role</dd>
+    </dl>
+</div>
+
+<h3>Tickets</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Flight</th>
+            <th>Seat</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ticket in Model.Tickets)
+        {
+            <tr>
+                <td>@ticket.Flight?.Route?.DepartureAirport?.AirportName - @ticket.Flight?.Route?.ArrivalAirport?.AirportName</td>
+                <td>@ticket.SeatPosition</td>
+                <td>@ticket.Price</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

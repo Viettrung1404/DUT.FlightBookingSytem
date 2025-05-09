@@ -1,0 +1,36 @@
+﻿@model IEnumerable<FlightBookingWeb.Models.Account>
+
+@{
+    Layout = "_Layout"
+    ViewData["Title"] = "Manage Accounts";
+}
+
+<h2>Manage Accounts</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var account in Model)
+        {
+            <tr>
+                <td>@account.Username</td>
+                <td>@account.Email</td>
+                <td>@account.Role</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@account.AccountId">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@account.AccountId">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@account.AccountId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Add New Account</a>

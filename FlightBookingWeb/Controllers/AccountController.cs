@@ -4,6 +4,9 @@ using FlightBookingWeb.Data;
 using FlightBookingWeb.ViewModels;
 using FlightBookingWeb.Models;
 using BCrypt.Net;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FlightBookingWeb.Controllers
 {
@@ -37,10 +40,19 @@ namespace FlightBookingWeb.Controllers
 
             if (user != null && BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
             {
-                // Lưu thông tin người dùng vào session
-                HttpContext.Session.SetString("UserId", user.AccountId.ToString());
-                HttpContext.Session.SetString("Username", user.Username);
-                HttpContext.Session.SetString("Role", user.Role ?? "User");
+                // Tạo Claims
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.Username),
+                    new Claim(ClaimTypes.Role, user.Role ?? "User"),
+                    new Claim("UserId", user.AccountId.ToString())
+                };
+
+                // Tạo ClaimsIdentity
+                var claimsIdentity = new ClaimsIdentity(claims, "MyCookieAuth");
+
+                // Tạo Cookie
+                await HttpContext.SignInAsync("MyCookieAuth", new ClaimsPrincipal(claimsIdentity));
 
                 // Chuyển hướng đến trang chủ
                 return RedirectToAction("Index", "Home");
@@ -51,15 +63,13 @@ namespace FlightBookingWeb.Controllers
             return View(model);
         }
 
+
         // GET: Register
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
-
-
-
 
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -96,7 +106,7 @@ namespace FlightBookingWeb.Controllers
                 PhoneNumber = model.PhoneNumber,
                 Email = model.Email,
                 Gender = model.Gender,
-                Role = "User" // Gán vai trò mặc định
+                Role = "Admin" // Gán vai trò mặc định
             };
 
             _context.Accounts.Add(newUser);
@@ -108,17 +118,71 @@ namespace FlightBookingWeb.Controllers
 
         // GET: Logout
         [HttpGet]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            // Xóa session
-            HttpContext.Session.Clear();
+            // Xóa cookie
+            await HttpContext.SignOutAsync("MyCookieAuth");
             return RedirectToAction("Login", "Account");
         }
+
 
         // GET: Index (Trang chủ của AccountController)
         public IActionResult Index()
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Authorize] // Chỉ cho phép người dùng đã đăng nhập
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize] // Chỉ cho phép người dùng đã đăng nhập
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // Lấy thông tin người dùng hiện tại
+            var username = User.Identity.Name;
+            var user = await _context.Accounts.FirstOrDefaultAsync(u => u.Username == username);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "User not found.");
+                return View(model);
+            }
+
+            // Kiểm tra mật khẩu hiện tại
+            if (!BCrypt.Net.BCrypt.Verify(model.CurrentPassword, user.Password))
+            {
+                ModelState.AddModelError("", "Current password is incorrect.");
+                return View(model);
+            }
+
+            // Mã hóa mật khẩu mới
+            user.Password = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
+
+            // Lưu thay đổi vào cơ sở dữ liệu
+            _context.Accounts.Update(user);
+            await _context.SaveChangesAsync();
+
+            // Thông báo thành công
+            TempData["SuccessMessage"] = "Password changed successfully.";
+            return RedirectToAction("Index", "Home");
+        }
+
+
     }
 }
