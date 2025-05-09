@@ -7,6 +7,8 @@ public partial class FlightSchedule
 {
     public int ScheduleId { get; set; }
 
+    public int? AirplaneId { get; set; }
+
     public int RouteId { get; set; }
 
     public TimeOnly DepartureTime { get; set; }
@@ -16,6 +18,8 @@ public partial class FlightSchedule
     public string Frequency { get; set; } = null!;
 
     public bool? Active { get; set; }
+
+    public virtual Airplane? Airplane { get; set; }
 
     public virtual ICollection<Flight> Flights { get; set; } = new List<Flight>();
 

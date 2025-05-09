@@ -21,7 +21,7 @@ public partial class Airplane
 
     public string? Status { get; set; }
 
-    public virtual ICollection<Flight> Flights { get; set; } = new List<Flight>();
+    public virtual ICollection<FlightSchedule> FlightSchedules { get; set; } = new List<FlightSchedule>();
 
     public virtual ICollection<Seat> Seats { get; set; } = new List<Seat>();
 }

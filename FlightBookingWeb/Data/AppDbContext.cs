@@ -136,7 +136,6 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Flight");
 
             entity.Property(e => e.FlightId).HasColumnName("FlightID");
-            entity.Property(e => e.AirplaneId).HasColumnName("AirplaneID");
             entity.Property(e => e.ArrivalDateTime).HasColumnType("datetime");
             entity.Property(e => e.DepartureDateTime).HasColumnType("datetime");
             entity.Property(e => e.ScheduleId).HasColumnName("ScheduleID");
@@ -144,11 +143,6 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasDefaultValue("Scheduled");
-
-            entity.HasOne(d => d.Airplane).WithMany(p => p.Flights)
-                .HasForeignKey(d => d.AirplaneId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Flight__Airplane__4D94879B");
 
             entity.HasOne(d => d.Schedule).WithMany(p => p.Flights)
                 .HasForeignKey(d => d.ScheduleId)
@@ -164,10 +158,15 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.ScheduleId).HasColumnName("ScheduleID");
             entity.Property(e => e.Active).HasDefaultValue(true);
+            entity.Property(e => e.AirplaneId).HasColumnName("AirplaneID");
             entity.Property(e => e.Frequency)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.RouteId).HasColumnName("RouteID");
+
+            entity.HasOne(d => d.Airplane).WithMany(p => p.FlightSchedules)
+                .HasForeignKey(d => d.AirplaneId)
+                .HasConstraintName("FK_FlightSchedule_Airplane");
 
             entity.HasOne(d => d.Route).WithMany(p => p.FlightSchedules)
                 .HasForeignKey(d => d.RouteId)
