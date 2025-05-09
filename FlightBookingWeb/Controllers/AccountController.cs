@@ -183,6 +183,61 @@ namespace FlightBookingWeb.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        //[HttpGet]
+        //[Authorize] // Chỉ cho phép người dùng đã đăng nhập
+        //public async Task<IActionResult> Profile()
+        //{
+        //    // Lấy thông tin người dùng hiện tại
+        //    var username = User.Identity.Name;
+        //    var user = await _context.Accounts
+        //        .Include(a => a.Invoices) // Bao gồm hóa đơn
+        //        .ThenInclude(i => i.Ticket) // Bao gồm vé trong hóa đơn
+        //        .ThenInclude(t => t.Flight) // Bao gồm thông tin chuyến bay
+        //        .ThenInclude(f => f.Route) // Bao gồm thông tin tuyến bay
+        //        .ThenInclude(r => r.DepartureAirport) // Bao gồm sân bay khởi hành
+        //        .Include(a => a.Invoices)
+        //        .ThenInclude(i => i.Ticket.Flight.Route.ArrivalAirport) // Bao gồm sân bay đến
+        //        .FirstOrDefaultAsync(u => u.Username == username);
+
+        //    if (user == null)
+        //    {
+        //        return NotFound("User not found.");
+        //    }
+
+        //    return View(user);
+        //}
+
+        [HttpPost]
+        [Authorize] // Chỉ cho phép người dùng đã đăng nhập
+        public async Task<IActionResult> Profile(Account model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // Lấy thông tin người dùng hiện tại
+            var username = User.Identity.Name;
+            var user = await _context.Accounts.FirstOrDefaultAsync(u => u.Username == username);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            // Cập nhật thông tin cá nhân
+            user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Gender = model.Gender;
+
+            _context.Accounts.Update(user);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Your profile has been updated successfully.";
+            return RedirectToAction(nameof(Profile));
+        }
+
+
 
     }
 }

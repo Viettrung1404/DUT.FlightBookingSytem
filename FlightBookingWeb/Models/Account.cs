@@ -7,21 +7,17 @@ public partial class Account
 {
     public int AccountId { get; set; }
 
-    public string? Username { get; set; }
+    public string Username { get; set; } = null!;
 
-    public string? Password { get; set; }
+    public string Password { get; set; } = null!;
 
     public string? PhoneNumber { get; set; }
 
-    public string? Email { get; set; }
+    public string Email { get; set; } = null!;
 
     public bool? Gender { get; set; }
 
-    public string? Role { get; set; }
-
-    public virtual ICollection<Baggage> Baggages { get; set; } = new List<Baggage>();
-
-    public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
+    public string Role { get; set; } = null!;
 
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }
