@@ -1,0 +1,100 @@
+﻿@model List<FlightBookingWeb.ViewModels.RouteViewModel>
+@{
+    Layout = "_Layout"; // Import layout
+    ViewData["Title"] = "Quản lý tuyến bay";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        .table-actions {
+            white-space: nowrap;
+        }
+
+            .table-actions a {
+                margin-right: 5px;
+            }
+
+        .price-column {
+            font-weight: 600;
+            color: #2a8f38;
+        }
+    </style>
+}
+
+<div class="container-fluid">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">
+                    <i class="fas fa-route me-2"></i>QUẢN LÝ TUYẾN BAY
+                </h3>
+                <a asp-action="Create" class="btn btn-light btn-sm">
+                    <i class="fas fa-plus me-1"></i> Thêm tuyến mới
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Sân bay đi</th>
+                            <th>Sân bay đến</th>
+                            <th>Thời gian bay</th>
+                            <th>Giá cơ bản</th>
+                            <th class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            @foreach (var route in Model)
+                            {
+                                <tr>
+                                    <td>@route.DepartureAirportName</td>
+                                    <td>@route.ArrivalAirportName</td>
+                                    <td>@route.Duration</td>  <!-- Hiển thị Duration dưới dạng chuỗi HH:mm -->
+                                    <td>@route.BasePrice</td>
+                                    <td class="text-center table-actions">
+                                        <!-- Thêm nút sửa -->
+                                        <a href="@Url.Action("Edit", "Route", new { id = route.RouteId })" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i> Sửa
+                                        </a>
+                                        <!-- Thêm nút xóa -->
+                                        <a href="@Url.Action("Delete", "Route", new { id = route.RouteId })" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa tuyến bay này?');">
+                                            <i class="fas fa-trash-alt"></i> Xóa
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">
+                                    <i class="fas fa-info-circle me-2"></i>Chưa có tuyến bay nào
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Thêm script nếu cần
+        $(document).ready(function() {
+            $('.table').DataTable({
+                responsive: true,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json'
+                }
+            });
+        });
+    </script>
+}

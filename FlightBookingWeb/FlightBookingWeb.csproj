@@ -22,10 +22,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Areas\Admin\ViewModels\" />
-    <Folder Include="Areas\Employee\Controllers\" />
     <Folder Include="Areas\Employee\Models\" />
-    <Folder Include="Areas\Employee\ViewModels\" />
   </ItemGroup>
 
   <ItemGroup>
