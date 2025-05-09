@@ -20,7 +20,7 @@ namespace FlightBookingWeb
 
             // Đăng ký AppDbContext
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("Name=ConnectionStrings:DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Đăng ký các dịch vụ khác
             builder.Services.AddControllersWithViews();
