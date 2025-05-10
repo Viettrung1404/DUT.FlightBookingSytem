@@ -1,0 +1,64 @@
+﻿@model FlightBookingWeb.Areas.Admin.ViewModels.AirplaneViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Airplane</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="AirplaneId" />
+            <div class="form-group">
+                <label asp-for="AirplaneName" class="control-label"></label>
+                <input asp-for="AirplaneName" class="form-control" />
+                <span asp-validation-for="AirplaneName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AirplaneType" class="control-label"></label>
+                <input asp-for="AirplaneType" class="form-control" />
+                <span asp-validation-for="AirplaneType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalSeats" class="control-label"></label>
+                <input asp-for="TotalSeats" class="form-control" />
+                <span asp-validation-for="TotalSeats" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EconomySeats" class="control-label"></label>
+                <input asp-for="EconomySeats" class="form-control" />
+                <span asp-validation-for="EconomySeats" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BusinessSeats" class="control-label"></label>
+                <input asp-for="BusinessSeats" class="form-control" />
+                <span asp-validation-for="BusinessSeats" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ManufactureYear" class="control-label"></label>
+                <input asp-for="ManufactureYear" class="form-control" />
+                <span asp-validation-for="ManufactureYear" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <input asp-for="Status" class="form-control" />
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
