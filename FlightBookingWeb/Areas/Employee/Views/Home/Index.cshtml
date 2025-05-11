@@ -30,7 +30,7 @@
                     <form method="get" class="mb-4">
                         <div class="input-group">
                             <input type="text" name="ticketKeyword" class="form-control"
-                                   placeholder="Nhập tên, chuyến bay hoặc trạng thái...">
+                                   placeholder="Nhập tên,ID chuyến bay hoặc ngày đặt...">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-search me-1"></i> Tìm kiếm
                             </button>
@@ -107,6 +107,7 @@
                                     <th>Mã TK</th>
                                     <th>Tên</th>
                                     <th>Email</th>
+                                    <th>Số điện thoại</th> <!-- thêm dòng này -->
                                     <th>Vai trò</th>
                                 </tr>
                             </thead>
@@ -119,6 +120,7 @@
                                             <td class="fw-bold">@acc.AccountId</td>
                                             <td>@acc.Username</td>
                                             <td>@acc.Email</td>
+                                            <td>@acc.PhoneNumber</td> <!-- thêm dòng này -->
                                             <td>
                                                 <span class="badge @GetRoleBadgeClass(acc.Role)">
                                                     @acc.Role
@@ -130,7 +132,7 @@
                                 else
                                 {
                                     <tr>
-                                        <td colspan="4" class="text-center py-4 text-muted">
+                                        <td colspan="5" class="text-center py-4 text-muted">
                                             Không tìm thấy tài khoản
                                         </td>
                                     </tr>

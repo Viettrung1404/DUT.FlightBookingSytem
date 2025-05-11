@@ -1,10 +1,12 @@
 ﻿@model FlightBookingWeb.ViewModels.RouteViewModel
 
 @{
-    ViewData["Title"] = "Them";
+    ViewData["Title"] = "Thêm tuyến bay";
     var airports = ViewBag.Airports as SelectList;
 }
-
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 <h2>@ViewData["Title"]</h2>
 
 <form asp-action="@ViewContext.RouteData.Values["action"]">

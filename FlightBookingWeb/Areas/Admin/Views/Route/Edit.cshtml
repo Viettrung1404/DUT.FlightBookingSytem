@@ -4,6 +4,9 @@
     ViewData["Title"] = "Chinh sua tuyen bay";
     var airports = ViewBag.Airports as SelectList;
 }
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 <h2>@ViewData["Title"]</h2>
 
@@ -45,3 +48,4 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+                 

@@ -14,6 +14,6 @@
         public string? Status { get; set; }
         public DateTime? BookingDate { get; set; }
         public decimal Price { get; set; }
-        public string FlightName { get; set; } = null!;
+        public int FlightID { get; set; } 
     }
 }
