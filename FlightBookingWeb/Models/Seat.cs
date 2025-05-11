@@ -19,5 +19,7 @@ public partial class Seat
 
     public virtual Airplane Airplane { get; set; } = null!;
 
+    public virtual ICollection<SeatBooking> SeatBookings { get; set; } = new List<SeatBooking>();
+
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }

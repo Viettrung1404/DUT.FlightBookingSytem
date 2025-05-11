@@ -1,0 +1,83 @@
+﻿@model FlightBookingWeb.ViewModels.SeatSelectionViewModel
+
+<div class="container mt-5">
+    <h2 class="text-center">Select Your Seats</h2>
+
+    <form asp-action="ConfirmSeat" method="post" class="mt-4">
+        <!-- Outbound Flight Seats -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <h4>Outbound Flight Seats</h4>
+                <p>Flight ID: @Model.OutboundFlightId</p>
+                <div class="row">
+                    @foreach (var seat in Model.AvailableOutboundSeats)
+                    {
+                        <div class="col-md-2 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       id="outboundSeat_@seat.SeatId"
+                                       name="SelectedSeatsOutBoard"
+                                       value="@seat.SeatNumber"
+                                @(seat.IsBooked ?? false ? "disabled" : "")>
+                                <label class="form-check-label @(seat.IsBooked ?? false ? "text-muted" : "")"
+                                       for="outboundSeat_@seat.SeatId">
+                                    @seat.SeatNumber (@seat.SeatClass)
+                                    @if (seat.IsBooked ?? false)
+                                    {
+                                        <span class="badge bg-danger">Booked</span>
+                                    }
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Return Flight Seats (if applicable) -->
+        @if (Model.IsRoundTrip && Model.AvailableReturnSeats != null)
+        {
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h4>Return Flight Seats</h4>
+                    <p>Flight ID: @Model.ReturnFlightId</p>
+                    <div class="row">
+                        @foreach (var seat in Model.AvailableReturnSeats)
+                        {
+                            <div class="col-md-2 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                           id="returnSeat_@seat.SeatId"
+                                           name="SelectedSeatsReturnBoard"
+                                           value="@seat.SeatNumber"
+                                    @(seat.IsBooked ?? false ? "disabled" : "")>
+                                    <label class="form-check-label @(seat.IsBooked ?? false ? "text-muted" : "")"
+                                           for="returnSeat_@seat.SeatId">
+                                        @seat.SeatNumber (@seat.SeatClass)
+                                        @if (seat.IsBooked ?? false)
+                                        {
+                                            <span class="badge bg-danger">Booked</span>
+                                        }
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Hidden fields -->
+        <input type="hidden" name="PassengerCount" value="@Model.PassengerCount" />
+        <input type="hidden" name="OutboundFlightId" value="@Model.OutboundFlightId" />
+        <input type="hidden" name="ReturnFlightId" value="@Model.ReturnFlightId" />
+        <input type="hidden" name="IsRoundTrip" value="@Model.IsRoundTrip.ToString()" />
+
+        <!-- Submit Button -->
+        <div class="row mt-4">
+            <div class="col-md-12 text-center">
+                <button type="submit" class="btn btn-primary btn-lg">Confirm Seats</button>
+            </div>
+        </div>
+    </form>
+</div>
