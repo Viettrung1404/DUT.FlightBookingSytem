@@ -20,19 +20,20 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var routes = await _context.Routes
-                .Include(r => r.DepartureAirport)
-                .Include(r => r.ArrivalAirport)
-                .Select(r => new RouteViewModel
-                {
-                    RouteId = r.RouteId,
-                    DepartureAirportId = r.DepartureAirportId,
-                    DepartureAirportName = r.DepartureAirport.AirportName,
-                    ArrivalAirportId = r.ArrivalAirportId,
-                    ArrivalAirportName = r.ArrivalAirport.AirportName,
-                    Duration = r.Duration.ToString("HH:mm"),  // Chuyển Duration thành chuỗi có định dạng HH:mm
-                    BasePrice = r.BasePrice
-                })
-                .ToListAsync();
+            .Where(r => r.Status == "Active") // Chỉ lấy những cái chưa bị xóa
+            .Include(r => r.DepartureAirport)
+            .Include(r => r.ArrivalAirport)
+            .Select(r => new RouteViewModel
+            {
+                RouteId = r.RouteId,
+                DepartureAirportId = r.DepartureAirportId,
+                DepartureAirportName = r.DepartureAirport.AirportName,
+                ArrivalAirportId = r.ArrivalAirportId,
+                ArrivalAirportName = r.ArrivalAirport.AirportName,
+                Duration = r.Duration.ToString("HH:mm"),
+                BasePrice = r.BasePrice
+            })
+            .ToListAsync();
 
             return View(routes);
         }
@@ -46,24 +47,15 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         public async Task<IActionResult> Create(RouteViewModel model)
         {
             TimeOnly duration = default; // Khởi tạo giá trị mặc định cho 'duration'
-
-            if (string.IsNullOrWhiteSpace(model.Duration) || !TimeOnly.TryParse(model.Duration, out duration))
-            {
-                ModelState.AddModelError("Duration", "Thoi gian bay khong hop le.");
-            }
+            ViewBag.Airports = new SelectList(_context.Airports, "AirportId", "AirportName");
 
             if (model.DepartureAirportId == model.ArrivalAirportId)
             {
-                ModelState.AddModelError("", "San bay di va den phai khac nhau.");
+                ModelState.AddModelError("DepartureAirportId", "San bay di va san bay den khong duoc trung nhau.");
             }
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Airports = new SelectList(_context.Airports, "AirportId", "AirportName");
-                foreach (var modelError in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine(modelError.ErrorMessage);
-                }
                 return View(model);
             }
 
@@ -138,7 +130,8 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
             var route = await _context.Routes.FindAsync(id);
             if (route != null)
             {
-                _context.Routes.Remove(route);
+                route.Status = "Delete"; // Đánh dấu đã xóa
+                _context.Routes.Update(route);
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction("Index");

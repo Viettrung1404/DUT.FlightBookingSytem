@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlightBookingWeb.Areas.Employee.Controllers
 {
+
     [Area("Employee")]
     public class HomeController : Controller
     {
@@ -19,59 +20,73 @@ namespace FlightBookingWeb.Areas.Employee.Controllers
         public async Task<IActionResult> Index(string? ticketKeyword, string? accountKeyword)
         {
             // --- TICKET SEARCH ---
-            var ticketQuery = _context.Tickets
-                .Include(t => t.Account)
-                .Include(t => t.Flight)
-                .AsQueryable();
+            var model = new EmployeeSearchIndexViewModel
+            {
+                Tickets = _context.Tickets.Include(t => t.Account).Select(t => new SearchViewModel
+                {
+                    TicketId = t.TicketId,
+                    FlightID = t.FlightId,
+                    Username = t.Account.Username,
+                    BookingDate = t.BookingDate,
+                    Price = t.Price,
+                    Status = t.Status
+                }).ToList(),
+
+                Accounts = _context.Accounts.Select(a => new SearchViewModel
+                {
+                    AccountId = a.AccountId,
+                    Username = a.Username,
+                    Email = a.Email,
+                    PhoneNumber = a.PhoneNumber,
+                    Role = a.Role
+                }).ToList()
+            };
+
+            return View(model);
+        }
+        public async Task<IActionResult> SearchTickets(string? ticketKeyword)
+        {
+            var query = _context.Tickets.Include(t => t.Account).Include(t => t.Flight).AsQueryable();
 
             if (!string.IsNullOrEmpty(ticketKeyword))
             {
-                // Check if keyword is a number (FlightId)
                 if (int.TryParse(ticketKeyword, out int flightId))
-                {
-                    ticketQuery = ticketQuery.Where(t => t.Flight.FlightId == flightId);
-                }
-                // Check if keyword is a valid DateTime
-                else if (DateTime.TryParse(ticketKeyword, out DateTime bookingDate))
-                {
-                    ticketQuery = ticketQuery.Where(t => t.BookingDate != null &&
-                        t.BookingDate.Value.Date == bookingDate.Date);
-                }
+                    query = query.Where(t => t.Flight.FlightId == flightId);
+                else if (DateTime.TryParse(ticketKeyword, out DateTime date))
+                    query = query.Where(t => t.BookingDate != null && t.BookingDate.Value.Date == date.Date);
                 else
-                {
-                    // Search by Status or Username (case-insensitive)
-                    ticketQuery = ticketQuery.Where(t =>
+                    query = query.Where(t =>
                         EF.Functions.Like(t.Status!, $"%{ticketKeyword}%") ||
                         EF.Functions.Like(t.Account.Username, $"%{ticketKeyword}%"));
-                }
             }
 
-            var ticketResults = await ticketQuery.Select(t => new SearchViewModel
+            var result = await query.Select(t => new SearchViewModel
             {
                 TicketId = t.TicketId,
                 Status = t.Status,
                 BookingDate = t.BookingDate,
                 Price = t.Price,
-                FlightID = t.Flight.FlightId, // Or t.Flight.FlightCode if available
+                FlightID = t.Flight.FlightId,
                 AccountId = t.Account.AccountId,
-                Username = t.Account.Username,
-                Email = t.Account.Email,
-                PhoneNumber = t.Account.PhoneNumber,
-                Role = t.Account.Role
+                Username = t.Account.Username
             }).ToListAsync();
 
-            // --- USER SEARCH (Role = "User" only) ---
-            var accountQuery = _context.Accounts.AsQueryable();
+            return PartialView("_TicketSearch", result);
+        }
+
+        public async Task<IActionResult> SearchAccounts(string? accountKeyword)
+        {
+            var query = _context.Accounts.AsQueryable();
 
             if (!string.IsNullOrEmpty(accountKeyword))
             {
-                accountQuery = accountQuery.Where(a =>
+                query = query.Where(a =>
                     a.Username.Contains(accountKeyword) ||
                     a.Email.Contains(accountKeyword) ||
                     a.PhoneNumber!.Contains(accountKeyword));
             }
 
-            var accountResults = await accountQuery.Select(a => new SearchViewModel
+            var result = await query.Select(a => new SearchViewModel
             {
                 AccountId = a.AccountId,
                 Username = a.Username,
@@ -80,10 +95,8 @@ namespace FlightBookingWeb.Areas.Employee.Controllers
                 Role = a.Role
             }).ToListAsync();
 
-            ViewBag.Tickets = ticketResults;
-            ViewBag.Accounts = accountResults;
-
-            return View();
+            return PartialView("_AccountSearch", result);
         }
+
     }
 }
