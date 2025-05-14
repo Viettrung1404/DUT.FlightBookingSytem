@@ -23,12 +23,13 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         public async Task<IActionResult> Index(string search, bool? active, string scheduleId)
         {
             var schedulesQuery = _context.FlightSchedules
-                .Include(fs => fs.Airplane)
-                .Include(fs => fs.Route)
-                    .ThenInclude(r => r.DepartureAirport)
-                .Include(fs => fs.Route)
-                    .ThenInclude(r => r.ArrivalAirport)
-                .AsQueryable();
+    .Include(fs => fs.Airplane)
+    .Include(fs => fs.Route)
+        .ThenInclude(r => r.DepartureAirport)
+    .Include(fs => fs.Route)
+        .ThenInclude(r => r.ArrivalAirport)
+    .Where(fs => fs.Status) // chỉ lấy các bản ghi có Status == true
+    .AsQueryable();
 
             // Tạo dropdown danh sách Schedule
             var allSchedules = await _context.FlightSchedules.ToListAsync();
@@ -328,7 +329,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         private bool KiemTraTrungLich(FlightSchedule newSchedule)
         {
             var lichTrinhs = _context.FlightSchedules
-                .Where(fs => fs.AirplaneId == newSchedule.AirplaneId && fs.ScheduleId != newSchedule.ScheduleId)
+                .Where(fs => fs.AirplaneId == newSchedule.AirplaneId && fs.ScheduleId != newSchedule.ScheduleId&& fs.Status==true &&fs.Active==true)
                 .ToList();
 
             var today = DateTime.Now;

@@ -21,16 +21,16 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         public async Task<IActionResult> Index(string search, DateTime? fromDate, DateTime? toDate, int? scheduleId)
         {
             var flightsQuery = _context.Flights
-    .Where(f => f.Status != "Đã hủy")
-    .Include(f => f.Schedule)
-        .ThenInclude(s => s.Route)
-            .ThenInclude(r => r.DepartureAirport)
-    .Include(f => f.Schedule)
-        .ThenInclude(s => s.Route)
-            .ThenInclude(r => r.ArrivalAirport)
-    .Include(f => f.Schedule) // thêm dòng này
-        .ThenInclude(s => s.Airplane) // để lấy thông tin máy bay
-    .AsQueryable();
+                .Where(f => f.Status != "Đã hủy")
+                .Include(f => f.Schedule)
+                    .ThenInclude(s => s.Route)
+                        .ThenInclude(r => r.DepartureAirport)
+                .Include(f => f.Schedule)
+                    .ThenInclude(s => s.Route)
+                        .ThenInclude(r => r.ArrivalAirport)
+                .Include(f => f.Schedule) // thêm dòng này
+                    .ThenInclude(s => s.Airplane) // để lấy thông tin máy bay
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
