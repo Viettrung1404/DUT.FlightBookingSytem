@@ -1,0 +1,51 @@
+﻿@model FlightBookingWeb.ViewModels.RouteViewModel
+
+@{
+    ViewData["Title"] = "Chinh sua tuyen bay";
+    var airports = ViewBag.Airports as SelectList;
+}
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="RouteId" />
+
+    <div class="mb-3">
+        <label class="form-label">San bay di</label>
+        <select asp-for="DepartureAirportId" class="form-select" asp-items="airports">
+            <option value="">-- Chon san bay di --</option>
+        </select>
+        <span asp-validation-for="DepartureAirportId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">San bay den</label>
+        <select asp-for="ArrivalAirportId" class="form-select" asp-items="airports">
+            <option value="">-- Chon san bay den --</option>
+        </select>
+        <span asp-validation-for="ArrivalAirportId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Thoi gian bay</label>
+        <input asp-for="Duration" class="form-control" type="time" />
+        <span asp-validation-for="Duration" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Gia co ban</label>
+        <input asp-for="BasePrice" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="BasePrice" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Luu thay doi</button>
+    <a asp-action="Index" class="btn btn-secondary">Huy</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+                 
