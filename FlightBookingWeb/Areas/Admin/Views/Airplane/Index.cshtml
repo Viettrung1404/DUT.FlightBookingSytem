@@ -1,66 +1,220 @@
 ﻿@model IEnumerable<FlightBookingWeb.Areas.Admin.ViewModels.AirplaneViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Airplane List";
 }
 
-<h1>Danh sách máy bay</h1>
+@section Styles {
+<style>
+    .container-fluid--airplane {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    }
 
-<div class="row mb-3">
-    <div class="col-md-6">
-        <a asp-action="Create" class="btn btn-primary">Thêm mới</a>
-    </div>
-    <div class="col-md-6">
-        <div class="input-group">
-            <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm theo tên, loại hoặc trạng thái...">
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" id="clearSearch">
-                    <i class="fas fa-times"></i>
-                </button>
+    h1 {
+    color: #1a3c87;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 30px;
+    }
+
+    .search-container {
+    max-width: 400px;
+    margin-left: auto;
+    }
+
+    .input-group {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-control {
+    border: 1px solid #ced4da;
+    padding: 10px;
+    border-radius: 8px 0 0 8px;
+    }
+
+    .form-control:focus {
+    border-color: #1a3c87;
+    box-shadow: none;
+    }
+
+    .input-group-append .btn {
+    border-radius: 0 8px 8px 0;
+    background: #f8f9fa;
+    border-color: #ced4da;
+    color: #333;
+    }
+
+    .input-group-append .btn:hover {
+    background: #e9ecef;
+    }
+
+    .btn-primary {
+    background: #1a3c87;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background 0.3s ease;
+    }
+
+    .btn-primary:hover {
+    background: #153074;
+    }
+
+    .table-container {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+    }
+
+    .table {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    }
+
+    .thead-dark th {
+    background: #1a3c87;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+    background: #f8f9fa;
+    }
+
+    td {
+    vertical-align: middle;
+    padding: 12px;
+    border: none;
+    text-align: center;
+    }
+
+    .btn-sm {
+    padding: 6px 12px;
+    margin: 0 3px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    }
+
+    .btn-warning {
+    background: #f39c12;
+    border: none;
+    }
+
+    .btn-warning:hover {
+    background: #e08e0b;
+    }
+
+    .btn-info {
+    background: #17a2b8;
+    border: none;
+    }
+
+    .btn-info:hover {
+    background: #138496;
+    }
+
+    .btn-danger {
+    background: #dc3545;
+    border: none;
+    }
+
+    .btn-danger:hover {
+    background: #c82333;
+    }
+
+    .fas {
+    font-size: 1rem;
+    }
+</style>
+}
+
+<div class="container-fluid--airplane">
+    <h1>Danh sách máy bay</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <a asp-action="Create" class="btn btn-primary">Thêm máy bay mới</a>
+        </div>
+        <div class="col-md-6">
+            <div class="search-container">
+                <div class="input-group">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm theo tên, loại hoặc trạng thái...">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<table class="table table-striped table-bordered">
-    <thead class="thead-dark">
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.AirplaneName)</th>
-            <th>@Html.DisplayNameFor(model => model.AirplaneType)</th>
-            <th>@Html.DisplayNameFor(model => model.TotalSeats)</th>
-            <th>@Html.DisplayNameFor(model => model.EconomySeats)</th>
-            <th>@Html.DisplayNameFor(model => model.BusinessSeats)</th>
-            <th>@Html.DisplayNameFor(model => model.ManufactureYear)</th>
-            <th>@Html.DisplayNameFor(model => model.Status)</th>
-            <th>Thao tác</th>
-        </tr>
-    </thead>
-    <tbody id="airplaneTable">
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.AirplaneName)</td>
-                <td>@Html.DisplayFor(modelItem => item.AirplaneType)</td>
-                <td>@Html.DisplayFor(modelItem => item.TotalSeats)</td>
-                <td>@Html.DisplayFor(modelItem => item.EconomySeats)</td>
-                <td>@Html.DisplayFor(modelItem => item.BusinessSeats)</td>
-                <td>@Html.DisplayFor(modelItem => item.ManufactureYear)</td>
-                <td>@Html.DisplayFor(modelItem => item.Status)</td>
-                <td>
-                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.AirplaneId">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.AirplaneId">
-                        <i class="fas fa-info-circle"></i>
-                    </a>
-                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.AirplaneId">
-                        <i class="fas fa-trash-alt"></i>
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.AirplaneName)</th>
+                        <th>@Html.DisplayNameFor(model => model.AirplaneType)</th>
+                        <th>@Html.DisplayNameFor(model => model.TotalSeats)</th>
+                        <th>@Html.DisplayNameFor(model => model.EconomySeats)</th>
+                        <th>@Html.DisplayNameFor(model => model.BusinessSeats)</th>
+                        <th>@Html.DisplayNameFor(model => model.ManufactureYear)</th>
+                        <th>@Html.DisplayNameFor(model => model.Status)</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="airplaneTable">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.AirplaneName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.AirplaneType)</td>
+                            <td>@Html.DisplayFor(modelItem => item.TotalSeats)</td>
+                            <td>@Html.DisplayFor(modelItem => item.EconomySeats)</td>
+                            <td>@Html.DisplayFor(modelItem => item.BusinessSeats)</td>
+                            <td>@Html.DisplayFor(modelItem => item.ManufactureYear)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                            <td>
+                                <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.AirplaneId" title="Sửa">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.AirplaneId" title="Chi tiết">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                                @if (item.Status == "Active")
+                                {
+                                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.AirplaneId" title="Xóa">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                }
+                                @if (item.Status != "Active")
+                                {
+                                    <a class="btn btn-sm btn-danger invisible" asp-action="Delete" asp-route-id="@item.AirplaneId" title="Xóa">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
@@ -84,25 +238,4 @@
             $('#searchInput').focus();
         });
     </script>
-
-    <style>
-        /* Thêm style cho responsive */
-        .input-group {
-            max-width: 400px;
-            float: right;
-        }
-
-        th {
-            white-space: nowrap;
-        }
-
-        td {
-            vertical-align: middle;
-        }
-
-        .btn-sm {
-            padding: 0.25rem 0.5rem;
-            margin: 2px;
-        }
-    </style>
 }

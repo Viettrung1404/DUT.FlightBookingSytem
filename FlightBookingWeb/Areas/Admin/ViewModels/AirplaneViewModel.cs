@@ -38,7 +38,7 @@ namespace FlightBookingWeb.Areas.Admin.ViewModels
         public int? ManufactureYear { get; set; }
 
         [StringLength(20, ErrorMessage = "Trạng thái không quá 20 ký tự")]
-        [RegularExpression("^(Active|Inactive|Retired)$", ErrorMessage = "Trạng thái không hợp lệ")]
+        [RegularExpression("^(Active|Deleted)$", ErrorMessage = "Trạng thái không hợp lệ")]
         [DisplayName("Trạng thái")]
         public string? Status { get; set; }
 

@@ -1,43 +1,162 @@
 ﻿@model List<FlightBookingWeb.ViewModels.RouteViewModel>
 @{
-    Layout = "_Layout"; // Import layout
+    Layout = "_Layout";
     ViewData["Title"] = "Quản lý tuyến bay";
 }
 
 @section Styles {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-        .table-actions {
-            white-space: nowrap;
+        /* Container chính */
+        .container-fluid--route {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-            .table-actions a {
-                margin-right: 5px;
+        h1 {
+            color: #1a3c87;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Tiêu đề chính */
+        .card-header {
+            background: #1a3c87;
+            color: #fff;
+            border-radius: 10px 10px 0 0;
+            padding: 20px;
+        }
+
+            .card-header h3 {
+                margin: 0;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
             }
 
+        /* Thẻ chứa bảng */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Nút thêm mới */
+        .btn-add {
+            background: #1a3c87;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+
+            .btn-add:hover {
+                background: #e08e0b;
+            }
+
+        /* Bảng */
+        .table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+            .table thead th {
+                background: #1a3c87;
+                color: #fff;
+                border: none;
+                padding: 12px;
+                font-weight: 500;
+                text-align: center;
+                white-space: nowrap;
+            }
+
+            .table tbody tr {
+                transition: background 0.2s ease;
+            }
+
+                .table tbody tr:hover {
+                    background: #f1f3f5;
+                }
+
+            .table td {
+                vertical-align: middle;
+                padding: 12px;
+                border: none;
+                text-align: center;
+            }
+
+        /* Cột giá */
         .price-column {
             font-weight: 600;
             color: #2a8f38;
         }
+
+        /* Nút thao tác */
+        .table-actions {
+            white-space: nowrap;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            margin: 0 3px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            border: none;
+            color: #fff;
+        }
+
+            .btn-warning:hover {
+                background: #e08e0b;
+            }
+
+        .btn-danger {
+            background: #dc3545;
+            border: none;
+            color: #fff;
+        }
+
+            .btn-danger:hover {
+                background: #c82333;
+            }
+
+        /* Thông báo không có dữ liệu */
+        .no-data {
+            color: #555;
+            font-style: italic;
+        }
+
     </style>
 }
 
-<div class="container-fluid">
+<div class="container-fluid--route">
     <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <div class="d-flex justify-content-between align-items-center">
-                <h3 class="mb-0">
-                    <i class="fas fa-route me-2"></i>QUẢN LÝ TUYẾN BAY
-                </h3>
-                <a asp-action="Create" class="btn btn-light btn-sm">
-                    <i class="fas fa-plus me-1"></i> Thêm tuyến mới
-                </a>
-            </div>
+        <h1>Danh sách tuyến bay</h1>
+        <div class="col-md-6">
+            <a asp-action="Create" class="btn btn-add">
+                <i class="fas fa-plus me-1"></i>Thêm tuyến bay mới
+            </a>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover table-bordered">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
                             <th>Sân bay đi</th>
                             <th>Sân bay đến</th>
@@ -54,15 +173,13 @@
                                 <tr>
                                     <td>@route.DepartureAirportName</td>
                                     <td>@route.ArrivalAirportName</td>
-                                    <td>@route.Duration</td>  <!-- Hiển thị Duration dưới dạng chuỗi HH:mm -->
-                                    <td>@route.BasePrice</td>
+                                    <td>@route.Duration</td>
+                                    <td class="price-column">@route.BasePrice</td>
                                     <td class="text-center table-actions">
-                                        <!-- Thêm nút sửa -->
-                                        <a href="@Url.Action("Edit", "Route", new { id = route.RouteId })" class="btn btn-warning btn-sm">
+                                        <a href="@Url.Action("Edit", "Route", new { id = route.RouteId })" class="btn btn-warning btn-sm" title="Sửa">
                                             <i class="fas fa-edit"></i> Sửa
                                         </a>
-                                        <!-- Thêm nút xóa -->
-                                        <a href="@Url.Action("Delete", "Route", new { id = route.RouteId })" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa tuyến bay này?');">
+                                        <a href="@Url.Action("Delete", "Route", new { id = route.RouteId })" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa tuyến bay này?');">
                                             <i class="fas fa-trash-alt"></i> Xóa
                                         </a>
                                     </td>
@@ -72,13 +189,12 @@
                         else
                         {
                             <tr>
-                                <td colspan="5" class="text-center py-4 text-muted">
+                                <td colspan="5" class="text-center py-4 no-data">
                                     <i class="fas fa-info-circle me-2"></i>Chưa có tuyến bay nào
                                 </td>
                             </tr>
                         }
                     </tbody>
-
                 </table>
             </div>
         </div>
@@ -87,13 +203,15 @@
 
 @section Scripts {
     <script>
-        // Thêm script nếu cần
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('.table').DataTable({
                 responsive: true,
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json'
-                }
+                },
+                columnDefs: [
+                    { orderable: false, targets: 4 } // Vô hiệu hóa sắp xếp cột Thao tác
+                ]
             });
         });
     </script>

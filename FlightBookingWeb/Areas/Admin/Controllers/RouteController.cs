@@ -64,7 +64,8 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
                 DepartureAirportId = model.DepartureAirportId,
                 ArrivalAirportId = model.ArrivalAirportId,
                 Duration = duration,
-                BasePrice = model.BasePrice
+                BasePrice = model.BasePrice,
+                Status = "Active"
             };
 
             _context.Routes.Add(route);

@@ -1,51 +1,184 @@
 ﻿@model FlightBookingWeb.ViewModels.RouteViewModel
 
 @{
-    ViewData["Title"] = "Chinh sua tuyen bay";
+    ViewData["Title"] = "Chỉnh sửa tuyến bay";
     var airports = ViewBag.Airports as SelectList;
 }
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+@section Styles {
+<style>
+    /* Container chính */
+    .edit-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 30px;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+    }
+
+    /* Tiêu đề chính */
+    h1 {
+        color: #1a3c87;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Nhóm form */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    /* Ô nhập liệu và dropdown */
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 12px;
+        border: 1px solid #ced4da;
+        transition: border-color 0.3s ease;
+    }
+
+        /* Hiệu ứng khi focus ô nhập liệu */
+        .form-control:focus, .form-select:focus {
+            border-color: #1a3c87;
+            box-shadow: 0 0 8px rgba(26, 60, 135, 0.2);
+        }
+
+    /* Nhãn của ô nhập liệu */
+    .control-label {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    /* Thông báo lỗi */
+    .text-danger {
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    /* Nút lưu */
+    .btn-primary--edit {
+        background: #1a3c87;
+        color: aliceblue;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: background 0.3s ease;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+            .btn-primary--edit:hover {
+            background: #153074;
+        }
+
+    /* Nút hủy */
+    .btn-secondary--edit {
+        background: #6c757d;
+        color: aliceblue;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: background 0.3s ease;
+        width: 100%;
+    }
+
+        .btn-secondary--edit:hover {
+            background: #5a6268;
+        }
+
+    /* Tiêu đề phụ */
+    .form-header {
+        color: #555;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    /* Đường kẻ ngang */
+    hr {
+        border: 0;
+        height: 1px;
+        background: #e9ecef;
+        margin: 20px 0;
+    }
+</style>
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="edit-container">
+    <h1>Chỉnh sửa tuyến bay</h1>
+    <h4 class="form-header">Cập nhật thông tin tuyến bay</h4>
+    <hr />
+    <div class="row">
+        <div class="col-12">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="RouteId" />
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="RouteId" />
+                <div class="form-group">
+                    <label asp-for="DepartureAirportId" class="control-label">Sân bay đi</label>
+                    <select asp-for="DepartureAirportId" class="form-select" asp-items="airports">
+                        <option value="">-- Chọn sân bay đi --</option>
+                    </select>
+                    <span asp-validation-for="DepartureAirportId" class="text-danger"></span>
+                </div>
 
-    <div class="mb-3">
-        <label class="form-label">San bay di</label>
-        <select asp-for="DepartureAirportId" class="form-select" asp-items="airports">
-            <option value="">-- Chon san bay di --</option>
-        </select>
-        <span asp-validation-for="DepartureAirportId" class="text-danger"></span>
+                <div class="form-group">
+                    <label asp-for="ArrivalAirportId" class="control-label">Sân bay đến</label>
+                    <select asp-for="ArrivalAirportId" class="form-select" asp-items="airports">
+                        <option value="">-- Chọn sân bay đến --</option>
+                    </select>
+                    <span asp-validation-for="ArrivalAirportId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Duration" class="control-label">Thời gian bay</label>
+                    <input asp-for="Duration" class="form-control" type="time" placeholder="Chọn thời gian bay (HH:mm)" />
+                    <span asp-validation-for="Duration" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="BasePrice" class="control-label">Giá cơ bản</label>
+                    <input asp-for="BasePrice" class="form-control" type="number" step="0.01" placeholder="Nhập giá cơ bản" />
+                    <span asp-validation-for="BasePrice" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary--edit">Lưu thay đổi</button>
+                    <a asp-action="Index" class="btn btn-secondary--edit">Hủy</a>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label class="form-label">San bay den</label>
-        <select asp-for="ArrivalAirportId" class="form-select" asp-items="airports">
-            <option value="">-- Chon san bay den --</option>
-        </select>
-        <span asp-validation-for="ArrivalAirportId" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Thoi gian bay</label>
-        <input asp-for="Duration" class="form-control" type="time" />
-        <span asp-validation-for="Duration" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Gia co ban</label>
-        <input asp-for="BasePrice" class="form-control" type="number" step="0.01" />
-        <span asp-validation-for="BasePrice" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Luu thay doi</button>
-    <a asp-action="Index" class="btn btn-secondary">Huy</a>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Đặt giá trị selected cho dropdown sân bay đi
+            var departureAirportId = '@Model.DepartureAirportId';
+            if (departureAirportId) {
+                $('#DepartureAirportId').val(departureAirportId);
+            }
+
+            // Đặt giá trị selected cho dropdown sân bay đến
+            var arrivalAirportId = '@Model.ArrivalAirportId';
+            if (arrivalAirportId) {
+                $('#ArrivalAirportId').val(arrivalAirportId);
+            }
+
+            // Xử lý sự kiện thay đổi dropdown
+            $('select').on('change', function () {
+                var selectedValue = $(this).val();
+                $(this).find('option').removeAttr('selected');
+                $(this).find('option[value="' + selectedValue + '"]').attr('selected', 'selected');
+            });
+        });
+    </script>
 }
-                 

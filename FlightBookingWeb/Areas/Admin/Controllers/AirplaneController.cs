@@ -205,7 +205,8 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
             var airplane = await _context.Airplanes.FindAsync(id);
             if (airplane != null)
             {
-                _context.Airplanes.Remove(airplane);
+                airplane.Status = "Deleted";
+                _context.Update(airplane);
             }
 
             await _context.SaveChangesAsync();

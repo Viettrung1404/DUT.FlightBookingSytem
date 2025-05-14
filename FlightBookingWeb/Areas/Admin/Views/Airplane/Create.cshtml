@@ -1,58 +1,170 @@
 ﻿@model FlightBookingWeb.Areas.Admin.ViewModels.AirplaneViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Thêm máy bay";
 }
 
-<h1>Create</h1>
+@section Styles {
+    <style>
+        /* Container chính */
+        .create-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
 
-<h4>Airplane</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="AirplaneName" class="control-label"></label>
-                <input asp-for="AirplaneName" class="form-control" />
-                <span asp-validation-for="AirplaneName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AirplaneType" class="control-label"></label>
-                <input asp-for="AirplaneType" class="form-control" />
-                <span asp-validation-for="AirplaneType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalSeats" class="control-label"></label>
-                <input asp-for="TotalSeats" class="form-control" />
-                <span asp-validation-for="TotalSeats" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EconomySeats" class="control-label"></label>
-                <input asp-for="EconomySeats" class="form-control" />
-                <span asp-validation-for="EconomySeats" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BusinessSeats" class="control-label"></label>
-                <input asp-for="BusinessSeats" class="form-control" />
-                <span asp-validation-for="BusinessSeats" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ManufactureYear" class="control-label"></label>
-                <input asp-for="ManufactureYear" class="form-control" />
-                <span asp-validation-for="ManufactureYear" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        /* Tiêu đề chính */
+        h1 {
+            color: #1a3c87;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Nhóm form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* Ô nhập liệu */
+        .form-control {
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s ease;
+        }
+
+            /* Hiệu ứng khi focus ô nhập liệu */
+            .form-control:focus {
+                border-color: #1a3c87;
+                box-shadow: 0 0 8px rgba(26, 60, 135, 0.2);
+            }
+
+        /* Nhãn của ô nhập liệu */
+        .control-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Thông báo lỗi */
+        .text-danger {
+            font-size: 0.875rem;
+            margin-top: 5px;
+        }
+
+        /* Nút tạo */
+        .btn-primary--create {
+            background: #1a3c87;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+            /* Hiệu ứng hover cho nút tạo */
+            .btn-primary--create:hover {
+                background: #153074;
+            }
+
+        /* Link quay lại */
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #1a3c87;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            /* Hiệu ứng hover cho link quay lại */
+            .back-link:hover {
+                text-decoration: underline;
+            }
+
+        /* Tiêu đề phụ */
+        .form-header {
+            color: #555;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Đường kẻ ngang */
+        hr {
+            border: 0;
+            height: 1px;
+            background: #e9ecef;
+            margin: 20px 0;
+        }
+    </style>
+}
+
+<div class="create-container">
+    <h1>Thêm máy bay</h1>
+    <h4 class="form-header">Thêm thông tin máy bay mới</h4>
+    <hr />
+    <div class="row">
+        <div class="col-12">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="form-group">
+                    <label asp-for="AirplaneName" class="control-label">Tên máy bay</label>
+                    <input asp-for="AirplaneName" class="form-control" placeholder="Nhập tên máy bay" />
+                    <span asp-validation-for="AirplaneName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="AirplaneType" class="control-label">Loại máy bay</label>
+                    <input asp-for="AirplaneType" class="form-control" placeholder="Nhập loại máy bay" />
+                    <span asp-validation-for="AirplaneType" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="TotalSeats" class="control-label">Tổng số ghế</label>
+                    <input asp-for="TotalSeats" class="form-control" type="number" placeholder="Nhập tổng số ghế" />
+                    <span asp-validation-for="TotalSeats" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="EconomySeats" class="control-label">Số ghế phổ thông</label>
+                    <input asp-for="EconomySeats" class="form-control" type="number" placeholder="Nhập số ghế phổ thông" />
+                    <span asp-validation-for="EconomySeats" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="BusinessSeats" class="control-label">Số ghế thương gia</label>
+                    <input asp-for="BusinessSeats" class="form-control" type="number" placeholder="Nhập số ghế thương gia" />
+                    <span asp-validation-for="BusinessSeats" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ManufactureYear" class="control-label">Năm sản xuất</label>
+                    <input asp-for="ManufactureYear" class="form-control" type="number" placeholder="Nhập năm sản xuất" />
+                    <span asp-validation-for="ManufactureYear" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Thêm máy bay" class="btn btn-primary--create" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index" class="back-link">Quay lại danh sách</a>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
