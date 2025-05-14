@@ -1,0 +1,81 @@
+﻿@model IEnumerable<FlightBookingWeb.Models.Flight>
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Danh sách chuyến bay";
+}
+
+<h1 class="mb-4 text-primary fw-bold">📋 Danh sách chuyến bay sắp tới</h1>
+
+<form asp-action="Index" method="get" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <input type="text" name="search" value="@Context.Request.Query["search"]" class="form-control" placeholder="🔍 Tìm mã, sân bay..." />
+    </div>
+    <div class="col-md-2">
+        <input type="date" name="fromDate" value="@Context.Request.Query["fromDate"]" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <input type="date" name="toDate" value="@Context.Request.Query["toDate"]" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <select name="scheduleId" class="form-select">
+            <option value="">🗂️ Mã lịch trình</option>
+            @foreach (var s in (SelectList)ViewBag.Schedules)
+            {
+                <option value="@s.Value" selected="@(Context.Request.Query["scheduleId"] == s.Value ? "selected" : null)">
+                    @s.Text
+                </option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-primary">🔍 Tìm kiếm</button>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-hover table-bordered align-middle">
+        <thead class="table-primary text-center">
+            <tr>
+                <th>Mã chuyến bay</th>
+                <th>Airplane</th>
+                <th>Tuyến bay</th>
+                <th>🛫 Khởi hành</th>
+                <th>🛬 Đến</th>
+                <th>📌 Trạng thái</th>
+                <th>⚙️ Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var flight in Model)
+            {
+                <tr>
+
+                    <td class="text-center fw-semibold">@flight.FlightId</td>
+                    <td>@flight.Schedule?.Airplane?.AirplaneName</td>
+                    <td>@flight.Schedule?.Route?.DepartureAirport?.AirportName → @flight.Schedule?.Route?.ArrivalAirport?.AirportName</td>
+                    <td>@flight.DepartureDateTime.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@flight.ArrivalDateTime.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="text-center">
+                        <span class="badge bg-@(flight.Status == "Đang bay" ? "success" : flight.Status == "Hoãn" ? "warning" : "secondary")">
+                            @(string.IsNullOrEmpty(flight.Status) ? "Chờ xử lý" : flight.Status)
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a asp-action="Details" asp-route-id="@flight.FlightId" class="btn btn-outline-info" title="Chi tiết">
+                                <i class="bi bi-eye"></i> Chi tiết
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@flight.FlightId" class="btn btn-outline-warning" title="Chỉnh sửa">
+                                <i class="bi bi-pencil-square"></i> Chỉnh sửa
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@flight.FlightId" class="btn btn-outline-danger" title="Xóa">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

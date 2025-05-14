@@ -1,0 +1,32 @@
+﻿@model FlightBookingWeb.Models.FlightSchedule
+
+@{
+    ViewData["Title"] = "Chi tiết lịch bay";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="mb-4">Chi tiết lịch bay</h2>
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3 fw-bold">Máy bay</dt>
+    <dd class="col-sm-9">@Model.Airplane?.AirplaneName</dd>
+
+    <dt class="col-sm-3 fw-bold">Tuyến bay</dt>
+    <dd class="col-sm-9">
+        @Model.Route?.DepartureAirport?.AirportName
+        &nbsp;→&nbsp;
+        @Model.Route?.ArrivalAirport?.AirportName
+    </dd>
+
+    <dt class="col-sm-3 fw-bold">Giờ khởi hành lần đầu</dt>
+    <dd class="col-sm-9">@Model.DepartureTime.ToString("dd/MM/yyyy HH:mm")</dd>
+
+    <dt class="col-sm-3 fw-bold">Tần suất</dt>
+    <dd class="col-sm-9">@Model.Frequency</dd>
+
+    <dt class="col-sm-3 fw-bold">Hoạt động</dt>
+    <dd class="col-sm-9">@(Model.Active ? "Có" : "Không")</dd>
+</dl>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">Quay lại danh sách</a>

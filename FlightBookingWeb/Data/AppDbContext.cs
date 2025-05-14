@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using FlightBookingWeb.Models;
@@ -238,16 +238,6 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Status)
                 .HasMaxLength(10)
                 .IsUnicode(false);
-
-            entity.HasOne(d => d.ArrivalAirport).WithMany(p => p.RouteArrivalAirports)
-                .HasForeignKey(d => d.ArrivalAirportId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Route_Airport1");
-
-            entity.HasOne(d => d.DepartureAirport).WithMany(p => p.RouteDepartureAirports)
-                .HasForeignKey(d => d.DepartureAirportId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Route_Airport");
         });
 
         modelBuilder.Entity<Seat>(entity =>

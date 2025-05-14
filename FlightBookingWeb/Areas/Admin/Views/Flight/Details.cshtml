@@ -1,0 +1,35 @@
+﻿@model FlightBookingWeb.Models.Flight
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Chi tiết chuyến bay";
+}
+
+<h2 class="mb-4"><i class="bi bi-airplane-engines"></i> @ViewData["Title"]</h2>
+
+<div class="card shadow rounded-4">
+    <div class="card-body">
+        <dl class="row fs-5">
+            <dt class="col-sm-4"><i class="bi bi-signpost-2"></i> Lịch trình</dt>
+            <dd class="col-sm-8">@Model.Schedule.Route.DepartureAirport.AirportName → @Model.Schedule.Route.ArrivalAirport.AirportName</dd>
+
+            <dt class="col-sm-4"><i class="bi bi-clock-history"></i> Thời gian khởi hành</dt>
+            <dd class="col-sm-8">@Model.DepartureDateTime.ToString("dd/MM/yyyy HH:mm")</dd>
+
+            <dt class="col-sm-4"><i class="bi bi-clock"></i> Thời gian đến</dt>
+            <dd class="col-sm-8">@Model.ArrivalDateTime.ToString("dd/MM/yyyy HH:mm")</dd>
+
+            <dt class="col-sm-4"><i class="bi bi-info-circle"></i> Trạng thái</dt>
+            <dd class="col-sm-8">@Model.Status</dd>
+        </dl>
+
+        <div class="mt-4">
+            <a asp-action="Edit" asp-route-id="@Model.FlightId" class="btn btn-warning">
+                <i class="bi bi-pencil-square"></i> Chỉnh sửa
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle"></i> Quay lại
+            </a>
+        </div>
+    </div>
+</div>
