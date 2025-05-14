@@ -53,11 +53,15 @@ namespace FlightBookingWeb.Controllers
 
                 // Tạo Cookie
                 await HttpContext.SignInAsync("MyCookieAuth", new ClaimsPrincipal(claimsIdentity));
-
-                // Chuyển hướng đến trang chủ
-                if (user.Role == "Admin")
+                if(user.Role == "Employee")
                 {
-                    return RedirectToAction("Index", "Admin");
+                    // Chuyển hướng đến trang quản lý nếu là Admin
+                    return RedirectToAction("Index", "Home", new { area = "Employee" });
+                }
+                else if (user.Role == "Admin")
+                {
+                    // Chuyển hướng đến trang quản lý nếu là Admin
+                    return RedirectToAction("Index", "Route", new { area = "Admin" });
                 }
                 else if (user.Role == "User")
                 {
