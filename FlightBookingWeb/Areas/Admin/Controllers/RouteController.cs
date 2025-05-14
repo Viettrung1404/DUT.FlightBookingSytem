@@ -21,15 +21,13 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         {
             var routes = await _context.Routes
             .Where(r => r.Status == "Active") // Chỉ lấy những cái chưa bị xóa
-            .Include(r => r.DepartureAirport)
-            .Include(r => r.ArrivalAirport)
             .Select(r => new RouteViewModel
             {
                 RouteId = r.RouteId,
                 DepartureAirportId = r.DepartureAirportId,
-                DepartureAirportName = r.DepartureAirport.AirportName,
+                DepartureAirportName = _context.Airports.Where(s => s.AirportId == r.DepartureAirportId).Select(s => s.AirportName).FirstOrDefault(),
                 ArrivalAirportId = r.ArrivalAirportId,
-                ArrivalAirportName = r.ArrivalAirport.AirportName,
+                ArrivalAirportName = _context.Airports.Where(s => s.AirportId == r.ArrivalAirportId).Select(s => s.AirportName).FirstOrDefault(),
                 Duration = r.Duration.ToString("HH:mm"),
                 BasePrice = r.BasePrice
             })
