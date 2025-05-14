@@ -27,7 +27,8 @@ namespace FlightBookingWeb
 
             // Đăng ký các dịch vụ khác
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddHostedService<FlightGeneratorService>();
+            builder.Services.AddHostedService<FlightStatusUpdater>();
             var app = builder.Build();
 
             // Sử dụng session

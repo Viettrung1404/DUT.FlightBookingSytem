@@ -11,17 +11,18 @@ public partial class FlightSchedule
 
     public int RouteId { get; set; }
 
-    public TimeOnly DepartureTime { get; set; }
+    public DateTime DepartureTime { get; set; }
 
     public TimeOnly ArrivalTime { get; set; }
 
-    public string Frequency { get; set; } = null!;
+    public int Frequency { get; set; }
 
-    public bool? Active { get; set; }
+    public bool Active { get; set; }
+    public bool Status { get; set; } = true;
 
     public virtual Airplane? Airplane { get; set; }
 
     public virtual ICollection<Flight> Flights { get; set; } = new List<Flight>();
 
-    public virtual Route Route { get; set; } = null!;
+    public virtual Route? Route { get; set; } = null!;
 }

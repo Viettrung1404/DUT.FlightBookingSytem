@@ -1,0 +1,41 @@
+﻿@model FlightBookingWeb.Models.Flight
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Xóa chuyến bay";
+}
+
+<h2 class="mb-4 text-danger"><i class="bi bi-exclamation-triangle"></i> @ViewData["Title"]</h2>
+
+<div class="card shadow rounded-4 border-danger">
+    <div class="card-body">
+        <h4 class="text-danger"><i class="bi bi-x-octagon"></i> Bạn có chắc chắn muốn hủy chuyến bay này không?</h4>
+        <hr />
+        <dl class="row fs-5">
+            <dt class="col-sm-4"><i class="bi bi-signpost-2"></i> Tuyến bay</dt>
+            <dd class="col-sm-8">
+                @Model.Schedule?.Route?.DepartureAirport?.AirportName →
+                @Model.Schedule?.Route?.ArrivalAirport?.AirportName
+            </dd>
+
+            <dt class="col-sm-4"><i class="bi bi-clock-history"></i> Giờ khởi hành</dt>
+            <dd class="col-sm-8">@Model.DepartureDateTime.ToString("dd/MM/yyyy HH:mm")</dd>
+
+            <dt class="col-sm-4"><i class="bi bi-clock"></i> Giờ hạ cánh</dt>
+            <dd class="col-sm-8">@Model.ArrivalDateTime.ToString("dd/MM/yyyy HH:mm")</dd>
+
+            <dt class="col-sm-4"><i class="bi bi-info-circle"></i> Trạng thái</dt>
+            <dd class="col-sm-8">@Model.Status</dd>
+        </dl>
+
+        <form asp-area="Admin" asp-controller="Flight" asp-action="Delete" method="post" class="mt-4">
+            <input type="hidden" asp-for="FlightId" />
+            <button type="submit" class="btn btn-danger me-2">
+                <i class="bi bi-trash-fill"></i> Hủy chuyến bay
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i> Quay lại
+            </a>
+        </form>
+    </div>
+</div>

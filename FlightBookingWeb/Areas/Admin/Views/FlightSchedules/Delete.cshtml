@@ -1,0 +1,52 @@
+﻿@model FlightBookingWeb.Models.FlightSchedule
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Xóa lịch bay";
+}
+
+<h2 class="mb-4 text-danger">Xóa lịch bay</h2>
+
+<div class="alert alert-warning" role="alert">
+    <strong>Bạn có chắc chắn muốn xóa lịch bay sau không?</strong>
+</div>
+
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3 fw-bold">Tuyến bay</dt>
+    <dd class="col-sm-9">@Model.Route?.DepartureAirport?.AirportName → @Model.Route?.ArrivalAirport?.AirportName</dd>
+
+    <dt class="col-sm-3 fw-bold">Máy bay</dt>
+    <dd class="col-sm-9">@Model.Airplane?.AirplaneName</dd>
+
+    <dt class="col-sm-3 fw-bold">Giờ khởi hành</dt>
+    <dd class="col-sm-9">@Model.DepartureTime.ToString("dd/MM/yyyy HH:mm")</dd>
+
+    <dt class="col-sm-3 fw-bold">Tần suất</dt>
+    <dd class="col-sm-9">@Model.Frequency</dd>
+
+    <dt class="col-sm-3 fw-bold">Trạng thái</dt>
+    <dd class="col-sm-9">@(Model.Active ? "Đang hoạt động" : "Ngưng hoạt động")</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="ScheduleId" />
+
+    <div class="form-group mb-3">
+        <label class="form-label fw-bold">Bạn có muốn hủy tất cả các chuyến bay thuộc lịch trình này không?</label>
+        <div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="cancelYes" name="cancelFlights" value="true" checked />
+                <label class="form-check-label" for="cancelYes">Có</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="cancelNo" name="cancelFlights" value="false" />
+                <label class="form-check-label" for="cancelNo">Không</label>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

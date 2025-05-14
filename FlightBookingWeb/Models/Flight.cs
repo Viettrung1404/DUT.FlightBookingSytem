@@ -15,7 +15,7 @@ public partial class Flight
 
     public string? Status { get; set; }
 
-    public virtual FlightSchedule Schedule { get; set; } = null!;
+    public virtual FlightSchedule? Schedule { get; set; }
 
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }

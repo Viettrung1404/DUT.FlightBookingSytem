@@ -1,0 +1,68 @@
+﻿@model FlightBookingWeb.Models.FlightSchedule
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Chỉnh sửa lịch bay";
+}
+
+<h2 class="mb-4">Chỉnh sửa lịch bay</h2>
+
+@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="ScheduleId" />
+
+    <div class="mb-3">
+        <label asp-for="RouteId" class="form-label">Tuyến bay</label>
+        <select asp-for="RouteId" class="form-select" asp-items="ViewBag.Routes">
+            <option value="">-- Chọn tuyến bay --</option>
+        </select>
+        <span asp-validation-for="RouteId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="AirplaneId" class="form-label">Máy bay</label>
+        <select asp-for="AirplaneId" class="form-select" asp-items="ViewBag.Airplanes">
+            <option value="">-- Chọn máy bay --</option>
+        </select>
+        <span asp-validation-for="AirplaneId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DepartureTime" class="form-label">Giờ đi</label>
+        <input asp-for="DepartureTime" class="form-control" type="datetime-local"
+               value="@Model.DepartureTime.ToString("yyyy-MM-ddTHH:mm")" />
+        <span asp-validation-for="DepartureTime" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Thời gian bay dự kiến</label>
+        <input class="form-control" value="@Model.ArrivalTime.ToString(@"hh\:mm")" readonly />
+        <span asp-validation-for="ArrivalTime" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Frequency" class="form-label">Tần suất</label>
+        <input asp-for="Frequency" class="form-control" />
+        <span asp-validation-for="Frequency" class="text-danger"></span>
+    </div>
+
+    <div class="form-check form-switch mb-3">
+        <input class="form-check-input" asp-for="Active" type="checkbox" role="switch" />
+        <label class="form-check-label" asp-for="Active">Kích hoạt</label>
+    </div>
+
+    <div class="form-check mb-4">
+        <input class="form-check-input" type="checkbox" name="updateFlights" id="updateFlights" value="true" />
+        <label class="form-check-label" for="updateFlights">
+            Cập nhật thời gian cho các chuyến bay tương ứng?
+        </label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

@@ -1,0 +1,85 @@
+﻿@model IEnumerable<FlightBookingWeb.Models.FlightSchedule>
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Flight Schedules";
+}
+
+<h2>Flight Schedules</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-warning">@TempData["Message"]</div>
+}
+
+@{
+    var search = Context.Request.Query["search"].ToString();
+    var fromDate = Context.Request.Query["fromDate"].ToString();
+    var toDate = Context.Request.Query["toDate"].ToString();
+    var selectedScheduleId = Context.Request.Query["scheduleId"].ToString();
+}
+
+<form method="get" class="mb-3 d-flex flex-wrap gap-2">
+    <input type="text" name="search" class="form-control w-auto" placeholder="Tìm kiếm..." value="@search" />
+
+    <select name="active" class="form-select w-auto">
+        <option value="">-- Active Status --</option>
+        <option value="true" selected="@(Context.Request.Query["active"] == "true" ? "selected" : null)">Active</option>
+        <option value="false" selected="@(Context.Request.Query["active"] == "false" ? "selected" : null)">Inactive</option>
+    </select>
+
+    <select name="scheduleId" class="form-select w-auto">
+        <option value="">-- All Schedules --</option>
+        @if (ViewBag.Schedules != null)
+        {
+            foreach (var s in (SelectList)ViewBag.Schedules)
+            {
+                <option value="@s.Value" selected="@(ViewBag.SelectedScheduleId == s.Value ? "selected" : null)">
+                    @s.Text
+                </option>
+            }
+        }
+    </select>
+
+    <button type="submit" class="btn btn-primary">Lọc</button>
+</form>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Tạo mới lịch trình</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Tuyến bay</th>
+            <th>Máy bay</th>
+            <th>Thời gian bắt đầu</th>
+            <th>Thời gian đến dự kiến</th>
+            <th>Tần suất</th>
+            <th>Hoạt động</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Route?.DepartureAirport?.AirportName - @item.Route?.ArrivalAirport?.AirportName
+                </td>
+                <td>
+                    @item.Airplane?.AirplaneName
+                </td>
+                <td>@item.DepartureTime.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@item.ArrivalTime.ToString(@"hh\:mm")</td>
+                <td>@item.Frequency</td>
+                <td>@(item.Active ? "Có" : "Không")</td>
+                <td>
+                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.ScheduleId">Sửa</a>
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.ScheduleId">Chi tiết</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.ScheduleId">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
