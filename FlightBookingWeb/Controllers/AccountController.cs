@@ -58,12 +58,15 @@ namespace FlightBookingWeb.Controllers
                     // Chuyển hướng đến trang quản lý nếu là Admin
                     return RedirectToAction("Index", "Home", new { area = "Employee" });
                 }
-                if (user.Role == "Admin")
+                else if (user.Role == "Admin")
                 {
                     // Chuyển hướng đến trang quản lý nếu là Admin
                     return RedirectToAction("Index", "Route", new { area = "Admin" });
                 }
-                
+                else if (user.Role == "User")
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
 
             // Thông báo lỗi nếu đăng nhập thất bại

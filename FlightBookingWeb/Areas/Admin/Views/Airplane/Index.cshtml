@@ -1,0 +1,108 @@
+﻿@model IEnumerable<FlightBookingWeb.Areas.Admin.ViewModels.AirplaneViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Danh sách máy bay</h1>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <a asp-action="Create" class="btn btn-primary">Thêm mới</a>
+    </div>
+    <div class="col-md-6">
+        <div class="input-group">
+            <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm theo tên, loại hoặc trạng thái...">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.AirplaneName)</th>
+            <th>@Html.DisplayNameFor(model => model.AirplaneType)</th>
+            <th>@Html.DisplayNameFor(model => model.TotalSeats)</th>
+            <th>@Html.DisplayNameFor(model => model.EconomySeats)</th>
+            <th>@Html.DisplayNameFor(model => model.BusinessSeats)</th>
+            <th>@Html.DisplayNameFor(model => model.ManufactureYear)</th>
+            <th>@Html.DisplayNameFor(model => model.Status)</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody id="airplaneTable">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.AirplaneName)</td>
+                <td>@Html.DisplayFor(modelItem => item.AirplaneType)</td>
+                <td>@Html.DisplayFor(modelItem => item.TotalSeats)</td>
+                <td>@Html.DisplayFor(modelItem => item.EconomySeats)</td>
+                <td>@Html.DisplayFor(modelItem => item.BusinessSeats)</td>
+                <td>@Html.DisplayFor(modelItem => item.ManufactureYear)</td>
+                <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                <td>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.AirplaneId">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.AirplaneId">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.AirplaneId">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Xử lý tìm kiếm
+            $('#searchInput').on('keyup', function() {
+                const value = $(this).val().toLowerCase().trim();
+                $('#airplaneTable tr').filter(function() {
+                    const text = $(this).text().toLowerCase();
+                    $(this).toggle(text.indexOf(value) > -1);
+                });
+            });
+
+            // Xóa nội dung tìm kiếm
+            $('#clearSearch').click(function() {
+                $('#searchInput').val('');
+                $('#airplaneTable tr').show();
+            });
+
+            // Tự động focus vào ô tìm kiếm
+            $('#searchInput').focus();
+        });
+    </script>
+
+    <style>
+        /* Thêm style cho responsive */
+        .input-group {
+            max-width: 400px;
+            float: right;
+        }
+
+        th {
+            white-space: nowrap;
+        }
+
+        td {
+            vertical-align: middle;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            margin: 2px;
+        }
+    </style>
+}
