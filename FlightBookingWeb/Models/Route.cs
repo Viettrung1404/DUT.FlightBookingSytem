@@ -13,7 +13,7 @@ public partial class Route
 
     public TimeOnly Duration { get; set; }
 
-    public decimal Price { get; set; }
+    public decimal BasePrice { get; set; }
 
     public virtual Airport ArrivalAirport { get; set; } = null!;
 

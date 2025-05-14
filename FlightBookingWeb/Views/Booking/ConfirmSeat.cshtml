@@ -63,13 +63,13 @@
     @if ((Model.SelectedOutboundSeats != null && Model.SelectedOutboundSeats.Any()) &&
     (!Model.IsRoundTrip || (Model.SelectedReturnSeats != null && Model.SelectedReturnSeats.Any())))
     {
-        <form asp-action="Payment" asp-controller="Booking" method="get">
-            <input type="hidden" name="flightId" value="@Model.OutboundFlightId" />
+        <form asp-action="Checkout" asp-controller="Booking" method="get">
+            <input type="hidden" name="outboundFlightId" value="@Model.OutboundFlightId" />
             @if (Model.ReturnFlightId.HasValue)
             {
                 <input type="hidden" name="returnFlightId" value="@Model.ReturnFlightId.Value" />
             }
-
+            <input type="hidden" name="passengerCount" value="@Model.PassengerCount" />
             @foreach (var seat in Model.SelectedOutboundSeats)
             {
                 <input type="hidden" name="selectedSeatsOutBoard" value="@seat.SeatNumber" />

@@ -3,11 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using FlightBookingWeb.Data;
 using FlightBookingWeb.Models;
 using Microsoft.AspNetCore.Authorization;
+using FlightBookingWeb.Areas.Admin.ViewModels;
 
 namespace FlightBookingWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")] // Chỉ cho phép người dùng có vai trò Admin truy cập
+    [Authorize(Roles = "Admin")]
     public class AccountController : Controller
     {
         private readonly AppDbContext _context;
@@ -20,8 +21,21 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         // GET: Admin/Account
         public async Task<IActionResult> Index()
         {
-            var accounts = await _context.Accounts.ToListAsync();
-            return View(accounts);
+            var accounts = await _context.Accounts
+                .Where(a => a.Role != "Delete")
+                .ToListAsync();
+
+            var viewModels = accounts.Select(a => new AccountViewModel
+            {
+                AccountId = a.AccountId,
+                Username = a.Username,
+                Email = a.Email,
+                PhoneNumber = a.PhoneNumber,
+                Gender = a.Gender,
+                Role = a.Role
+            }).ToList();
+
+            return View(viewModels);
         }
 
         // GET: Admin/Account/Details/5
@@ -33,7 +47,17 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            return View(account);
+            var viewModel = new AccountViewModel
+            {
+                AccountId = account.AccountId,
+                Username = account.Username,
+                Email = account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Gender = account.Gender,
+                Role = account.Role
+            };
+
+            return View(viewModel);
         }
 
         // GET: Admin/Account/Create
@@ -45,72 +69,77 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         // POST: Admin/Account/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Account account)
+        public async Task<IActionResult> Create(AccountViewModel account)
         {
             if (ModelState.IsValid)
             {
-                account.Password = BCrypt.Net.BCrypt.HashPassword(account.Password); // Mã hóa mật khẩu
-                _context.Add(account);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(account);
-        }
+                try
+                {
+                    // Kiểm tra email trùng
+                    if (await _context.Accounts.AnyAsync(a => a.Email == account.Email))
+                    {
+                        ModelState.AddModelError("Email", "Email đã được sử dụng.");
+                        return View(account); // Hiển thị lại form với lỗi
+                    }
 
-        // GET: Admin/Account/Edit/5
-        public async Task<IActionResult> Edit(int id)
-        {
-            var account = await _context.Accounts.FindAsync(id);
-            if (account == null)
-            {
-                return NotFound();
+                    // Kiểm tra username trùng
+                    if (await _context.Accounts.AnyAsync(a => a.Username == account.Username))
+                    {
+                        ModelState.AddModelError("Username", "Tên đăng nhập đã tồn tại.");
+                        return View(account);
+                    }
+
+                    var entity = new Account
+                    {
+                        Username = account.Username,
+                        Password = BCrypt.Net.BCrypt.HashPassword(account.Password),
+                        Email = account.Email,
+                        PhoneNumber = account.PhoneNumber,
+                        Gender = account.Gender,
+                        Role = account.Role
+                    };
+
+                    _context.Accounts.Add(entity);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException ex)
+                {
+                    // Nếu vì lý do gì đó vẫn bị lỗi (tránh exception văng ra)
+                    ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi khi lưu tài khoản.");
+                    return View(account);
+                }
             }
-            return View(account);
+
+            return View(account); // Form không hợp lệ
         }
 
         // POST: Admin/Account/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Account account)
+        public async Task<IActionResult> Edit(int id, AccountViewModel account)
         {
             if (id != account.AccountId)
-            {
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    var existingAccount = await _context.Accounts.FindAsync(id);
-                    if (existingAccount == null)
-                    {
-                        return NotFound();
-                    }
+                var existingAccount = await _context.Accounts.FindAsync(id);
+                if (existingAccount == null)
+                    return NotFound();
 
-                    // Cập nhật thông tin
-                    existingAccount.Username = account.Username;
-                    existingAccount.Email = account.Email;
-                    existingAccount.PhoneNumber = account.PhoneNumber;
-                    existingAccount.Gender = account.Gender;
-                    existingAccount.Role = account.Role;
+                existingAccount.Username = account.Username;
+                existingAccount.Email = account.Email;
+                existingAccount.PhoneNumber = account.PhoneNumber;
+                existingAccount.Gender = account.Gender;
+                existingAccount.Role = account.Role;
 
-                    _context.Update(existingAccount);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AccountExists(account.AccountId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(existingAccount);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(account);
         }
 
@@ -123,7 +152,17 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            return View(account);
+            var viewModel = new AccountViewModel
+            {
+                AccountId = account.AccountId,
+                Username = account.Username,
+                Email = account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Gender = account.Gender,
+                Role = account.Role
+            };
+
+            return View(viewModel);
         }
 
         // POST: Admin/Account/Delete/5
@@ -132,11 +171,12 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var account = await _context.Accounts.FindAsync(id);
-            if (account != null)
-            {
-                _context.Accounts.Remove(account);
-                await _context.SaveChangesAsync();
-            }
+            if (account == null)
+                return NotFound();
+
+            account.Role = "Delete"; // Xóa mềm
+            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 

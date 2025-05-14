@@ -1,0 +1,186 @@
+﻿@model FlightBookingWeb.ViewModels.CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Checkout";
+    var hasOutboundFlight = Model?.OutboundFlight != null;
+    var hasReturnFlight = Model?.ReturnFlight != null;
+    var showPayPalButton = ViewBag.ShowPayPalButton as bool? ?? false;
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Checkout</h2>
+
+    @if (Model == null)
+    {
+        <div class="alert alert-danger">
+            <h4>System Error</h4>
+            Unable to load booking information. Please try again.
+        </div>
+    }
+    else if (!hasOutboundFlight)
+    {
+        <div class="alert alert-warning">
+            Outbound flight information not found.
+        </div>
+    }
+    else
+    {
+        <!-- Flight Details -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Flight Details</h5>
+            </div>
+            <div class="card-body">
+                <h6 class="text-primary">Outbound Flight</h6>
+                <p>
+                    <strong>Flight Number:</strong> @Model.OutboundFlight.FlightId<br />
+                    <strong>Route:</strong>
+                    @(Model.DepartureCity ?? "N/A") → @(Model.ArrivalCity ?? "N/A")<br />
+                    <strong>Date:</strong> @Model.OutboundFlight.DepartureDateTime.ToString("dd/MM/yyyy")
+                </p>
+                <p>
+                    <strong>Selected Seats:</strong>
+                    @if (Model.SelectedOutboundSeats?.Any() == true)
+                    {
+                        @string.Join(", ", Model.SelectedOutboundSeats)
+                    }
+                    else
+                    {
+                        <span class="text-danger">No seats selected</span>
+                    }
+                </p>
+
+                @if (hasReturnFlight)
+                {
+                    <hr />
+                    <h6 class="text-success">Return Flight</h6>
+                    <p>
+                        <strong>Flight Number:</strong> @Model.ReturnFlight.FlightId<br />
+                        <strong>Route:</strong>
+                        @(Model.ReturnDepartureCity ?? "N/A") → @(Model.ReturnArrivalCity ?? "N/A")<br />
+                        <strong>Date:</strong> @Model.ReturnFlight.DepartureDateTime.ToString("dd/MM/yyyy")
+                    </p>
+                    <p>
+                        <strong>Selected Seats:</strong>
+                        @if (Model.SelectedReturnSeats?.Any() == true)
+                        {
+                            @string.Join(", ", Model.SelectedReturnSeats)
+                        }
+                        else
+                        {
+                            <span class="text-danger">No seats selected</span>
+                        }
+                    </p>
+                }
+            </div>
+        </div>
+
+        <!-- Total Summary -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Total Amount: <span class="text-success">@Model.TotalAmount.ToString("C")</span></h5>
+                <p><strong>Passenger Count:</strong> @Model.PassengerCount</p>
+                <p><strong>Payment Method:</strong> @Model.PaymentMethod</p>
+            </div>
+        </div>
+
+        <!-- Begin Form -->
+        <form asp-action="Checkout" method="post" id="checkout-form">
+            <!-- Truyền lại tất cả các trường của model -->
+            <input type="hidden" name="DepartureCity" value="@Model.DepartureCity" />
+            <input type="hidden" name="ArrivalCity" value="@Model.ArrivalCity" />
+            <input type="hidden" name="ReturnDepartureCity" value="@Model.ReturnDepartureCity" />
+            <input type="hidden" name="ReturnArrivalCity" value="@Model.ReturnArrivalCity" />
+            <input type="hidden" name="PassengerCount" value="@Model.PassengerCount" />
+            <input type="hidden" name="TotalAmount" value="@Model.TotalAmount" />
+            <input type="hidden" name="PaymentMethod" value="@Model.PaymentMethod" />
+            <input type="hidden" name="IsRoundTrip" value="@(Model.IsRoundTrip ? "true" : "false")" />
+
+            @if (hasOutboundFlight)
+            {
+                <input type="hidden" name="OutboundFlight.FlightId" value="@Model.OutboundFlight.FlightId" />
+            }
+            @if (hasReturnFlight)
+            {
+                <input type="hidden" name="ReturnFlight.FlightId" value="@Model.ReturnFlight.FlightId" />
+            }
+
+            @foreach (var seat in Model.SelectedOutboundSeats ?? Enumerable.Empty<string>())
+            {
+                <input type="hidden" name="SelectedOutboundSeats" value="@seat" />
+            }
+            @if (hasReturnFlight)
+            {
+                foreach (var seat in Model.SelectedReturnSeats ?? Enumerable.Empty<string>())
+                {
+                    <input type="hidden" name="SelectedReturnSeats" value="@seat" />
+                }
+            }
+
+            <!-- Passenger Info -->
+            @if (!showPayPalButton)
+            {
+                <div class="card mb-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">Passenger Information</h5>
+                    </div>
+                    <div class="card-body">
+                        @for (int i = 0; i < Model.PassengerCount; i++)
+                        {
+                            var passenger = Model.Passengers != null && Model.Passengers.Count > i ? Model.Passengers[i] : null;
+                            <div class="border p-3 mb-3 rounded bg-light">
+                                <h6 class="text-dark">Passenger @(i + 1)</h6>
+                                <div class="form-group mb-2">
+                                    <label>Full Name</label>
+                                    <input class="form-control" name="Passengers[@i].FullName" value="@(passenger?.FullName ?? "")" required />
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Email</label>
+                                    <input class="form-control" type="email" name="Passengers[@i].Email" value="@(passenger?.Email ?? "")" />
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Phone Number</label>
+                                    <input class="form-control" name="Passengers[@i].PhoneNumber" value="@(passenger?.PhoneNumber ?? "")" />
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Country Code</label>
+                                    <input class="form-control" name="Passengers[@i].CountryCode" value="@(passenger?.CountryCode ?? "")" />
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Passport Number</label>
+                                    <input class="form-control" name="Passengers[@i].PassportNumber" value="@(passenger?.PassportNumber ?? "")" />
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Citizen ID (CCCD)</label>
+                                    <input class="form-control" name="Passengers[@i].CCCD" value="@(passenger?.CCCD ?? "")" />
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Date of Birth</label>
+                                    <input class="form-control" type="date" name="Passengers[@i].DateOfBirth" value="@(passenger?.DateOfBirth.ToString("yyyy-MM-dd") ?? "")" required />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                @if (!showPayPalButton)
+                {
+                    <button type="submit" class="btn btn-primary btn-lg">Xác nhận thông tin</button>
+                }
+            </div>
+        </form>
+
+        @if (showPayPalButton)
+        {
+            <div class="text-center mt-4">
+                <div id="paypal-button-container"></div>
+            </div>
+            <script src="https://www.paypal.com/sdk/js?client-id=Af-WtkZ5kCVKHEhpFkoFhky-76AatSg3PghCyxCaFlJR9Ix9j2ZAHf1iWBhPTCbkKIYa7ShuT6Rkc8OM&currency=USD"></script>
+            <script src="~/js/paypal.js"></script>
+        }
+    }
+</div>

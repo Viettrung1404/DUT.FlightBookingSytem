@@ -28,7 +28,7 @@ namespace FlightBookingWeb.Controllers
 
         // POST: Login
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
             if (!ModelState.IsValid)
             {
@@ -54,9 +54,16 @@ namespace FlightBookingWeb.Controllers
                 // Tạo Cookie
                 await HttpContext.SignInAsync("MyCookieAuth", new ClaimsPrincipal(claimsIdentity));
 
+
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+
                 // Chuyển hướng đến trang chủ
                 return RedirectToAction("Index", "Home");
             }
+
 
             // Thông báo lỗi nếu đăng nhập thất bại
             ModelState.AddModelError("", "Invalid username or password.");

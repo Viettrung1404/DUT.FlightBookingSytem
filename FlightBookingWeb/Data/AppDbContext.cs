@@ -240,7 +240,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.RouteId).HasColumnName("RouteID");
             entity.Property(e => e.ArrivalAirportId).HasColumnName("ArrivalAirportID");
             entity.Property(e => e.DepartureAirportId).HasColumnName("DepartureAirportID");
-            entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.BasePrice).HasColumnType("decimal(18, 0)");
 
             entity.HasOne(d => d.ArrivalAirport).WithMany(p => p.RouteArrivalAirports)
                 .HasForeignKey(d => d.ArrivalAirportId)

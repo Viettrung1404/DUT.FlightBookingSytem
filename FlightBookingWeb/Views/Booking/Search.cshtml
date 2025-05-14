@@ -6,14 +6,40 @@
         <div class="row">
             <!-- Departure Airport -->
             <div class="col-md-6 mb-3">
-                <label for="DepartureAirport" class="form-label">Departure Airport</label>
-                <input type="text" class="form-control" id="DepartureAirport" name="DepartureAirport" placeholder="Enter departure city or airport" value="@Model.DepartureAirport" required>
+                <label for="DepartureAirport" class="form-label">Departure City</label>
+                <select class="form-select" id="DepartureAirport" name="DepartureAirport" required>
+                    <option value="" disabled selected>Select a city</option>
+                    @foreach (var city in Model.Cities)
+                    {
+                        if (city == Model.DepartureAirport)
+                        {
+                            <option value="@city" selected>@city</option>
+                        }
+                        else
+                        {
+                            <option value="@city">@city</option>
+                        }
+                    }
+                </select>
             </div>
 
             <!-- Arrival Airport -->
             <div class="col-md-6 mb-3">
-                <label for="ArrivalAirport" class="form-label">Arrival Airport</label>
-                <input type="text" class="form-control" id="ArrivalAirport" name="ArrivalAirport" placeholder="Enter arrival city or airport" value="@Model.ArrivalAirport" required>
+                <label for="ArrivalAirport" class="form-label">Arrival City</label>
+                <select class="form-select" id="ArrivalAirport" name="ArrivalAirport" required>
+                    <option value="" disabled selected>Select a city</option>
+                    @foreach (var city in Model.Cities)
+                    {
+                        if (city == Model.ArrivalAirport)
+                        {
+                            <option value="@city" selected>@city</option>
+                        }
+                        else
+                        {
+                            <option value="@city">@city</option>
+                        }
+                    }
+                </select>
             </div>
         </div>
 
@@ -45,7 +71,8 @@
             <div class="col-md-6 mb-3">
                 <label class="form-label">Trip Type</label>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="IsRoundTrip" name="IsRoundTrip" @(Model.IsRoundTrip ? "checked" : "") onchange="toggleReturnDate()">
+                    @* <input type="hidden" name="IsRoundTrip" value="false" /> *@
+                    <input class="form-check-input" type="checkbox" id="IsRoundTrip" name="IsRoundTrip" value="false" @(Model.IsRoundTrip ? "checked" : "") onchange="toggleReturnDate()" />
                     <label class="form-check-label" for="IsRoundTrip">Round Trip</label>
                 </div>
             </div>
@@ -70,5 +97,13 @@
     // Initialize the state on page load
     document.addEventListener('DOMContentLoaded', function () {
         toggleReturnDate();
+        document.getElementById("IsRoundTrip").addEventListener("change", function() {
+            if (this.checked) {
+                this.value = "true";
+            } else {
+                this.value = "false";
+            }
+        });
     });
+
 </script>
