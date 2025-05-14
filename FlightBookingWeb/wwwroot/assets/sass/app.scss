@@ -1,0 +1,62 @@
+/* CMD run: sass --watch assets/sass/app.scss:assets/css/app.css */
+
+
+/*-------------------------
+    Variables
+-------------------------*/
+@use "basic/variables" as var;
+
+/*-------------------------
+    Responsive Styles
+-------------------------*/
+@use "helpers/mixin" as mix;
+
+/*-------------------------
+    Reset Styles
+-------------------------*/
+@use "basic/basic";
+
+/*-------------------------
+    Helpers
+-------------------------*/
+@use "helpers/classes";
+@use "helpers/spacing";
+
+/*-------------------------
+    Elements
+-------------------------*/
+@use "elements/preloader";
+@use "elements/buttons";
+@use "elements/form";
+@use "elements/search-popup";
+@use "elements/pagination";
+@use "elements/modal";
+
+/*-------------------------
+    Layouts
+-------------------------*/
+@use "layout/header";
+@use "layout/footer";
+@use "layout/hero-banner";
+@use "layout/booking";
+@use "layout/benefit";
+@use "layout/card";
+@use "layout/travel";
+@use "layout/achievement";
+@use "layout/testimonials";
+@use "layout/blog";
+@use "layout/blog-detail";
+@use "layout/title-banner";
+@use "layout/flight-listing";
+@use "layout/sidebar";
+@use "layout/pagination-layout";
+@use "layout/flight-booking";
+@use "layout/contact-us";
+@use "layout/sign-up";
+@use "layout/hotel-listing";
+@use "layout/hotel-detail";
+@use "layout/hotel-booking";
+@use "layout/car-listing";
+@use "layout/car-detail";
+@use "layout/tour-detail";
+

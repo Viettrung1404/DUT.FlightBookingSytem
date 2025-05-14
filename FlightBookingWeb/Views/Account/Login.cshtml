@@ -4,23 +4,239 @@
     ViewData["Title"] = "Login";
 }
 
-<h2>Login</h2>
+@section CSS {
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --text-color: #1f2937;
+            --border-color: #d1d5db;
+            --error-color: #ef4444;
+        }
 
-<form asp-action="Login" method="post">
-    <div class="form-group">
-        <label asp-for="Username"></label>
-        <input asp-for="Username" class="form-control" />
-        <span asp-validation-for="Username" class="text-danger"></span>
+        .login-section {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            height: 70vh;
+            margin: 40px 0 80px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px rgba(0, 0, 0, 0.03);
+            width: 100%;
+            max-width: 420px;
+            padding: 2.5rem;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+            .login-header h2 {
+                color: var(--text-color);
+                font-size: 1.75rem;
+                font-weight: 700;
+                margin: 0 0 0.5rem 0;
+            }
+
+            .login-header p {
+                color: #6b7280;
+                font-size: 0.975rem;
+                margin: 0;
+            }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+            .form-group label {
+                display: block;
+                font-size: 0.875rem;
+                font-weight: 500;
+                color: var(--text-color);
+                margin-bottom: 0.5rem;
+            }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+            .form-control:focus {
+                border-color: var(--primary-color);
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+            }
+
+        .text-danger {
+            display: block;
+            color: var(--error-color);
+            font-size: 0.8125rem;
+            margin-top: 0.375rem;
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+
+            .remember-me input {
+                margin-right: 0.5rem;
+            }
+
+            .remember-me label {
+                font-size: 0.875rem;
+                color: #6b7280;
+            }
+
+        .forgot-password {
+            font-size: 0.875rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+            .forgot-password:hover {
+                text-decoration: underline;
+            }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: center;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background-color: var(--primary-hover);
+            }
+
+        .social-login {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+            .social-login p {
+                font-size: 0.875rem;
+                color: #6b7280;
+                margin-bottom: 1rem;
+                position: relative;
+            }
+
+                .social-login p::before,
+                .social-login p::after {
+                    content: "";
+                    position: absolute;
+                    top: 50%;
+                    width: 40%;
+                    height: 1px;
+                    background-color: var(--border-color);
+                }
+
+                .social-login p::before {
+                    left: 0;
+                }
+
+                .social-login p::after {
+                    right: 0;
+                }
+
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+        }
+
+            .social-btn:hover {
+                background-color: #f3f4f6;
+            }
+
+        .register-link {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+            .register-link a {
+                color: var(--primary-color);
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+                .register-link a:hover {
+                    text-decoration: underline;
+                }
+    </style>
+}
+
+<div class="login-section">
+    <div class="login-container">
+        <div class="login-header">
+            <h2>Đăng nhập</h2>
+            <p>Nhập thông tin tài khoản của bạn</p>
+        </div>
+
+        <form asp-action="Login" method="post">
+            <div class="form-group">
+                <label asp-for="Username">Tên đăng nhập</label>
+                <input asp-for="Username" class="form-control" placeholder="Nhập tên đăng nhập" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password">Mật khẩu</label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Đăng nhập</button>
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="register-link">
+                Chưa có tài khoản? <a href="#">Đăng ký ngay</a>
+            </div>
+        </form>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
+</div>
 
 @section Scripts {
     @{

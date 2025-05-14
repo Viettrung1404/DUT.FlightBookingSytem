@@ -4,11 +4,11 @@
     @RenderSection("Styles", required: false)
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - FlightBookingWeb</title>
+    <title>@ViewData["Title"] - Quanda Airlines</title>
     @* <link rel="stylesheet" href="~/css/site.css" /> *@
     @* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" /> *@
     <!-- Favicon -->
-    <link href="~/admin/img/favicon.ico" rel="icon">
+    <link rel="shortcut icon" type="image/x-icon" href="~/img/icons8-airplane-100.png">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,10 +41,10 @@
         <!-- Spinner End -->
 
         <!-- Sidebar Start -->
-        <div class="sidebar pe-4 pb-3">
+        <div class="sidebar pe-4 pb-3 pt-2">
             <nav class="navbar bg-light navbar-light">
                 <a asp-area="Admin" asp-action="Index" asp-controller="Home" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>DASHMIN</h3>
+                    <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>Manager</h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
@@ -57,22 +57,13 @@
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                    <a asp-area="Admin" asp-action="Index" asp-controller="Home" class="nav-item nav-link active"><i class="fa fa-chart-bar me-2"></i>Thống kê</a>
-                    <a asp-area="Admin" asp-action="Index" asp-controller="Account" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Tài khoản</a>
-                    <a asp-area="Admin" asp-action="Index" asp-controller="FlightSchedules" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Lịch trình bay</a>
-                    <a asp-area="Admin" asp-action="Index" asp-controller="Airplane" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Máy bay</a>
-                    <a asp-area="Admin" asp-action="Index" asp-controller="Route" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Tuyến bay</a>
-                    <a asp-area="Admin" asp-action="Index" asp-controller="Flight" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Chuyến bay</a>
-                    <a asp-area="Admin" asp-action="Index" asp-controller="Airport" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Sân bay</a>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="signin.html" class="dropdown-item">Sign In</a>
-                            <a href="signup.html" class="dropdown-item">Sign Up</a>
-                            <a href="404.html" class="dropdown-item">404 Error</a>
-                            <a href="blank.html" class="dropdown-item">Blank Page</a>
-                        </div>
-                    </div>
+                    <a asp-area="Admin" asp-action="Index" asp-controller="Home" class="nav-item nav-link @(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : "")"><i class="fa fa-chart-bar me-2"></i>Thống kê</a>
+                    <a asp-area="Admin" asp-action="Index" asp-controller="Account" class="nav-item nav-link @(ViewContext.RouteData.Values["controller"].ToString() == "Account" ? "active" : "")"><i class="fa fa-tachometer-alt me-2"></i>Tài khoản</a>
+                    <a asp-area="Admin" asp-action="Index" asp-controller="FlightSchedules" class="nav-item nav-link @(ViewContext.RouteData.Values["controller"].ToString() == "FlightSchedules" ? "active" : "")"><i class="fa fa-th me-2"></i>Lịch trình bay</a>
+                    <a asp-area="Admin" asp-action="Index" asp-controller="Airplane" class="nav-item nav-link @(ViewContext.RouteData.Values["controller"].ToString() == "Airplane" ? "active" : "")"><i class="fa fa-keyboard me-2"></i>Máy bay</a>
+                    <a asp-area="Admin" asp-action="Index" asp-controller="Route" class="nav-item nav-link @(ViewContext.RouteData.Values["controller"].ToString() == "Route" ? "active" : "")"><i class="fa fa-table me-2"></i>Tuyến bay</a>
+                    <a asp-area="Admin" asp-action="Index" asp-controller="Flight" class="nav-item nav-link @(ViewContext.RouteData.Values["controller"].ToString() == "Flight" ? "active" : "")"><i class="fa fa-chart-bar me-2"></i>Chuyến bay</a>
+                    <a asp-area="Admin" asp-action="Index" asp-controller="Airport" class="nav-item nav-link @(ViewContext.RouteData.Values["controller"].ToString() == "Airport" ? "active" : "")"><i class="fa fa-chart-bar me-2"></i>Sân bay</a>
                 </div>
             </nav>
         </div>
@@ -81,79 +72,18 @@
         <!-- Content Start -->
         <div class="content">
             <!-- Navbar Start -->
-            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
+            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-2">
                 <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
                 </a>
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
                 </a>
-                <form class="d-none d-md-flex ms-4">
-                    <input class="form-control border-0" type="search" placeholder="Search">
-                </form>
                 <div class="navbar-nav align-items-center ms-auto">
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="fa fa-envelope me-lg-2"></i>
-                            <span class="d-none d-lg-inline-flex">Message</span>
+                    <div class="nav-item">
+                        <a asp-area="" asp-action="Index" asp-controller="Home" class="nav-link">
+                            Chuyển Sang Giao Diện Khách Hàng
                         </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex align-items-center">
-                                    <img class="rounded-circle" src="~/admin/img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                                    <div class="ms-2">
-                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                                        <small>15 minutes ago</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex align-items-center">
-                                    <img class="rounded-circle" src="~/admin/img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                                    <div class="ms-2">
-                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                                        <small>15 minutes ago</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex align-items-center">
-                                    <img class="rounded-circle" src="~/admin/img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                                    <div class="ms-2">
-                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                                        <small>15 minutes ago</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item text-center">See all message</a>
-                        </div>
-                    </div>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="fa fa-bell me-lg-2"></i>
-                            <span class="d-none d-lg-inline-flex">Notificatin</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Profile updated</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">New user added</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Password changed</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item text-center">See all notifications</a>
-                        </div>
                     </div>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
@@ -170,8 +100,11 @@
             <!-- Navbar End -->
 
 			<!-- Render Body Start -->
-            @RenderBody()
+            <div class="p-3">
+                @RenderBody()
+            </div>
 			<!-- Render Body End -->
+
             <!-- Back to Top -->
             <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
         </div>
