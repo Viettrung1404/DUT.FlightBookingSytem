@@ -114,6 +114,26 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
             return View(account); // Form không hợp lệ
         }
 
+        // GET: Admin/Account/Edit/5
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var existingAccount = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountId == id); ;
+            if (existingAccount == null)
+            {
+                return NotFound();
+            }
+            return View(new AccountViewModel
+            {
+                AccountId = existingAccount.AccountId,
+                Username = existingAccount.Username,
+                Email = existingAccount.Email,
+                PhoneNumber = existingAccount.PhoneNumber,
+                Gender = existingAccount.Gender,
+                Role = existingAccount.Role
+            });
+        }
+
         // POST: Admin/Account/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]

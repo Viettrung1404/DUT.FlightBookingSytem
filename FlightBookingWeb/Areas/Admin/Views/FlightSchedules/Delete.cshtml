@@ -5,48 +5,218 @@
     ViewData["Title"] = "Xóa lịch bay";
 }
 
-<h2 class="mb-4 text-danger">Xóa lịch bay</h2>
+@section Styles {
+    <style>
+        /* Container chính */
+        .delete-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
 
-<div class="alert alert-warning" role="alert">
-    <strong>Bạn có chắc chắn muốn xóa lịch bay sau không?</strong>
-</div>
+        /* Tiêu đề chính */
+        h1 {
+            color: #1a3c87;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-<hr />
+        /* Câu hỏi xác nhận */
+        h3 {
+            color: #dc3545;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
 
-<dl class="row">
-    <dt class="col-sm-3 fw-bold">Tuyến bay</dt>
-    <dd class="col-sm-9">@Model.Route?.DepartureAirport?.AirportName → @Model.Route?.ArrivalAirport?.AirportName</dd>
+        /* Tiêu đề phụ */
+        .delete-header {
+            color: #555;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
 
-    <dt class="col-sm-3 fw-bold">Máy bay</dt>
-    <dd class="col-sm-9">@Model.Airplane?.AirplaneName</dd>
+        /* Đường kẻ ngang */
+        hr {
+            border: 0;
+            height: 1px;
+            background: #e9ecef;
+            margin: 20px 0;
+        }
 
-    <dt class="col-sm-3 fw-bold">Giờ khởi hành</dt>
-    <dd class="col-sm-9">@Model.DepartureTime.ToString("dd/MM/yyyy HH:mm")</dd>
+        /* Định dạng danh sách chi tiết */
+        .dl-delete {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
 
-    <dt class="col-sm-3 fw-bold">Tần suất</dt>
-    <dd class="col-sm-9">@Model.Frequency</dd>
+            .dl-delete dt {
+                font-weight: 500;
+                color: #333;
+                padding: 10px 0;
+                border-bottom: 1px solid #e9ecef;
+            }
 
-    <dt class="col-sm-3 fw-bold">Trạng thái</dt>
-    <dd class="col-sm-9">@(Model.Active ? "Đang hoạt động" : "Ngưng hoạt động")</dd>
-</dl>
+            .dl-delete dd {
+                color: #555;
+                padding: 10px 0;
+                margin-bottom: 0;
+                border-bottom: 1px solid #e9ecef;
+            }
 
-<form asp-action="Delete" method="post">
-    <input type="hidden" asp-for="ScheduleId" />
+        /* Thông báo cảnh báo */
+        .alert-warning {
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: #fff3cd;
+            color: #856404;
+        }
 
-    <div class="form-group mb-3">
-        <label class="form-label fw-bold">Bạn có muốn hủy tất cả các chuyến bay thuộc lịch trình này không?</label>
-        <div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" id="cancelYes" name="cancelFlights" value="true" checked />
-                <label class="form-check-label" for="cancelYes">Có</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" id="cancelNo" name="cancelFlights" value="false" />
-                <label class="form-check-label" for="cancelNo">Không</label>
+        /* Form group */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-check {
+            margin-right: 20px;
+        }
+
+        .form-check-label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* Nút hành động */
+        .action-buttons {
+            text-align: center;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            margin: 0 10px;
+        }
+
+            .btn-danger:hover {
+                background: #c82333;
+            }
+
+        .back-link {
+            color: #1a3c87;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 12px 30px;
+            border-radius: 8px;
+            transition: background 0.3s ease, color 0.3s ease;
+            margin: 0 10px;
+            display: inline-block;
+        }
+
+            .back-link:hover {
+                background: #e9ecef;
+                text-decoration: none;
+            }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .delete-container
+
+        {
+            padding: 20px;
+        }
+
+        .dl-delete dt, .dl-delete dd {
+            font-size: 0.875rem;
+        }
+
+        .action-buttons .btn-danger, .action-buttons .back-link {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        .form-check {
+            margin-right: 10px;
+        }
+
+        }
+    </style>
+}
+
+<div class="delete-container">
+    <h1>Xóa lịch bay</h1>
+    <h3>Bạn có chắc muốn xóa lịch bay này?</h3>
+    <div class="alert alert-warning" role="alert">
+        <strong>Lưu ý:</strong> Hành động này không thể hoàn tác!
+    </div>
+    <h4 class="delete-header">Thông tin lịch bay</h4>
+    <hr />
+    <dl class="dl-delete row">
+        <dt class="col-sm-4">Tuyến bay</dt>
+        <dd class="col-sm-8">
+            @Model.Route?.DepartureAirport?.AirportName → @Model.Route?.ArrivalAirport?.AirportName
+        </dd>
+        <dt class="col-sm-4">Máy bay</dt>
+        <dd class="col-sm-8">@Model.Airplane?.AirplaneName</dd>
+        <dt class="col-sm-4">Thời gian khởi hành</dt>
+        <dd class="col-sm-8">@Model.DepartureTime.ToString("dd/MM/yyyy HH:mm")</dd>
+        <dt class="col-sm-4">Tần suất</dt>
+        <dd class="col-sm-8">@Model.Frequency</dd>
+        <dt class="col-sm-4">Trạng thái</dt>
+        <dd class="col-sm-8">@(Model.Active ? "Kích hoạt" : "Không kích hoạt")</dd>
+    </dl>
+
+    <form asp-action="Delete" class="action-buttons" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ScheduleId" />
+        <div class="form-group">
+            <label class="form-label">Bạn có muốn hủy tất cả các chuyến bay thuộc lịch trình này không?</label>
+            <div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="cancelYes" name="cancelFlights" value="true" checked />
+                    <label class="form-check-label" for="cancelYes">Có</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="cancelNo" name="cancelFlights" value="false" />
+                    <label class="form-check-label" for="cancelNo">Không</label>
+                </div>
             </div>
         </div>
-    </div>
+        <button type="submit" class="btn btn-danger">Xóa lịch bay</button>
+        <a asp-action="Index" class="back-link">Quay lại danh sách</a>
+    </form>
+</div>
 
-    <button type="submit" class="btn btn-danger">Xóa</button>
-    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-</form>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('form').on('submit', function (e) {
+                if (!confirm('Bạn có chắc muốn xóa lịch bay này? Hành động này không thể hoàn tác!')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

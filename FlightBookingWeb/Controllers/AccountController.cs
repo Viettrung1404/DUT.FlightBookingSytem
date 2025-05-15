@@ -21,15 +21,17 @@ namespace FlightBookingWeb.Controllers
 
         // GET: Login
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string? ReturnUrl)
         {
+            ViewBag.ReturnUrl = ReturnUrl;
             return View();
         }
 
         // POST: Login
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
+        public async Task<IActionResult> Login(LoginViewModel model, string? ReturnUrl)
         {
+            ViewBag.ReturnUrl = ReturnUrl;
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -53,12 +55,10 @@ namespace FlightBookingWeb.Controllers
 
                 // Tạo Cookie
                 await HttpContext.SignInAsync("MyCookieAuth", new ClaimsPrincipal(claimsIdentity));
-                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                {
-                    return Redirect(returnUrl);
-                }
+                if (Url.IsLocalUrl(ReturnUrl))
+                    return Redirect(ReturnUrl);
 
-                if(user.Role == "Employee")
+                if (user.Role == "Employee")
                 {
                     // Chuyển hướng đến trang quản lý nếu là Admin
                     return RedirectToAction("Index", "Home", new { area = "Employee" });
@@ -66,7 +66,7 @@ namespace FlightBookingWeb.Controllers
                 else if (user.Role == "Admin")
                 {
                     // Chuyển hướng đến trang quản lý nếu là Admin
-                    return RedirectToAction("Index", "Route", new { area = "Admin" });
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
                 }
                 else if (user.Role == "User")
                 {
@@ -138,7 +138,7 @@ namespace FlightBookingWeb.Controllers
         {
             // Xóa cookie
             await HttpContext.SignOutAsync("MyCookieAuth");
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Index", "Home");
         }
 
 

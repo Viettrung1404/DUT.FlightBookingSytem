@@ -99,6 +99,8 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         }
 
         // GET: Admin/Airplane/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

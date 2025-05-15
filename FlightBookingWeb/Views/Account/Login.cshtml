@@ -217,6 +217,7 @@
         </div>
 
         <form asp-action="Login" method="post">
+            <input type="hidden" name="ReturnUrl" value="@ViewBag.ReturnUrl" />
             <div class="form-group">
                 <label asp-for="Username">Tên đăng nhập</label>
                 <input asp-for="Username" class="form-control" placeholder="Nhập tên đăng nhập" />

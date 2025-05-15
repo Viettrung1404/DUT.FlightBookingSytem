@@ -2,84 +2,308 @@
 
 @{
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Flight Schedules";
+    ViewData["Title"] = "Quản lý lịch bay";
 }
 
-<h2>Flight Schedules</h2>
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* Container chính */
+        .index-fluid {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-warning">@TempData["Message"]</div>
-}
+        h1 {
+            color: #1a3c87;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-@{
-    var search = Context.Request.Query["search"].ToString();
-    var fromDate = Context.Request.Query["fromDate"].ToString();
-    var toDate = Context.Request.Query["toDate"].ToString();
-    var selectedScheduleId = Context.Request.Query["scheduleId"].ToString();
-}
+        /* Thẻ chứa bảng */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+        }
 
-<form method="get" class="mb-3 d-flex flex-wrap gap-2">
-    <input type="text" name="search" class="form-control w-auto" placeholder="Tìm kiếm..." value="@search" />
+        /* Tiêu đề thẻ */
+        .card-header {
+            background: #1a3c87;
+            color: #fff;
+            border-radius: 10px 10px 0 0;
+            padding: 20px;
+        }
 
-    <select name="active" class="form-select w-auto">
-        <option value="">-- Active Status --</option>
-        <option value="true" selected="@(Context.Request.Query["active"] == "true" ? "selected" : null)">Active</option>
-        <option value="false" selected="@(Context.Request.Query["active"] == "false" ? "selected" : null)">Inactive</option>
-    </select>
-
-    <select name="scheduleId" class="form-select w-auto">
-        <option value="">-- All Schedules --</option>
-        @if (ViewBag.Schedules != null)
-        {
-            foreach (var s in (SelectList)ViewBag.Schedules)
-            {
-                <option value="@s.Value" selected="@(ViewBag.SelectedScheduleId == s.Value ? "selected" : null)">
-                    @s.Text
-                </option>
+            .card-header h3 {
+                margin: 0;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
             }
+
+        .card-body {
+            padding: 20px;
         }
-    </select>
 
-    <button type="submit" class="btn btn-primary">Lọc</button>
-</form>
-
-<p>
-    <a asp-action="Create" class="btn btn-success">Tạo mới lịch trình</a>
-</p>
-
-<table class="table table-bordered table-striped">
-    <thead class="table-dark">
-        <tr>
-            <th>Tuyến bay</th>
-            <th>Máy bay</th>
-            <th>Thời gian bắt đầu</th>
-            <th>Thời gian đến dự kiến</th>
-            <th>Tần suất</th>
-            <th>Hoạt động</th>
-            <th>Thao tác</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @item.Route?.DepartureAirport?.AirportName - @item.Route?.ArrivalAirport?.AirportName
-                </td>
-                <td>
-                    @item.Airplane?.AirplaneName
-                </td>
-                <td>@item.DepartureTime.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>@item.ArrivalTime.ToString(@"hh\:mm")</td>
-                <td>@item.Frequency</td>
-                <td>@(item.Active ? "Có" : "Không")</td>
-                <td>
-                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.ScheduleId">Sửa</a>
-                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.ScheduleId">Chi tiết</a>
-                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.ScheduleId">Xóa</a>
-                </td>
-            </tr>
+        /* Form tìm kiếm */
+        .search-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
-    </tbody>
-</table>
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s ease;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #1a3c87;
+                box-shadow: 0 0 8px rgba(26, 60, 135, 0.2);
+            }
+
+        .btn-search {
+            background: #1a3c87;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+            .btn-search:hover {
+                background: #153074;
+            }
+
+        /* Nút tạo mới */
+        .btn-add {
+            background: #1a3c87;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            margin-left:20px;
+        }
+
+            .btn-add:hover {
+                background: #1a3c87;
+            }
+
+        /* Thông báo */
+        .alert-warning {
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* Bảng */
+        .table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+            .table thead th {
+                background: #1a3c87;
+                color: #fff;
+                border: none;
+                padding: 12px;
+                font-weight: 500;
+                text-align: center;
+                white-space: nowrap;
+            }
+
+            .table tbody tr {
+                transition: background 0.2s ease;
+            }
+
+                .table tbody tr:hover {
+                    background: #f1f3f5;
+                }
+
+            .table td {
+                vertical-align: middle;
+                padding: 12px;
+                border: none;
+                text-align: center;
+            }
+
+        /* Nút thao tác */
+        .table-actions {
+            white-space: nowrap;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            margin: 0 3px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            border: none;
+            color: #fff;
+        }
+
+            .btn-info:hover {
+                background: #138496;
+            }
+
+        .btn-warning {
+            background: #f39c12;
+            border: none;
+            color: #fff;
+        }
+
+            .btn-warning:hover {
+                background: #e08e0b;
+            }
+
+        .btn-danger {
+            background: #dc3545;
+            border: none;
+            color: #fff;
+        }
+
+            .btn-danger:hover {
+                background: #c82333;
+            }
+
+        /* Thông báo không có dữ liệu */
+        .no-data {
+            color: #555;
+            font-style: italic;
+        }
+
+    </style>
+}
+
+<div class="index-fluid">
+    <div class="card shadow-sm">
+        <h1>Danh sách lịch trình bay</h1>
+        <div class="col-md-6">
+            <a asp-action="Create" class="btn btn-add">
+                <i class="fas fa-plus me-1"></i>Thêm lịch trình bay mới
+            </a>
+        </div>
+        <div class="card-body">
+            @if (TempData["Message"] != null)
+            {
+                <div class="alert alert-warning">@TempData["Message"]</div>
+            }
+
+            @* <form method="get" class="search-form row g-3 d-flex justify-content-around"> *@
+            @*     <div class="col-md-3"> *@
+            @*         <input type="text" name="search" class="form-control" placeholder="Tìm tuyến bay, máy bay..." value="@Context.Request.Query["search"]" /> *@
+            @*     </div> *@
+            @*     <div class="col-md-2"> *@
+            @*         <select name="active" class="form-select"> *@
+            @*             <option value="">Trạng thái kích hoạt</option> *@
+            @*             <option value="true" selected="@(Context.Request.Query["active"] == "true" ? "selected" : null)">Kích hoạt</option> *@
+            @*             <option value="false" selected="@(Context.Request.Query["active"] == "false" ? "selected" : null)">Không kích hoạt</option> *@
+            @*         </select> *@
+            @*     </div> *@
+            @*     <div class="col-md-2"> *@
+            @*         <select name="scheduleId" class="form-select"> *@
+            @*             <option value="">Chọn mã lịch trình</option> *@
+            @*             @if (ViewBag.Schedules != null) *@
+            @*             { *@
+            @*                 foreach (var s in (SelectList)ViewBag.Schedules) *@
+            @*                 { *@
+            @*                     <option value="@s.Value" selected="@(Context.Request.Query["scheduleId"] == s.Value ? "selected" : null)"> *@
+            @*                         @s.Text *@
+            @*                     </option> *@
+            @*                 } *@
+            @*             } *@
+            @*         </select> *@
+            @*     </div> *@
+            @*     <div class="col-md-2 d-grid"> *@
+            @*         <button type="submit" class="btn btn-search">Tìm kiếm</button> *@
+            @*     </div> *@
+            @* </form> *@
+
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Tuyến bay</th>
+                            <th>Máy bay</th>
+                            <th>Thời gian khởi hành</th>
+                            <th>Tần suất</th>
+                            <th>Hoạt động</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.Route?.DepartureAirport?.AirportName - @item.Route?.ArrivalAirport?.AirportName
+                                    </td>
+                                    <td>@item.Airplane?.AirplaneName</td>
+                                    <td>@item.DepartureTime.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@item.Frequency</td>
+                                    <td>@(item.Active ? "Kích hoạt" : "Không kích hoạt")</td>
+                                    <td class="table-actions">
+                                        <a asp-action="Edit" asp-route-id="@item.ScheduleId" class="btn btn-warning btn-sm" title="Sửa">
+                                            <i class="fas fa-edit"></i> Sửa
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.ScheduleId" class="btn btn-info btn-sm" title="Chi tiết">
+                                            <i class="fas fa-eye"></i> Chi tiết
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.ScheduleId" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa lịch bay này?');">
+                                            <i class="fas fa-trash-alt"></i> Xóa
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-4 no-data">
+                                    <i class="fas fa-info-circle me-2"></i>Chưa có lịch bay nào
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.table').DataTable({
+                responsive: true,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json'
+                },
+                columnDefs: [
+                    { orderable: false, targets: 5 } // Vô hiệu hóa sắp xếp cột Thao tác
+                ]
+            });
+        });
+    </script>
+}

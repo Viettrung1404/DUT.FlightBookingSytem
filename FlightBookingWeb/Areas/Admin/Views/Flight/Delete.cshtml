@@ -5,37 +5,149 @@
     ViewData["Title"] = "Xóa chuyến bay";
 }
 
-<h2 class="mb-4 text-danger"><i class="bi bi-exclamation-triangle"></i> @ViewData["Title"]</h2>
+@section Styles {
+    <style>
+        /* Container chính */
+        .delete-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
 
-<div class="card shadow rounded-4 border-danger">
-    <div class="card-body">
-        <h4 class="text-danger"><i class="bi bi-x-octagon"></i> Bạn có chắc chắn muốn hủy chuyến bay này không?</h4>
-        <hr />
-        <dl class="row fs-5">
-            <dt class="col-sm-4"><i class="bi bi-signpost-2"></i> Tuyến bay</dt>
-            <dd class="col-sm-8">
-                @Model.Schedule?.Route?.DepartureAirport?.AirportName →
-                @Model.Schedule?.Route?.ArrivalAirport?.AirportName
-            </dd>
+        /* Tiêu đề chính */
+        h1 {
+            color: #1a3c87;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-            <dt class="col-sm-4"><i class="bi bi-clock-history"></i> Giờ khởi hành</dt>
-            <dd class="col-sm-8">@Model.DepartureDateTime.ToString("dd/MM/yyyy HH:mm")</dd>
+        /* Câu hỏi xác nhận */
+        h3 {
+            color: #dc3545;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
 
-            <dt class="col-sm-4"><i class="bi bi-clock"></i> Giờ hạ cánh</dt>
-            <dd class="col-sm-8">@Model.ArrivalDateTime.ToString("dd/MM/yyyy HH:mm")</dd>
+        /* Tiêu đề phụ */
+        .delete-header {
+            color: #555;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
 
-            <dt class="col-sm-4"><i class="bi bi-info-circle"></i> Trạng thái</dt>
-            <dd class="col-sm-8">@Model.Status</dd>
-        </dl>
+        /* Đường kẻ ngang */
+        hr {
+            border: 0;
+            height: 1px;
+            background: #e9ecef;
+            margin: 20px 0;
+        }
 
-        <form asp-area="Admin" asp-controller="Flight" asp-action="Delete" method="post" class="mt-4">
-            <input type="hidden" asp-for="FlightId" />
-            <button type="submit" class="btn btn-danger me-2">
-                <i class="bi bi-trash-fill"></i> Hủy chuyến bay
-            </button>
-            <a asp-action="Index" class="btn btn-secondary">
-                <i class="bi bi-x-circle"></i> Quay lại
-            </a>
-        </form>
-    </div>
+        /* Định dạng danh sách chi tiết */
+        .dl-delete {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+            .dl-delete dt {
+                font-weight: 500;
+                color: #333;
+                padding: 10px 0;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .dl-delete dd {
+                color: #555;
+                padding: 10px 0;
+                margin-bottom: 0;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+        /* Nút hành động */
+        .action-buttons {
+            text-align: center;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            margin: 0 10px;
+        }
+
+            .btn-danger:hover {
+                background: #c82333;
+            }
+
+        .back-link {
+            color: #1a3c87;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 12px 30px;
+            border-radius: 8px;
+            transition: background 0.3s ease, color 0.3s ease;
+            margin: 0 10px;
+            display: inline-block;
+        }
+
+            .back-link:hover {
+                background: #e9ecef;
+                text-decoration: none;
+            }
+
+    </style>
+}
+
+<div class="delete-container">
+    <h1>Xóa chuyến bay</h1>
+    <h3>Bạn có chắc muốn xóa chuyến bay này?</h3>
+    <h4 class="delete-header">Thông tin chuyến bay</h4>
+    <hr />
+    <dl class="dl-delete row">
+        <dt class="col-sm-4">Tuyến bay</dt>
+        <dd class="col-sm-8">
+            @Model.Schedule?.Route?.DepartureAirport?.AirportName →
+            @Model.Schedule?.Route?.ArrivalAirport?.AirportName
+        </dd>
+        <dt class="col-sm-4">Thời gian khởi hành</dt>
+        <dd class="col-sm-8">@Model.DepartureDateTime.ToString("dd/MM/yyyy HH:mm")</dd>
+        <dt class="col-sm-4">Thời gian đến</dt>
+        <dd class="col-sm-8">@Model.ArrivalDateTime.ToString("dd/MM/yyyy HH:mm")</dd>
+        <dt class="col-sm-4">Trạng thái</dt>
+        <dd class="col-sm-8">
+            @(string.IsNullOrEmpty(Model.Status) ? "Chờ xử lý" : Model.Status)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" class="action-buttons" method="post">
+        <input type="hidden" asp-for="FlightId" />
+        <button type="submit" class="btn btn-danger">Xóa</button>
+        <a asp-action="Index" class="back-link">Quay lại danh sách</a>
+    </form>
 </div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('form').on('submit', function (e) {
+                if (!confirm('Bạn có chắc muốn xóa chuyến bay này?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

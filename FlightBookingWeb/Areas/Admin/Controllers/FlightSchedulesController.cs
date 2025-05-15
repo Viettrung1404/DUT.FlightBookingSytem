@@ -23,13 +23,13 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         public async Task<IActionResult> Index(string search, bool? active, string scheduleId)
         {
             var schedulesQuery = _context.FlightSchedules
-    .Include(fs => fs.Airplane)
-    .Include(fs => fs.Route)
-        .ThenInclude(r => r.DepartureAirport)
-    .Include(fs => fs.Route)
-        .ThenInclude(r => r.ArrivalAirport)
-    .Where(fs => fs.Status) // chỉ lấy các bản ghi có Status == true
-    .AsQueryable();
+                .Include(fs => fs.Airplane)
+                .Include(fs => fs.Route)
+                    .ThenInclude(r => r.DepartureAirport)
+                .Include(fs => fs.Route)
+                    .ThenInclude(r => r.ArrivalAirport)
+                .Where(fs => fs.Status) // chỉ lấy các bản ghi có Status == true
+                .AsQueryable();
 
             // Tạo dropdown danh sách Schedule
             var allSchedules = await _context.FlightSchedules.ToListAsync();
@@ -94,6 +94,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
             var routes = _context.Routes
                 .Include(r => r.DepartureAirport)
                 .Include(r => r.ArrivalAirport)
+                .Where(r => r.Status == "Active")
                 .Select(r => new
                 {
                     r.RouteId,
@@ -136,7 +137,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("AirplaneId", "Máy bay không hợp lệ.");
             }
-
+            flightSchedule.Route = route;
             if (ModelState.IsValid)
             {
                 // Assign the ArrivalTime based on the route's duration

@@ -5,93 +5,215 @@
     ViewData["Title"] = "Chỉnh sửa chuyến bay";
 }
 
-<h1 class="mb-4"><i class="bi bi-pencil-square"></i> Chỉnh sửa chuyến bay</h1>
+@section Styles {
+    <style>
+        /* Container chính */
+        .edit-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
 
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger">
-        <ul>
-            @foreach (var modelError in ViewData.ModelState)
-            {
-                foreach (var error in modelError.Value.Errors)
-                {
-                    <li><strong>@modelError.Key:</strong> @error.ErrorMessage</li>
-                }
+        /* Tiêu đề chính */
+        h1 {
+            color: #1a3c87;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Nhóm form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* Ô nhập liệu */
+        .form-control {
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s ease;
+        }
+
+            /* Hiệu ứng khi focus ô nhập liệu */
+            .form-control:focus {
+                border-color: #1a3c87;
+                box-shadow: 0 0 8px rgba(26, 60, 135, 0.2);
             }
-        </ul>
-    </div>
+
+            /* Ô readonly */
+            .form-control[readonly] {
+                background: #f8f9fa;
+                cursor: not-allowed;
+            }
+
+        /* Nhãn của ô nhập liệu */
+        .control-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Thông báo lỗi */
+        .text-danger {
+            font-size: 0.875rem;
+            margin-top: 5px;
+        }
+
+        /* Thông báo lỗi tổng quát */
+        .alert-danger {
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+            .alert-danger ul {
+                margin: 0;
+                padding-left: 20px;
+            }
+
+            .alert-danger li {
+                margin-bottom: 5px;
+            }
+
+        /* Nút lưu */
+        .btn-primary--edit {
+            color: aliceblue;
+            background: #1a3c87;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+            .btn-primary--edit:hover {
+                background: #153074;
+            }
+
+        /* Nút hủy */
+        .btn-secondary--edit {
+            color: aliceblue;
+            background: #6c757d;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+            .btn-secondary--edit:hover {
+                background: #5a6268;
+            }
+
+        /* Tiêu đề phụ */
+        .form-header {
+            color: #555;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Đường kẻ ngang */
+        hr {
+            border: 0;
+            height: 1px;
+            background: #e9ecef;
+            margin: 20px 0;
+        }
+
+    </style>
 }
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="card shadow rounded-4">
-            <div class="card-body">
-                <form asp-action="Edit" method="post">
-                    <input type="hidden" asp-for="FlightId" />
+<div class="edit-container">
+    <h1>Chỉnh sửa chuyến bay</h1>
+    <h4 class="form-header">Cập nhật thông tin chuyến bay</h4>
+    <hr />
 
-                    <div class="mb-3">
-                        <label class="form-label">Lịch trình</label>
-                        <input class="form-control" value="@ViewBag.ScheduleName" readonly />
-                        <input type="hidden" asp-for="ScheduleId" />
-                    </div>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var modelError in ViewData.ModelState)
+                {
+                    foreach (var error in modelError.Value.Errors)
+                    {
+                        <li><strong>@modelError.Key:</strong> @error.ErrorMessage</li>
+                    }
+                }
+            </ul>
+        </div>
+    }
 
-                    <div class="mb-3">
-                        <label asp-for="DepartureDateTime" class="form-label">Thời gian khởi hành</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-clock-history"></i></span>
-                            <input asp-for="DepartureDateTime" class="form-control" type="datetime-local" id="departure" />
-                        </div>
-                        <span asp-validation-for="DepartureDateTime" class="text-danger"></span>
-                    </div>
+    <div class="row">
+        <div class="col-12">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="FlightId" />
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                    <div class="mb-3">
-                        <label asp-for="ArrivalDateTime" class="form-label">Thời gian đến</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-clock"></i></span>
-                            <input asp-for="ArrivalDateTime" class="form-control" type="datetime-local" id="arrival" />
-                        </div>
-                        <span asp-validation-for="ArrivalDateTime" class="text-danger" id="arrivalError"></span>
-                    </div>
+                <div class="form-group">
+                    <label class="control-label">Lịch trình</label>
+                    <input class="form-control" value="@ViewBag.ScheduleName" readonly />
+                    <input type="hidden" asp-for="ScheduleId" />
+                </div>
 
-                    <div class="mb-3">
-                        <label asp-for="Status" class="form-label">Trạng thái</label>
-                        <input asp-for="Status" class="form-control" placeholder="VD: Đã lên lịch, Trễ, Hủy..." />
-                        <span asp-validation-for="Status" class="text-danger"></span>
-                    </div>
+                <div class="form-group">
+                    <label asp-for="DepartureDateTime" class="control-label">Thời gian khởi hành</label>
+                    <input asp-for="DepartureDateTime" class="form-control" type="datetime-local" id="departure" />
+                    <span asp-validation-for="DepartureDateTime" class="text-danger"></span>
+                </div>
 
-                    <div class="d-flex justify-content-between mt-4">
-                        <button type="submit" class="btn btn-success">
-                            <i class="bi bi-save2-fill"></i> Lưu thay đổi
-                        </button>
-                        <a asp-action="Index" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left-circle"></i> Hủy
-                        </a>
-                    </div>
-                </form>
-            </div>
+                <div class="form-group">
+                    <label asp-for="ArrivalDateTime" class="control-label">Thời gian đến</label>
+                    <input asp-for="ArrivalDateTime" class="form-control" type="datetime-local" id="arrival" />
+                    <span asp-validation-for="ArrivalDateTime" class="text-danger" id="arrivalError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Status" class="control-label">Trạng thái</label>
+                    <input asp-for="Status" class="form-control" placeholder="Nhập trạng thái (VD: Đã lên lịch, Trễ, Hủy...)" />
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary--edit">Lưu thay đổi</button>
+                    <a asp-action="Index" class="btn btn-secondary--edit">Hủy</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        document.querySelector("form").addEventListener("submit", function (e) {
-            const departureInput = document.getElementById("departure");
-            const arrivalInput = document.getElementById("arrival");
-            const errorSpan = document.getElementById("arrivalError");
+        $(document).ready(function () {
+            // Validation thời gian khởi hành và đến
+            $('form').on('submit', function (e) {
+                const departureInput = $('#departure');
+                const arrivalInput = $('#arrival');
+                const errorSpan = $('#arrivalError');
 
-            const departure = new Date(departureInput.value);
-            const arrival = new Date(arrivalInput.value);
+                const departure = new Date(departureInput.val());
+                const arrival = new Date(arrivalInput.val());
 
-            errorSpan.textContent = "";
+                errorSpan.text('');
 
-            if (arrival < departure) {
-                e.preventDefault();
-                errorSpan.textContent = "❌ Thời gian đến không được nhỏ hơn thời gian khởi hành!";
-                arrivalInput.focus();
-            }
+                if (arrival < departure) {
+                    e.preventDefault();
+                    errorSpan.text('Thời gian đến không được sớm hơn thời gian khởi hành!');
+                    arrivalInput.focus();
+                }
+            });
         });
     </script>
 }

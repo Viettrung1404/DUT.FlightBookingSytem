@@ -5,51 +5,171 @@
     ViewData["Title"] = "Tạo lịch bay mới";
 }
 
-<h2 class="mb-4">Tạo lịch bay mới</h2>
+<style>
+    /* Container chính */
+    .create-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 30px;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+    }
 
-@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    /* Tiêu đề chính */
+    h1 {
+        color: #1a3c87;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
-<form asp-action="Create" method="post">
-    @Html.AntiForgeryToken()
+    /* Nhóm form */
+    .form-group {
+        margin-bottom: 20px;
+    }
 
-    <div class="mb-3">
-        <label asp-for="RouteId" class="form-label">Tuyến bay</label>
-        <select asp-for="RouteId" class="form-select" asp-items="@(ViewData["Routes"] as SelectList)">
-            <option value="">-- Chọn tuyến bay --</option>
-        </select>
-        <span asp-validation-for="RouteId" class="text-danger"></span>
+    /* Ô nhập liệu và dropdown */
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 12px;
+        border: 1px solid #ced4da;
+        transition: border-color 0.3s ease;
+    }
+
+        /* Hiệu ứng khi focus ô nhập liệu */
+        .form-control:focus, .form-select:focus {
+            border-color: #1a3c87;
+            box-shadow: 0 0 8px rgba(26, 60, 135, 0.2);
+        }
+
+    /* Nhãn của ô nhập liệu */
+    .control-label {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    /* Thông báo lỗi */
+    .text-danger {
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    /* Checkbox */
+    .form-check {
+        margin-bottom: 20px;
+    }
+
+    .form-check-label {
+        font-weight: 500;
+        color: #333;
+    }
+
+    /* Nút lưu */
+    .btn-primary--create {
+        color: aliceblue;
+        background: #1a3c87;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: background 0.3s ease;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+        .btn-primary--create:hover {
+            background: #153074;
+        }
+
+    /* Nút hủy */
+    .btn-secondary--create {
+        color: aliceblue;
+        background: #6c757d;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: background 0.3s ease;
+        width: 100%;
+    }
+
+        .btn-secondary--create:hover {
+            background: #5a6268;
+        }
+
+    /* Tiêu đề phụ */
+    .form-header {
+        color: #555;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    /* Đường kẻ ngang */
+    hr {
+        border: 0;
+        height: 1px;
+        background: #e9ecef;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="create-container">
+    <h1>Thêm lịch bay</h1>
+    <h4 class="form-header">Thêm thông tin lịch bay mới</h4>
+    <hr />
+    <div class="row">
+        <div class="col-12">
+            <form asp-action="Create" method="post">
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="form-group">
+                    <label asp-for="RouteId" class="control-label">Tuyến bay</label>
+                    <select asp-for="RouteId" class="form-select" asp-items="@(ViewData["Routes"] as SelectList)">
+                        <option value="">-- Chọn tuyến bay --</option>
+                    </select>
+                    <span asp-validation-for="RouteId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="AirplaneId" class="control-label">Máy bay</label>
+                    <select asp-for="AirplaneId" class="form-select" asp-items="@(ViewBag.Airplanes as SelectList)">
+                        <option value="">-- Chọn máy bay --</option>
+                    </select>
+                    <span asp-validation-for="AirplaneId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DepartureTime" class="control-label">Thời gian khởi hành</label>
+                    <input asp-for="DepartureTime" class="form-control" type="datetime-local" placeholder="Chọn thời gian khởi hành" />
+                    <span asp-validation-for="DepartureTime" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Frequency" class="control-label">Tần suất</label>
+                    <input asp-for="Frequency" class="form-control" placeholder="Nhập tần suất (VD: Hàng ngày, Hàng tuần)" />
+                    <span asp-validation-for="Frequency" class="text-danger"></span>
+                </div>
+
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="Active" name="Active" value="true" @(Model?.Active == true ? "checked" : "") />
+                    <label class="form-check-label" for="Active">Kích hoạt lịch bay</label>
+                    <input type="hidden" name="Active" value="false" /> <!-- Đảm bảo gửi false nếu không check -->
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary--create">Thêm lịch bay</button>
+                    <a asp-action="Index" class="btn btn-secondary--create">Hủy</a>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label asp-for="AirplaneId" class="form-label">Máy bay</label>
-        <select asp-for="AirplaneId" class="form-select" asp-items="ViewBag.Airplanes">
-            <option value="">-- Chọn máy bay --</option>
-        </select>
-        <span asp-validation-for="AirplaneId" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="DepartureTime" class="form-label">Giờ khởi hành</label>
-        <input asp-for="DepartureTime" class="form-control" type="datetime-local" />
-        <span asp-validation-for="DepartureTime" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Frequency" class="form-label">Tần suất</label>
-        <input asp-for="Frequency" class="form-control" />
-        <span asp-validation-for="Frequency" class="text-danger"></span>
-    </div>
-
-    <div class="form-check mb-3">
-        <input type="checkbox" class="form-check-input" id="Active" name="Active" value="true" @(Model?.Active == true ? "checked" : "") />
-        <label class="form-check-label" for="Active">Kích hoạt</label>
-    </div>
-
-    <div class="mb-3">
-        <button type="submit" class="btn btn-primary">Lưu</button>
-        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-    </div>
-</form>
+</div>
 
 @section Scripts {
     @{

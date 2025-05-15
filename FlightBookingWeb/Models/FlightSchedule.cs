@@ -18,9 +18,8 @@ public partial class FlightSchedule
     public int Frequency { get; set; }
 
     public bool Active { get; set; }
-    public bool Status { get; set; } = true;
 
-    public bool? Status { get; set; }
+    public bool Status { get; set; } = true;
 
     public virtual Airplane? Airplane { get; set; }
 

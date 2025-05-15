@@ -83,6 +83,29 @@
                 background: #153074;
             }
 
+        /* Nút tạo mới */
+        .btn-add {
+            background: #1a3c87;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            margin-left: 20px;
+        }
+
+            .btn-add:hover {
+                background: #1a3c87;
+            }
+
+        /* Thông báo */
+        .alert-warning {
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
         /* Bảng */
         .table {
             margin-bottom: 0;
@@ -176,40 +199,41 @@
 }
 
 <div class="container-fluid--flight">
-    <h1>Danh sách chuyến bay</h1>
     <div class="card shadow-sm">
+        <h1>Danh sách chuyến bay</h1>
+
         <div class="card-body">
-            <form asp-action="Index" method="get" class="search-form row g-3">
-                <div class="col-md-3">
-                    <input type="text" name="search" value="@Context.Request.Query["search"]" class="form-control" placeholder="Tìm mã chuyến bay, sân bay..." />
-                </div>
-                <div class="col-md-2">
-                    <input type="date" name="fromDate" value="@Context.Request.Query["fromDate"]" class="form-control" />
-                </div>
-                <div class="col-md-2">
-                    <input type="date" name="toDate" value="@Context.Request.Query["toDate"]" class="form-control" />
-                </div>
-                <div class="col-md-2">
-                    <select name="scheduleId" class="form-select">
-                        <option value="">Chọn mã lịch trình</option>
-                        @foreach (var s in (SelectList)ViewBag.Schedules)
-                        {
-                            <option value="@s.Value" selected="@(Context.Request.Query["scheduleId"] == s.Value ? "selected" : null)">
-                                @s.Text
-                            </option>
-                        }
-                    </select>
-                </div>
-                <div class="col-md-2 d-grid">
-                    <button type="submit" class="btn btn-search">Tìm kiếm</button>
-                </div>
-            </form>
+            @* <form asp-action="Index" method="get" class="search-form row g-3"> *@
+            @*     <div class="col-md-3"> *@
+            @*         <input type="text" name="search" value="@Context.Request.Query["search"]" class="form-control" placeholder="Tìm mã chuyến bay, sân bay..." /> *@
+            @*     </div> *@
+            @*     <div class="col-md-2"> *@
+            @*         <input type="date" name="fromDate" value="@Context.Request.Query["fromDate"]" class="form-control" /> *@
+            @*     </div> *@
+            @*     <div class="col-md-2"> *@
+            @*         <input type="date" name="toDate" value="@Context.Request.Query["toDate"]" class="form-control" /> *@
+            @*     </div> *@
+            @*     <div class="col-md-2"> *@
+            @*         <select name="scheduleId" class="form-select"> *@
+            @*             <option value="">Chọn mã lịch trình</option> *@
+            @*             @foreach (var s in (SelectList)ViewBag.Schedules) *@
+            @*             { *@
+            @*                 <option value="@s.Value" selected="@(Context.Request.Query["scheduleId"] == s.Value ? "selected" : null)"> *@
+            @*                     @s.Text *@
+            @*                 </option> *@
+            @*             } *@
+            @*         </select> *@
+            @*     </div> *@
+            @*     <div class="col-md-2 d-grid"> *@
+            @*         <button type="submit" class="btn btn-search">Tìm kiếm</button> *@
+            @*     </div> *@
+            @* </form> *@
 
             <div class="table-responsive">
                 <table class="table table-hover table-bordered">
                     <thead>
                         <tr>
-                            <th>Mã chuyến bay</th>
+                            <th>Mã</th>
                             <th>Máy bay</th>
                             <th>Tuyến bay</th>
                             <th>Khởi hành</th>

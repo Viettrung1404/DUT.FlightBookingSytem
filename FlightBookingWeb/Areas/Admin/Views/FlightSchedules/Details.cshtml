@@ -1,32 +1,125 @@
 ﻿@model FlightBookingWeb.Models.FlightSchedule
 
 @{
-    ViewData["Title"] = "Chi tiết lịch bay";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Chi tiết lịch bay";
 }
 
-<h2 class="mb-4">Chi tiết lịch bay</h2>
-<hr />
+@section Styles {
+    <style>
+        /* Container chính */
+        .details-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
 
-<dl class="row">
-    <dt class="col-sm-3 fw-bold">Máy bay</dt>
-    <dd class="col-sm-9">@Model.Airplane?.AirplaneName</dd>
+        /* Tiêu đề chính */
+        h1 {
+            color: #1a3c87;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-    <dt class="col-sm-3 fw-bold">Tuyến bay</dt>
-    <dd class="col-sm-9">
-        @Model.Route?.DepartureAirport?.AirportName
-        &nbsp;→&nbsp;
-        @Model.Route?.ArrivalAirport?.AirportName
-    </dd>
+        /* Tiêu đề phụ */
+        .details-header {
+            color: #555;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
 
-    <dt class="col-sm-3 fw-bold">Giờ khởi hành lần đầu</dt>
-    <dd class="col-sm-9">@Model.DepartureTime.ToString("dd/MM/yyyy HH:mm")</dd>
+        /* Đường kẻ ngang */
+        hr {
+            border: 0;
+            height: 1px;
+            background: #e9ecef;
+            margin: 20px 0;
+        }
 
-    <dt class="col-sm-3 fw-bold">Tần suất</dt>
-    <dd class="col-sm-9">@Model.Frequency</dd>
+        /* Định dạng danh sách chi tiết */
+        .dl-details {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
 
-    <dt class="col-sm-3 fw-bold">Hoạt động</dt>
-    <dd class="col-sm-9">@(Model.Active ? "Có" : "Không")</dd>
-</dl>
+            .dl-details dt {
+                font-weight: 500;
+                color: #333;
+                padding: 10px 0;
+                border-bottom: 1px solid #e9ecef;
+            }
 
-<a asp-action="Index" class="btn btn-secondary mt-3">Quay lại danh sách</a>
+            .dl-details dd {
+                color: #555;
+                padding: 10px 0;
+                margin-bottom: 0;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+        /* Nút quay lại */
+        .back-link {
+            color: #1a3c87;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 12px 30px;
+            border-radius: 8px;
+            transition: background 0.3s ease, color 0.3s ease;
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+        }
+
+            .back-link:hover {
+                background: #e9ecef;
+                text-decoration: none;
+            }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .details-container
+
+        {
+            padding: 20px;
+        }
+
+        .dl-details dt, .dl-details dd {
+            font-size: 0.875rem;
+        }
+
+        .back-link {
+            padding: 10px;
+        }
+
+        }
+    </style>
+}
+
+<div class="details-container">
+    <h1>Chi tiết lịch bay</h1>
+    <h4 class="details-header">Thông tin lịch bay</h4>
+    <hr />
+    <dl class="dl-details row">
+        <dt class="col-sm-4">Máy bay</dt>
+        <dd class="col-sm-8">@Model.Airplane?.AirplaneName</dd>
+        <dt class="col-sm-4">Tuyến bay</dt>
+        <dd class="col-sm-8">
+            @Model.Route?.DepartureAirport?.AirportName → @Model.Route?.ArrivalAirport?.AirportName
+        </dd>
+        <dt class="col-sm-4">Thời gian khởi hành</dt>
+        <dd class="col-sm-8">@Model.DepartureTime.ToString("dd/MM/yyyy HH:mm")</dd>
+        <dt class="col-sm-4">Tần suất</dt>
+        <dd class="col-sm-8">@Model.Frequency</dd>
+        <dt class="col-sm-4">Trạng thái</dt>
+        <dd class="col-sm-8">@(Model.Active ? "Kích hoạt" : "Không kích hoạt")</dd>
+    </dl>
+    <a asp-action="Index" class="back-link">Quay lại danh sách</a>
+</div>

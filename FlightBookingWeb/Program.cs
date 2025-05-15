@@ -12,6 +12,14 @@ namespace FlightBookingWeb
 
             // Cấu hình session
             builder.Services.AddDistributedMemoryCache();
+
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             builder.Services.AddAuthentication("MyCookieAuth")
                 .AddCookie("MyCookieAuth", options =>
                 {
@@ -29,8 +37,6 @@ namespace FlightBookingWeb
             builder.Services.AddScoped<IPayPalService, PayPalService>();
 
             builder.Services.AddControllersWithViews();
-          
-            builder.Services.AddSession();
           
             builder.Services.AddHostedService<FlightGeneratorService>();
             builder.Services.AddHostedService<FlightStatusUpdater>();
