@@ -2,86 +2,334 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - FlightBookingWeb</title>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/FlightBookingWeb.styles.css" asp-append-version="true" />
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css"
-    rel="stylesheet" />
-    <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/styles.css" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="FlyNow HTML5 Template">
+
+    <title>@ViewData["Title"] - QuandaAirlines</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="~/img/icons8-airplane-100.png">
+
+    <!-- All CSS files -->
+    <link rel="stylesheet" href="~/assets/css/vendor/font-awesome.css">
+    <link rel="stylesheet" href="~/assets/css/fonts/icomoon/style.css">
+    <link rel="stylesheet" href="~/assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="~/assets/css/vendor/slick.css">
+    <link rel="stylesheet" href="~/assets/css/vendor/slick-theme.css">
+    <link rel="stylesheet" href="~/assets/css/vendor/datetime.css">
+    <link rel="stylesheet" href="~/assets/css/vendor/calendar/classic.css">
+    <link rel="stylesheet" href="~/assets/css/vendor/calendar/classic.date.css">
+    <link rel="stylesheet" href="~/assets/css/vendor/jquery.timepicker.min.css">
+    <link rel="stylesheet" href="~/assets/css/vendor/ui-autocomplete.css">
+    <link rel="stylesheet" href="~/assets/css/vendor/sal.css">
+    <link rel="stylesheet" href="~/assets/css/app.css">
+    @await RenderSectionAsync("CSS", required: false)
+    <script bis_use="true" type="text/javascript" charset="utf-8" data-bis-config="[&quot;facebook.com/&quot;,&quot;twitter.com/&quot;,&quot;youtube-nocookie.com/embed/&quot;,&quot;//vk.com/&quot;,&quot;//www.vk.com/&quot;,&quot;linkedin.com/&quot;,&quot;//www.linkedin.com/&quot;,&quot;//instagram.com/&quot;,&quot;//www.instagram.com/&quot;,&quot;//www.google.com/recaptcha/api2/&quot;,&quot;//hangouts.google.com/webchat/&quot;,&quot;//www.google.com/calendar/&quot;,&quot;//www.google.com/maps/embed&quot;,&quot;spotify.com/&quot;,&quot;soundcloud.com/&quot;,&quot;//player.vimeo.com/&quot;,&quot;//disqus.com/&quot;,&quot;//tgwidget.com/&quot;,&quot;//js.driftt.com/&quot;,&quot;friends2follow.com&quot;,&quot;/widget&quot;,&quot;login&quot;,&quot;//video.bigmir.net/&quot;,&quot;blogger.com&quot;,&quot;//smartlock.google.com/&quot;,&quot;//keep.google.com/&quot;,&quot;/web.tolstoycomments.com/&quot;,&quot;moz-extension://&quot;,&quot;chrome-extension://&quot;,&quot;/auth/&quot;,&quot;//analytics.google.com/&quot;,&quot;adclarity.com&quot;,&quot;paddle.com/checkout&quot;,&quot;hcaptcha.com&quot;,&quot;recaptcha.net&quot;,&quot;2captcha.com&quot;,&quot;accounts.google.com&quot;,&quot;www.google.com/shopping/customerreviews&quot;,&quot;buy.tinypass.com&quot;,&quot;gstatic.com&quot;,&quot;secureir.ebaystatic.com&quot;,&quot;docs.google.com&quot;,&quot;contacts.google.com&quot;,&quot;github.com&quot;,&quot;mail.google.com&quot;,&quot;chat.google.com&quot;,&quot;audio.xpleer.com&quot;,&quot;keepa.com&quot;,&quot;static.xx.fbcdn.net&quot;,&quot;sas.selleramp.com&quot;,&quot;1plus1.video&quot;,&quot;console.googletagservices.com&quot;,&quot;//lnkd.demdex.net/&quot;,&quot;//radar.cedexis.com/&quot;,&quot;//li.protechts.net/&quot;,&quot;challenges.cloudflare.com/&quot;,&quot;ogs.google.com&quot;]" src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/executors/traffic.js"></script>
+
 </head>
-<body>
-    <header>
-        <nav>
-            <div class="nav__logo">Flivan</div>
-            <ul class="nav__links">
-                <li class="link"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                <li class="link"><a href="#">About</a></li>
-                <li class="link"><a href="#">Offers</a></li>
-                @if (!User.Identity.IsAuthenticated)
-                {
-                    <li class="link"><a a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
-                    <li class="link"><a asp-controller="Account" asp-action="Register">Register</a></li>
-                }
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <li class="link"><a a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
-                }
-            </ul>
-            <button class="btn">Contact</button>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+<body class="" __processed_037d1b65-bc99-466a-8911-be1b6308a2b0__="true" bis_status="ok" bis_frame_id="9">
+    <!-- Preloader-->
+    <div id="preloader" style="display: none;">
+        <div class="loader">
+            <div class="plane">
+                <img src="https://zupimages.net/up/19/34/4820.gif" class="plane-img" alt="">
+            </div>
+            <div class="earth-wrapper">
+                <div class="earth"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Main Wrapper Start -->
+    <div id="main-wrapper" class="main-wrapper mr-4">
+
+        <!-- Header Area Start -->
+        <header>
+            <nav class="main-menu">
+                <div class="container-fluid">
+                    <div class="main-menu__block">
+                        <div class="main-menu__left">
+                            <div>
+                                <a href="index.html" class="navbar-brand fw-bold text-primary color-primary fs-3 mr-3">
+                                    <img src="~/img/icons8-airplane-100.png" alt="logo" /> Quanda
+                                </a>
+                            </div>
+
+                            <div class="main-menu__nav">
+                                <ul class="main-menu__list">
+                                    <li class="current"><a asp-action="Index" asp-controller="Home" class="active">Trang chủ</a></li>
+                                    <li class="current"><a asp-action="Index" asp-controller="Booking">Chuyến bay</a></li>
+                                    @if(User.Identity.IsAuthenticated) {
+                                        <li class="current"><a asp-action="ThongTin" asp-controller="Booking">Thông tin của bạn</a></li>
+                                    }
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li class="current"><a asp-action="Index" asp-controller="Admin">Chuyển sang giao diện quản lý</a></li>
+                                    }
+                                    @if (User.IsInRole("Employee"))
+                                    {
+                                        <li class="current"><a asp-action="Index" asp-controller="Employee">Chuyển sang giao diện nhân viên</a></li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="main-menu__right">
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <div class="main-menu-signup__login d-xl-flex d-none">
+                                    <a asp-action="Login" asp-controller="Account" class="main-menu__login">
+                                        Đăng nhập
+                                    </a>
+                                    <div class="center_slach d-xl-flex d-none">/</div>
+                                    <a asp-action="Register" asp-controller="Account" class="main-menu__login">
+                                        Đăng ký
+                                    </a>
+                                </div>
+                            }
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <div class="main-menu-signup__login d-xl-flex d-none">
+                                    <a asp-action="Logout" asp-controller="Account" class="main-menu__login">
+                                        Đăng xuất
+                                    </a>
+                                </div>
+                            }
+                            <a href="#" class="main-menu__toggler mobile-nav__toggler">
+                                <i class="fa fa-bars"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <!-- Header Area end -->
+
+        <!-- Render Body Start -->
+		<section class="content" style="min-height: auto">
+			@RenderBody()
+		</section>
+		<!-- Render Body End -->
+
+        <!-- Footer Start -->
+        <footer class="bg-white p-40" data-sal="slide-down" data-sal-duration="800" data-sal-delay="100" data-sal-easing="ease-in-out">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 mb-lg-0 mb-32 ">
+                        <a href=""><img src="assets/media/logo.png" alt="" class="mb-16"></a>
+                        <p class="dark-gray mb-16">
+                            Vietnam Airlines tự hào là Hãng hàng không quốc tế 4 sao.
+                            Xin trân trọng cảm ơn sự đồng hành của Quý khách và bạn hàng!
+                        </p>
+                        <h6 class="lightest-black mb-8">Subscribe to our special offers</h6>
+                        <form action="index.html" method="post">
+                            <input type="email" class="form-control" placeholder="Địa chỉ email" name="email">
+                            <button type="submit" class="subscribe">Gửi</button>
+                        </form>
+                    </div>
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-lg-0 mb-32">
+                        <h4 class="light-black mb-24">Đặt vé</h4>
+                        <div class="our-links">
+                            <ul class="unstyled">
+                                <li class="mb-16">
+                                    <a href="flight-booking.html" class="light-black">Chuyến bay</a>
+                                </li>
+                                <li class="mb-16">
+                                    <a href="tour-packages.html" class="light-black">Dịch vụ</a>
+                                </li>
+                                <li class="mb-16">
+                                    <a href="tour-packages.html" class="light-black">
+                                        Lên kế hoạch
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-lg-0 mb-32">
+                        <h4 class="light-black mb-24">Liên kết</h4>
+                        <div class="our-links">
+                            <ul class="unstyled">
+                                <li class="mb-16">
+                                    <a asp-action="Index" asp-controller="Home" class="light-black">Home</a>
+                                </li>
+                                <li class="mb-16">
+                                    <a asp-action="Search" asp-controller="Booking" class="light-black">Tìm kiếm chuyến bay</a>
+                                </li>
+                                <li class="mb-16"><a asp-action="AboutUs" asp-controller="Home" class="light-black">Về chúng tôi </a></li>
+                                <li class="mb-16"><a asp-action="ContactUs" asp-controller="Home" class="light-black">Liên hệ</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-md-0 mb-32">
+                        <h4 class="light-black mb-24">Quản lý</h4>
+                        <div class="our-links">
+                            <ul class="unstyled">
+                                <li class="mb-16"><a href="flight-booking.html" class="light-black">Check-in</a></li>
+                                <li class="mb-16">
+                                    <a href="tour-packages.html" class="light-black">
+                                        Lịch sử đặt vé
+                                    </a>
+                                </li>
+                                <li class="mb-16">
+                                    <a href="flight-listing.html" class="light-black">Trạng thái chuyến bay</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                        <h4 class="light-black mb-16">Liên hệ với chúng tôi</h4>
+                        <div class="follow-us">
+                            <ul class="unstyled">
+                                <li class="mb-8">
+                                    <img src="assets/media/icons/location-bk.png" alt="">&nbsp;&nbsp;123
+                                    Đà Nẵng, Việt Nam.
+                                </li>
+                                <li class="mb-8 h4 color-primary"><img src="assets/media/icons/telephone.png" alt="">&nbsp;&nbsp;+84 868 102 111</li>
+                                <li class="mb-24"><a href=""><img src="assets/media/icons/mail.png" alt="">&nbsp;&nbsp;quanda2025@gmail.com</a></li>
+                            </ul>
+                        </div>
+                        <div class="social-link mb-32">
+                            <h6 class="light-black mb-8">Theo dõi!</h6>
+                            <ul class="unstyled">
+                                <li><a href="https://www.instagram.com/baonguyenphananh/" class="active"><img src="assets/media/icons/instagram.png" alt=""></a></li>
+                                <li><a href="https://www.facebook.com/viet.trung.1404"><img src="assets/media/icons/facebook.png" alt=""></a></li>
+                                <li><a href=""><img src="assets/media/icons/linkedin.png" alt=""></a></li>
+                                <li><a href=""><img src="assets/media/icons/twitter.png" alt=""></a></li>
+                            </ul>
+                        </div>
+                        <p class="light-black">©2025 No copyright.</p>
+
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer Area End  -->
+
+        <!-- modal-popup area Start  -->
+        <div class="search-popup">
+            <div class="search-popup__overlay search-toggler"></div>
+            <div class="search-popup__content">
+                <form role="search" method="get" class="search-popup__form" action="index.html">
+                    <input type="text" id="search" placeholder="Search Here...">
+                    <button type="submit" title="Search"><i class="fal fa-search"></i></button>
+                </form>
+            </div>
+        </div>
+        <!-- search-popup end-->
+
     </div>
 
-    <footer class="footer">
-        <div class="section__container footer__container">
-            <div class="footer__col">
-                <h3>Flivan</h3>
-                <p>
-                    Where Excellence Takes Flight. With a strong commitment to customer
-                    satisfaction and a passion for air travel, Flivan Airlines offers
-                    exceptional service and seamless journeys.
-                </p>
-                <p>
-                    From friendly smiles to state-of-the-art aircraft, we connect the
-                    world, ensuring safe, comfortable, and unforgettable experiences.
-                </p>
-            </div>
-            <div class="footer__col">
-                <h4>INFORMATION</h4>
-                <p>Home</p>
-                <p>About</p>
-                <p>Offers</p>
-                <p>Seats</p>
-                <p>Destinations</p>
-            </div>
-            <div class="footer__col">
-                <h4>CONTACT</h4>
-                <p>Support</p>
-                <p>Media</p>
-                <p>Socials</p>
-            </div>
-        </div>
-        <div class="section__container footer__bar">
-            <p>Copyright © 2023 Web Design Mastery. All rights reserved.</p>
-            <div class="socials">
-                <span><i class="ri-facebook-fill"></i></span>
-                <span><i class="ri-twitter-fill"></i></span>
-                <span><i class="ri-instagram-line"></i></span>
-                <span><i class="ri-youtube-fill"></i></span>
-            </div>
-        </div>
-    </footer>
+    <!-- Back To Top Start -->
+    <a href="#main-wrapper" id="backto-top" class="back-to-top"><i class="fas fa-angle-up"></i></a>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- Mobile Menu Start -->
+    <div class="mobile-nav__wrapper">
+        <div class="mobile-nav__overlay mobile-nav__toggler"></div>
+        <div class="mobile-nav__content">
+            <span class="mobile-nav__close mobile-nav__toggler"></span>
+            <div class="logo-box">
+                <a href="index.html" aria-label="logo image"><img src="assets/media/logo.png" alt="" class="invisible"></a>
+            </div>
+            <div class="mobile-nav__container">
+                <ul class="main-menu__list">
+                    <li class="current"><a href="index.html" class="active">Home</a></li>
+                    <li class="dropdown">
+                        <a href="javascript:void(0);">Flight<button aria-label="dropdown toggler"><i class="fa fa-angle-down"></i></button></a>
+                        <ul class="sub-menu">
+                            <li><a href="flight-listing.html">Flight Listing</a></li>
+                            <li><a href="flight-booking.html">Flight Booking</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="javascript:void(0);">Car<button aria-label="dropdown toggler"><i class="fa fa-angle-down"></i></button></a>
+                        <ul class="sub-menu">
+                            <li><a href="car-listing.html">Car Listing</a></li>
+                            <li><a href="car-booking.html">Car Booking</a></li>
+                            <li><a href="car-detail.html">Car Detail</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="javascript:void(0);">Hotel<button aria-label="dropdown toggler"><i class="fa fa-angle-down"></i></button></a>
+                        <ul class="sub-menu">
+                            <li><a href="hotel-listing.html">Hotel Listing</a></li>
+                            <li><a href="hotel-booking.html">Hotel Booking</a></li>
+                            <li><a href="hotel-detail.html">Hotel Detail</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="javascript:void(0);">Tour<button aria-label="dropdown toggler"><i class="fa fa-angle-down"></i></button></a>
+                        <ul>
+                            <li><a href="tour-packages.html">Tour Packages</a></li>
+                            <li><a href="tour-detail.html">Tour Detail</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="javascript:void(0);">Pages<button aria-label="dropdown toggler"><i class="fa fa-angle-down"></i></button></a>
+                        <ul class="sub-menu">
+                            <li><a href="about-us.html">About</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                            <li><a href="login.html">Login</a></li>
+                            <li><a href="sign-up.html">Signup</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="javascript:void(0);">News<button aria-label="dropdown toggler"><i class="fa fa-angle-down"></i></button></a>
+                        <ul>
+
+                            <li><a href="blog-listing.html">News Listing</a></li>
+                            <li><a href="blog-detail.html">News Detail</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <ul class="mobile-nav__contact list-unstyled">
+                <li>
+                    <i class="fas fa-envelope"></i>
+                    <a href="mailto:example@company.com">quanda2025@company.com</a>
+                </li>
+                <li>
+                    <i class="fa fa-phone-alt"></i>
+                    <a href="tel:+12345678">+84 868 102 111</a>
+                </li>
+            </ul>
+            <div class="mobile-nav__social">
+                <a href="https://twitter.com/"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+    <!-- Mobile Menu End -->
+
+    <!-- Jquery Js -->
+    <script src="~/assets/js/vendor/jquery-3.6.3.min.js"></script>
+    <script src="~/assets/js/vendor/calendar/popper.min.js"></script>
+    <script src="~/assets/js/vendor/bootstrap.min.js"></script>
+    <script src="~/assets/js/vendor/slick.min.js"></script>
+    <script src="~/assets/js/vendor/jquery-appear.js"></script>
+    <script src="~/assets/js/vendor/jquery-validator.js"></script>
+    <script src="~/assets/js/vendor/aksVideoPlayer.js"></script>
+    <script src="~/assets/js/vendor/tilt.jquery.js"></script>
+    <script src="~/assets/js/vendor/calendar/picker.js"></script>
+    <script src="~/assets/js/vendor/calendar/picker.date.js"></script>
+    <script src="~/assets/js/vendor/autoComplete.js"></script>
+    <script src="~/assets/js/vendor/jquery.timepicker.min.js"></script>
+    <script src="~/assets/js/vendor/sal.js"></script>
+
+    <!-- Site Scripts -->
+    <script src="~/assets/js/date.js"></script>
+    <script src="~/assets/js/app.js"></script>
+    <script src="~/js/site.js"></script>
+
+
+    <script>
+        $(document).ready(function() {
+            
+        });
+    </script>
+
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

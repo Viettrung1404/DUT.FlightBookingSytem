@@ -2,221 +2,554 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="section__container header__container">
-    <h1 class="section__header">Find And Book<br />A Great Experience</h1>
-    <img src="~/img/header.jpg" alt="header" />
+<!-- Hero Banner start -->
+<section class="hero-banner-1">
+    <div class="container-fluid">
+        <div class="content">
+            <div class="vector-image">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1414" height="319" viewBox="0 0 1414 319" fill="none">
+                    <path class="path" d="M-0.5 215C62.4302 220.095 287 228 373 143.5C444.974 72.7818 368.5 -3.73136 320.5 1.99997C269.5 8.08952 231.721 43.5 253.5 119C275.279 194.5 367 248.212 541.5 207.325C675.76 175.867 795.5 82.7122 913 76.7122C967.429 73.9328 1072.05 88.6813 1085 207.325C1100 344.712 882 340.212 922.5 207.325C964.415 69.7967 1354 151.5 1479 183.5" stroke="#ECECF2" stroke-width="6" stroke-linecap="round" stroke-dasharray="round"></path>
+
+                    <path class="dashed" d="M-0.5 215C62.4302 220.095 287 228 373 143.5C444.974 72.7818 368.5 -3.73136 320.5 1.99997C269.5 8.08952 231.721 43.5 253.5 119C275.279 194.5 367 248.212 541.5 207.325C675.76 175.867 795.5 82.7122 913 76.7122C967.429 73.9328 1072.05 88.6813 1085 207.325C1100 344.712 882 340.212 922.5 207.325C964.415 69.7967 1354 151.5 1479 183.5" stroke="#212627" stroke-width="6" stroke-linecap="round" stroke-dasharray="22 22"></path>
+                </svg>
+                <div class="location-image">
+                    <img src="assets/media/icons/location-blue.png" alt="">
+                </div>
+            </div>
+            <div class="row align-items-center row-gap-5">
+                <div class="col-xxl-3 col-xl-4 col-lg-4 col-md-5 col-sm-5">
+                    <div class="content-block">
+                        <h1 class="lightest-black mb-16"><span class="color-primary">Đặt</span> Chuyến Bay <span class="color-primary">Của Bạn</span> Ngay Nào!</h1>
+                        <p class="dark-gray mb-24">Quanda Airlines tự hào là Hãng hàng không quốc tế 4 sao của Việt Nam.</p>
+                        <a href="#booking" class="cus-btn" >Đặt Vé Ngay</a>
+                    </div>
+                </div>
+                <div class="col-xxl-9 col-xl-8 col-lg-8 col-md-7 col-sm-7">
+                    <div class="image flynow-tilt" data-tilt-options="{ &quot;glare&quot;: false, &quot;maxGlare&quot;: 0, &quot;maxTilt&quot;: 3, &quot;speed&quot;: 700, &quot;scale&quot;: 1.02 }" style="will-change: transform; transform: perspective(300px) rotateX(0deg) rotateY(0deg);">
+                        <img src="~/assets/media/banner/plane.png" alt="banner">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Hero Banner End -->
+
+<!-- Booking Area Start -->
+<section class="booking mb-20" id="booking">
+    <div class="container-fluid">
+        <div class="content">
+            <div class="card">
+                <div class="card-body tab-content">
+                    <div class="tab-pane fade show active" id="flight">
+                        <div class="card">
+                            <div class="card-header">
+                                <ul class="nav nav-tabs card-header-tabs " data-bs-tabs="tabs">
+                                    <li class="nav-item">
+                                        <a href="#stopover" class="cus-btn primary-light primary active" aria-current="true" data-bs-toggle="tab">
+                                            Tìm kiếm vé
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#manage" class="cus-btn primary-light primary" aria-current="false" data-bs-toggle="tab">
+                                            Quản lý vé
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#status" class="cus-btn primary-light primary" aria-current="false" data-bs-toggle="tab">
+                                            Trạng thái chuyến bay
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="card-body tab-content">
+                                <!-- StopOver tab Start -->
+                                <div class="tab-pane fade active show" id="stopover">
+                                    <form action="flight-listing.html" method="post">
+                                        <div class="custom-control mb-32">
+                                            <div class=" radio-button">
+                                                <input type="radio" name="way" class="custom-control-input" id="way">
+                                                <label class="custom-control-label" for="way">One way</label>
+                                            </div>
+                                            <div class=" radio-button">
+                                                <input type="radio" name="way" class="custom-control-input" id="trip">
+                                                <label class="custom-control-label" for="trip">Round-trip</label>
+                                            </div>
+                                        </div>
+                                        <div class="booking-info mb-32">
+                                            <div class="d-xl-flex align-items-center gap-24 d-lg-block d-flex">
+                                                <div class="custom-sel-input-block">
+                                                    <label for="flightFrom" class="h6 color-medium-gray">Từ</label>
+                                                    <input type="text" class="sel-input auto-input ui-autocomplete-input" id="flightFrom" placeholder="From" autocomplete="off">
+                                                    <div class="slector-wrapper"></div>
+                                                </div>
+                                                <div class="arrows">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                        <g clip-path="url(#clip0_518_2277)">
+                                                            <path d="M23.6804 6.07409L18.2259 0.619583C17.7999 0.193537 17.1092 0.193537 16.6831 0.619583C16.2571 1.04563 16.2571 1.73628 16.6831 2.16233L20.2754 5.75464H1.09096C0.488472 5.75464 3.51626e-05 6.24307 3.51626e-05 6.84556C3.51626e-05 7.44804 0.488472 7.93648 1.09096 7.93648H20.2754L16.6832 11.5287C16.2571 11.9548 16.2571 12.6455 16.6832 13.0715C16.8961 13.2845 17.1753 13.391 17.4545 13.391C17.7337 13.391 18.0129 13.2845 18.2258 13.0714L23.6804 7.61688C24.1064 7.19084 24.1064 6.50013 23.6804 6.07409Z" fill="#4D73FC"></path>
+                                                            <path d="M22.9091 16.6637H3.72462L7.31683 13.0714C7.74288 12.6453 7.74288 11.9547 7.31683 11.5286C6.89088 11.1026 6.20013 11.1026 5.77409 11.5286L0.319535 16.9831C-0.106512 17.4092 -0.106512 18.0998 0.319535 18.5259L5.77404 23.9804C5.98713 24.1935 6.26627 24.3 6.54546 24.3C6.82465 24.3 7.10388 24.1935 7.31679 23.9804C7.74283 23.5544 7.74283 22.8637 7.31679 22.4377L3.72457 18.8455H22.9091C23.5116 18.8455 24 18.357 24 17.7546C24 17.1521 23.5116 16.6637 22.9091 16.6637Z" fill="#4D73FC"></path>
+                                                        </g>
+                                                        <defs>
+                                                            <clipPath id="clip0_518_2277">
+                                                                <rect width="24" height="24" fill="white"></rect>
+                                                            </clipPath>
+                                                        </defs>
+                                                    </svg>
+                                                </div>
+                                                <div class="custom-sel-input-block">
+                                                    <label for="flightTo" class="h6 color-medium-gray">Đến</label>
+                                                    <input type="text" class="sel-input auto-input ui-autocomplete-input" id="flightTo" placeholder="To" autocomplete="off">
+                                                    <div class="slector-wrapper"></div>
+                                                </div>
+                                                <div class="vertical-line d-xl-block d-none"></div>
+                                            </div>
+                                            <div class="d-xl-flex align-items-center gap-24 d-lg-block ">
+                                                <div class="input-date-picker">
+                                                    <label for="flightDep" class="h6 color-medium-gray">Ngày đi</label>
+                                                    <input type="text" class="sel-input date_from picker__input" id="flightDep" placeholder="Aug 18, 2023" readonly="" aria-haspopup="true" aria-expanded="false" aria-readonly="false" aria-owns="flightDep_root"><div class="picker" id="flightDep_root" aria-hidden="true"><div class="picker__holder" tabindex="-1"><div class="picker__frame"><div class="picker__wrap"><div class="picker__box"><div class="picker__header"><div class="picker__month">May</div><div class="picker__year">2025</div><div class="picker__nav--prev" data-nav="-1" role="button" aria-controls="flightDep_table" title="Previous month"> </div><div class="picker__nav--next" data-nav="1" role="button" aria-controls="flightDep_table" title="Next month"> </div></div><table class="picker__table" id="flightDep_table" role="grid" aria-controls="flightDep" aria-readonly="true"><thead><tr><th class="picker__weekday" scope="col" title="Sunday">Sun</th><th class="picker__weekday" scope="col" title="Monday">Mon</th><th class="picker__weekday" scope="col" title="Tuesday">Tue</th><th class="picker__weekday" scope="col" title="Wednesday">Wed</th><th class="picker__weekday" scope="col" title="Thursday">Thu</th><th class="picker__weekday" scope="col" title="Friday">Fri</th><th class="picker__weekday" scope="col" title="Saturday">Sat</th></tr></thead><tbody><tr><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745686800000" role="gridcell" aria-label="27 April, 2025">27</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745773200000" role="gridcell" aria-label="28 April, 2025">28</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745859600000" role="gridcell" aria-label="29 April, 2025">29</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745946000000" role="gridcell" aria-label="30 April, 2025">30</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746032400000" role="gridcell" aria-label="1 May, 2025">1</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746118800000" role="gridcell" aria-label="2 May, 2025">2</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746205200000" role="gridcell" aria-label="3 May, 2025">3</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746291600000" role="gridcell" aria-label="4 May, 2025">4</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746378000000" role="gridcell" aria-label="5 May, 2025">5</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746464400000" role="gridcell" aria-label="6 May, 2025">6</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746550800000" role="gridcell" aria-label="7 May, 2025">7</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746637200000" role="gridcell" aria-label="8 May, 2025">8</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746723600000" role="gridcell" aria-label="9 May, 2025">9</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--today picker__day--highlighted" data-pick="1746810000000" role="gridcell" aria-label="10 May, 2025" aria-activedescendant="true">10</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746896400000" role="gridcell" aria-label="11 May, 2025">11</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746982800000" role="gridcell" aria-label="12 May, 2025">12</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747069200000" role="gridcell" aria-label="13 May, 2025">13</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747155600000" role="gridcell" aria-label="14 May, 2025">14</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747242000000" role="gridcell" aria-label="15 May, 2025">15</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747328400000" role="gridcell" aria-label="16 May, 2025">16</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747414800000" role="gridcell" aria-label="17 May, 2025">17</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747501200000" role="gridcell" aria-label="18 May, 2025">18</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747587600000" role="gridcell" aria-label="19 May, 2025">19</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747674000000" role="gridcell" aria-label="20 May, 2025">20</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747760400000" role="gridcell" aria-label="21 May, 2025">21</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747846800000" role="gridcell" aria-label="22 May, 2025">22</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747933200000" role="gridcell" aria-label="23 May, 2025">23</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748019600000" role="gridcell" aria-label="24 May, 2025">24</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748106000000" role="gridcell" aria-label="25 May, 2025">25</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748192400000" role="gridcell" aria-label="26 May, 2025">26</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748278800000" role="gridcell" aria-label="27 May, 2025">27</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748365200000" role="gridcell" aria-label="28 May, 2025">28</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748451600000" role="gridcell" aria-label="29 May, 2025">29</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748538000000" role="gridcell" aria-label="30 May, 2025">30</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748624400000" role="gridcell" aria-label="31 May, 2025">31</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748710800000" role="gridcell" aria-label="1 June, 2025">1</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748797200000" role="gridcell" aria-label="2 June, 2025">2</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748883600000" role="gridcell" aria-label="3 June, 2025">3</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748970000000" role="gridcell" aria-label="4 June, 2025">4</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1749056400000" role="gridcell" aria-label="5 June, 2025">5</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1749142800000" role="gridcell" aria-label="6 June, 2025">6</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1749229200000" role="gridcell" aria-label="7 June, 2025">7</div></td></tr></tbody></table><div class="picker__footer"><button class="picker__button--today" type="button" data-pick="1746810000000" disabled="" aria-controls="flightDep">Today</button><button class="picker__button--clear" type="button" data-clear="1" disabled="" aria-controls="flightDep">Clear</button><button class="picker__button--close" type="button" data-close="true" disabled="" aria-controls="flightDep">Close</button></div></div></div></div></div></div>
+                                                </div>
+                                                <div class="input-date-picker">
+                                                    <label for="flightTime" class="h6 color-medium-gray">Ngày về</label>
+                                                    <input type="text" class="sel-input date_to picker__input" id="flightTime" placeholder="Aug 20, 2023" readonly="" aria-haspopup="true" aria-expanded="false" aria-readonly="false" aria-owns="flightTime_root"><div class="picker" id="flightTime_root" aria-hidden="true"><div class="picker__holder" tabindex="-1"><div class="picker__frame"><div class="picker__wrap"><div class="picker__box"><div class="picker__header"><div class="picker__month">May</div><div class="picker__year">2025</div><div class="picker__nav--prev" data-nav="-1" role="button" aria-controls="flightTime_table" title="Previous month"> </div><div class="picker__nav--next" data-nav="1" role="button" aria-controls="flightTime_table" title="Next month"> </div></div><table class="picker__table" id="flightTime_table" role="grid" aria-controls="flightTime" aria-readonly="true"><thead><tr><th class="picker__weekday" scope="col" title="Sunday">Sun</th><th class="picker__weekday" scope="col" title="Monday">Mon</th><th class="picker__weekday" scope="col" title="Tuesday">Tue</th><th class="picker__weekday" scope="col" title="Wednesday">Wed</th><th class="picker__weekday" scope="col" title="Thursday">Thu</th><th class="picker__weekday" scope="col" title="Friday">Fri</th><th class="picker__weekday" scope="col" title="Saturday">Sat</th></tr></thead><tbody><tr><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745686800000" role="gridcell" aria-label="27 April, 2025">27</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745773200000" role="gridcell" aria-label="28 April, 2025">28</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745859600000" role="gridcell" aria-label="29 April, 2025">29</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745946000000" role="gridcell" aria-label="30 April, 2025">30</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746032400000" role="gridcell" aria-label="1 May, 2025">1</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746118800000" role="gridcell" aria-label="2 May, 2025">2</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746205200000" role="gridcell" aria-label="3 May, 2025">3</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746291600000" role="gridcell" aria-label="4 May, 2025">4</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746378000000" role="gridcell" aria-label="5 May, 2025">5</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746464400000" role="gridcell" aria-label="6 May, 2025">6</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746550800000" role="gridcell" aria-label="7 May, 2025">7</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746637200000" role="gridcell" aria-label="8 May, 2025">8</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746723600000" role="gridcell" aria-label="9 May, 2025">9</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--today picker__day--highlighted" data-pick="1746810000000" role="gridcell" aria-label="10 May, 2025" aria-activedescendant="true">10</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746896400000" role="gridcell" aria-label="11 May, 2025">11</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746982800000" role="gridcell" aria-label="12 May, 2025">12</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747069200000" role="gridcell" aria-label="13 May, 2025">13</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747155600000" role="gridcell" aria-label="14 May, 2025">14</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747242000000" role="gridcell" aria-label="15 May, 2025">15</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747328400000" role="gridcell" aria-label="16 May, 2025">16</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747414800000" role="gridcell" aria-label="17 May, 2025">17</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747501200000" role="gridcell" aria-label="18 May, 2025">18</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747587600000" role="gridcell" aria-label="19 May, 2025">19</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747674000000" role="gridcell" aria-label="20 May, 2025">20</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747760400000" role="gridcell" aria-label="21 May, 2025">21</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747846800000" role="gridcell" aria-label="22 May, 2025">22</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747933200000" role="gridcell" aria-label="23 May, 2025">23</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748019600000" role="gridcell" aria-label="24 May, 2025">24</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748106000000" role="gridcell" aria-label="25 May, 2025">25</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748192400000" role="gridcell" aria-label="26 May, 2025">26</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748278800000" role="gridcell" aria-label="27 May, 2025">27</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748365200000" role="gridcell" aria-label="28 May, 2025">28</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748451600000" role="gridcell" aria-label="29 May, 2025">29</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748538000000" role="gridcell" aria-label="30 May, 2025">30</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748624400000" role="gridcell" aria-label="31 May, 2025">31</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748710800000" role="gridcell" aria-label="1 June, 2025">1</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748797200000" role="gridcell" aria-label="2 June, 2025">2</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748883600000" role="gridcell" aria-label="3 June, 2025">3</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748970000000" role="gridcell" aria-label="4 June, 2025">4</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1749056400000" role="gridcell" aria-label="5 June, 2025">5</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1749142800000" role="gridcell" aria-label="6 June, 2025">6</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1749229200000" role="gridcell" aria-label="7 June, 2025">7</div></td></tr></tbody></table><div class="picker__footer"><button class="picker__button--today" type="button" data-pick="1746810000000" disabled="" aria-controls="flightTime">Today</button><button class="picker__button--clear" type="button" data-clear="1" disabled="" aria-controls="flightTime">Clear</button><button class="picker__button--close" type="button" data-close="true" disabled="" aria-controls="flightTime">Close</button></div></div></div></div></div></div>
+                                                </div>
+                                                <div class="custom-sel-input-block ">
+                                                    <div class="h6 color-medium-gray mb-2">Hành khách</div>
+                                                    <div class="seat-booking color-black"> <span class="total-pasenger">1</span> Hành khách</div>
+
+                                                    <div class="passenger-area pessenger-box bg-white light-shadow br-5 p-24">
+                                                        <h4 class="color-black mb-32">Passenger</h4>
+                                                        <div class="passenger-box mb-24">
+                                                            <div class="row">
+                                                                <div class="col-md-7 col-sm-6 col-6">
+                                                                    <div class="content-box">
+                                                                        <h5 class="lightest-black">Người lớn</h5>
+                                                                        <p class="color-medium-gray light"> Trên 12 tuổi.</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-5 col-sm-6 col-6">
+                                                                    <div class="quantity quantity-wrap">
+                                                                        <input class="decrement" type="button" value="-">
+                                                                        <input type="text" name="quantity" value="0" maxlength="2" size="1" id="adult" class="number" title="Enter the number of adults" placeholder="Adults">
+                                                                        <input class="increment" type="button" value="+">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="passenger-box mb-24">
+                                                            <div class="row">
+                                                                <div class="col-md-7 col-sm-6 col-6">
+                                                                    <div class="content-box">
+                                                                        <h5 class="lightest-black">Trẻ em</h5>
+                                                                        <p class="color-medium-gray light"> 2-11 tuổi.</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-5 col-sm-6 col-6">
+                                                                    <div class="quantity quantity-wrap">
+                                                                        <input class="decrement" type="button" value="-">
+                                                                        <input type="text" name="quantity" value="0" maxlength="2" size="1" id="child" class="number" title="Enter the number of children" placeholder="Children">
+                                                                        <input class="increment" type="button" value="+">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="passenger-box mb-32">
+                                                            <div class="row">
+                                                                <div class="col-md-7 col-sm-6 col-6">
+                                                                    <div class="content-box">
+                                                                        <h5 class="lightest-black">Sơ sinh</h5>
+                                                                        <p class="color-medium-gray light"> Dưới 2 tuổi.</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-5 col-sm-6 col-6">
+                                                                    <div class="quantity quantity-wrap">
+                                                                        <input class="decrement" type="button" value="-">
+                                                                        <input type="text" name="quantity" value="0" maxlength="2" size="1" id="infant" class="number" title="Enter the number of infants" placeholder="Infants">
+                                                                        <input class="increment" type="button" value="+">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <p class="color-medium-gray light mb-32">
+                                                            Hãy lưu ý: Bạn chỉ có thể đặt tối đa 5 vé.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- StopOver tab End -->
+                                <!-- Manage tab Start -->
+                                <div class="tab-pane fade" id="manage">
+                                    <div class="booking-bar">
+                                        <ul class="nav nav-tabs " data-bs-tabs="tabs">
+                                            <li class="nav-item">
+                                                <a href="#manageBooking" class="nav-link active" aria-current="true" data-bs-toggle="tab">
+                                                    Quản lý vé
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="#checkIn" class="nav-link " aria-current="false" data-bs-toggle="tab">
+                                                    Check in
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-body tab-content">
+                                        <div class="tab-pane fade show active" id="manageBooking">
+                                            <form action="flight-booking.html" method="post">
+                                                <div class="row align-items-center">
+                                                    <div class="col-xl-10 col-lg-10 col-md-10">
+                                                        <div class="booking-info d-block">
+                                                            <div class="row">
+                                                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                                                    <div class="custom-sel-input-block v-2">
+                                                                        <input type="text" class="sel-input" name="reference" id="ref-name" placeholder="Mã vé">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                                                    <div class="custom-sel-input-block m-0">
+                                                                        <input type="text" class="sel-input" name="name" id="last-name" placeholder="Tên">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 col-md-2 mt-md-0 mt-32">
+                                                        <button type="submit" class="cus-btn">Kiểm tra vé</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="tab-pane fade" id="checkIn">
+                                            <form action="flight-booking.html" method="post">
+                                                <div class="row align-items-center">
+                                                    <div class="col-xl-10 col-lg-10 col-md-10">
+                                                        <div class="booking-info d-block">
+                                                            <div class="row">
+                                                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                                                    <div class="custom-sel-input-block v-2 m-0">
+                                                                        <input type="text" class="sel-input" name="reference" id="refNname" placeholder="Mã Vé">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                                                    <div class="custom-sel-input-block m-0">
+                                                                        <input type="text" class="sel-input" name="name" id="lasName" placeholder="Tên">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 col-md-2 mt-md-0 mt-32">
+                                                        <button type="submit" class="cus-btn">Kiểm tra vé</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Manage tab End -->
+                                <!-- Flight Status tab Start -->
+                                <div class="tab-pane fade" id="status">
+                                    <div class="booking-bar">
+                                        <ul class="nav nav-tabs " data-bs-tabs="tabs">
+                                            <li class="nav-item">
+                                                <a href="#byRoute" class="nav-link active" aria-current="true" data-bs-toggle="tab">
+                                                    Theo Tuyến Bay
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="#flightNo" class="nav-link" aria-current="false" data-bs-toggle="tab">
+                                                    Theo Mã Chuyến Bay
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-body tab-content">
+                                        <div class="tab-pane fade active show" id="byRoute">
+                                            <form action="flight-listing.html" method="post">
+                                                <div class="row align-items-center">
+                                                    <div class="col-xl-10 col-lg-10">
+                                                        <div class="booking-info v-2 d-md-flex d-inline-block justify-content-between">
+
+                                                            <div class="custom-sel-input-block m-0">
+                                                                <input type="text" class="sel-input auto-input ui-autocomplete-input" id="flightDepart" placeholder="Từ" autocomplete="off">
+                                                                <div class="slector-wrapper"></div>
+                                                            </div>
+                                                            <div class="custom-sel-input-block m-0 d-flex flex-row align-items-center">
+                                                                <div class="vertical-line d-md-flex d-none"></div>
+                                                                <input type="text" class="sel-input auto-input ui-autocomplete-input" id="flightArrive" placeholder="Đến" autocomplete="off">
+                                                                <div class="slector-wrapper"></div>
+                                                            </div>
+
+                                                            <div>
+                                                                <div class="input-date-picker date-time m-0">
+                                                                    <input type="text" class="sel-input date_from picker__input" id="flightTimeDate" placeholder="Aug 20, 2023" readonly="" aria-haspopup="true" aria-expanded="false" aria-readonly="false" aria-owns="flightTimeDate_root"><div class="picker" id="flightTimeDate_root" aria-hidden="true"><div class="picker__holder" tabindex="-1"><div class="picker__frame"><div class="picker__wrap"><div class="picker__box"><div class="picker__header"><div class="picker__month">May</div><div class="picker__year">2025</div><div class="picker__nav--prev" data-nav="-1" role="button" aria-controls="flightTimeDate_table" title="Previous month"> </div><div class="picker__nav--next" data-nav="1" role="button" aria-controls="flightTimeDate_table" title="Next month"> </div></div><table class="picker__table" id="flightTimeDate_table" role="grid" aria-controls="flightTimeDate" aria-readonly="true"><thead><tr><th class="picker__weekday" scope="col" title="Sunday">Sun</th><th class="picker__weekday" scope="col" title="Monday">Mon</th><th class="picker__weekday" scope="col" title="Tuesday">Tue</th><th class="picker__weekday" scope="col" title="Wednesday">Wed</th><th class="picker__weekday" scope="col" title="Thursday">Thu</th><th class="picker__weekday" scope="col" title="Friday">Fri</th><th class="picker__weekday" scope="col" title="Saturday">Sat</th></tr></thead><tbody><tr><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745686800000" role="gridcell" aria-label="27 April, 2025">27</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745773200000" role="gridcell" aria-label="28 April, 2025">28</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745859600000" role="gridcell" aria-label="29 April, 2025">29</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745946000000" role="gridcell" aria-label="30 April, 2025">30</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746032400000" role="gridcell" aria-label="1 May, 2025">1</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746118800000" role="gridcell" aria-label="2 May, 2025">2</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746205200000" role="gridcell" aria-label="3 May, 2025">3</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746291600000" role="gridcell" aria-label="4 May, 2025">4</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746378000000" role="gridcell" aria-label="5 May, 2025">5</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746464400000" role="gridcell" aria-label="6 May, 2025">6</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746550800000" role="gridcell" aria-label="7 May, 2025">7</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746637200000" role="gridcell" aria-label="8 May, 2025">8</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746723600000" role="gridcell" aria-label="9 May, 2025">9</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--today picker__day--highlighted" data-pick="1746810000000" role="gridcell" aria-label="10 May, 2025" aria-activedescendant="true">10</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746896400000" role="gridcell" aria-label="11 May, 2025">11</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746982800000" role="gridcell" aria-label="12 May, 2025">12</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747069200000" role="gridcell" aria-label="13 May, 2025">13</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747155600000" role="gridcell" aria-label="14 May, 2025">14</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747242000000" role="gridcell" aria-label="15 May, 2025">15</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747328400000" role="gridcell" aria-label="16 May, 2025">16</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747414800000" role="gridcell" aria-label="17 May, 2025">17</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747501200000" role="gridcell" aria-label="18 May, 2025">18</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747587600000" role="gridcell" aria-label="19 May, 2025">19</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747674000000" role="gridcell" aria-label="20 May, 2025">20</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747760400000" role="gridcell" aria-label="21 May, 2025">21</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747846800000" role="gridcell" aria-label="22 May, 2025">22</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747933200000" role="gridcell" aria-label="23 May, 2025">23</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748019600000" role="gridcell" aria-label="24 May, 2025">24</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748106000000" role="gridcell" aria-label="25 May, 2025">25</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748192400000" role="gridcell" aria-label="26 May, 2025">26</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748278800000" role="gridcell" aria-label="27 May, 2025">27</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748365200000" role="gridcell" aria-label="28 May, 2025">28</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748451600000" role="gridcell" aria-label="29 May, 2025">29</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748538000000" role="gridcell" aria-label="30 May, 2025">30</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748624400000" role="gridcell" aria-label="31 May, 2025">31</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748710800000" role="gridcell" aria-label="1 June, 2025">1</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748797200000" role="gridcell" aria-label="2 June, 2025">2</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748883600000" role="gridcell" aria-label="3 June, 2025">3</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748970000000" role="gridcell" aria-label="4 June, 2025">4</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1749056400000" role="gridcell" aria-label="5 June, 2025">5</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1749142800000" role="gridcell" aria-label="6 June, 2025">6</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1749229200000" role="gridcell" aria-label="7 June, 2025">7</div></td></tr></tbody></table><div class="picker__footer"><button class="picker__button--today" type="button" data-pick="1746810000000" disabled="" aria-controls="flightTimeDate">Today</button><button class="picker__button--clear" type="button" data-clear="1" disabled="" aria-controls="flightTimeDate">Clear</button><button class="picker__button--close" type="button" data-close="true" disabled="" aria-controls="flightTimeDate">Close</button></div></div></div></div></div></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 d-flex align-items-center mt-lg-0 mt-32">
+                                                        <button type="submit" class="cus-btn">
+                                                            Hiển thị chuyến bay
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="none">
+                                                                <g clip-path="url(#clip0_502_1331)">
+                                                                    <path d="M31.6933 0.544584C30.6572 -0.491824 27.1402 1.34503 26.1041 2.38143L21.9545 6.53127H3.07887C2.63024 6.53127 2.24462 6.85011 2.16055 7.29104C2.07669 7.73189 2.31798 8.16995 2.73524 8.3348L15.2174 13.2677L7.5633 20.9216H0.323909C0.168651 20.9221 0.0346723 21.0323 0.00576263 21.1852C-0.023357 21.3385 0.060152 21.4901 0.20498 21.5471L6.29687 23.9548C6.33201 24.1078 6.38108 24.2574 6.44394 24.4038L6.17745 24.6709C5.79778 25.0503 5.79778 25.6651 6.17745 26.045C6.55664 26.4247 7.17263 26.4247 7.55182 26.045L7.81194 25.785C7.95935 25.8501 8.11132 25.9014 8.26623 25.9382L10.6144 31.9561C10.6709 32.1013 10.8229 32.1851 10.976 32.1568C11.0419 32.145 11.1002 32.1123 11.1451 32.0673C11.2044 32.0087 11.2399 31.9274 11.2399 31.8382V24.7512L19.0155 16.976L23.9019 29.4993C24.0654 29.9177 24.5037 30.1608 24.9452 30.0781C25.136 30.0421 25.3038 29.9498 25.4333 29.8212C25.6038 29.6499 25.7071 29.4151 25.7077 29.1591V10.284L29.8573 6.13423C30.893 5.09789 32.7293 1.58085 31.6933 0.544584Z" fill="white"></path>
+                                                                </g>
+                                                                <defs>
+                                                                    <clipPath id="clip0_502_1391">
+                                                                        <rect width="32" height="32" fill="black"></rect>
+                                                                    </clipPath>
+                                                                </defs>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="tab-pane fade" id="flightNo">
+                                            <form action="flight-listing.html" method="post">
+                                                <div class="row align-items-center">
+                                                    <div class="col-xl-10 col-lg-10">
+                                                        <div class="booking-info v-2 d-md-flex d-inline-block justify-content-between">
+
+                                                            <div class="custom-sel-input-block m-0">
+                                                                <input type="text" class="sel-input auto-input ui-autocomplete-input" id="flightDepat" placeholder="Từ" autocomplete="off">
+                                                                <div class="slector-wrapper"></div>
+                                                            </div>
+                                                            <div class="custom-sel-input-block m-0 d-flex flex-row align-items-center">
+                                                                <div class="vertical-line d-md-flex d-none"></div>
+                                                                <input type="text" class="sel-input auto-input ui-autocomplete-input" id="flightArive" placeholder="Đến" autocomplete="off">
+                                                                <div class="slector-wrapper"></div>
+                                                            </div>
+
+                                                            <div>
+                                                                <div class="input-date-picker date-time m-0">
+                                                                    <input type="text" class="sel-input date_from picker__input" id="flightTieDate" placeholder="Aug 20, 2023" readonly="" aria-haspopup="true" aria-expanded="false" aria-readonly="false" aria-owns="flightTieDate_root"><div class="picker" id="flightTieDate_root" aria-hidden="true"><div class="picker__holder" tabindex="-1"><div class="picker__frame"><div class="picker__wrap"><div class="picker__box"><div class="picker__header"><div class="picker__month">May</div><div class="picker__year">2025</div><div class="picker__nav--prev" data-nav="-1" role="button" aria-controls="flightTieDate_table" title="Previous month"> </div><div class="picker__nav--next" data-nav="1" role="button" aria-controls="flightTieDate_table" title="Next month"> </div></div><table class="picker__table" id="flightTieDate_table" role="grid" aria-controls="flightTieDate" aria-readonly="true"><thead><tr><th class="picker__weekday" scope="col" title="Sunday">Sun</th><th class="picker__weekday" scope="col" title="Monday">Mon</th><th class="picker__weekday" scope="col" title="Tuesday">Tue</th><th class="picker__weekday" scope="col" title="Wednesday">Wed</th><th class="picker__weekday" scope="col" title="Thursday">Thu</th><th class="picker__weekday" scope="col" title="Friday">Fri</th><th class="picker__weekday" scope="col" title="Saturday">Sat</th></tr></thead><tbody><tr><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745686800000" role="gridcell" aria-label="27 April, 2025">27</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745773200000" role="gridcell" aria-label="28 April, 2025">28</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745859600000" role="gridcell" aria-label="29 April, 2025">29</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745946000000" role="gridcell" aria-label="30 April, 2025">30</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746032400000" role="gridcell" aria-label="1 May, 2025">1</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746118800000" role="gridcell" aria-label="2 May, 2025">2</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746205200000" role="gridcell" aria-label="3 May, 2025">3</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746291600000" role="gridcell" aria-label="4 May, 2025">4</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746378000000" role="gridcell" aria-label="5 May, 2025">5</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746464400000" role="gridcell" aria-label="6 May, 2025">6</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746550800000" role="gridcell" aria-label="7 May, 2025">7</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746637200000" role="gridcell" aria-label="8 May, 2025">8</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746723600000" role="gridcell" aria-label="9 May, 2025">9</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--today picker__day--highlighted" data-pick="1746810000000" role="gridcell" aria-label="10 May, 2025" aria-activedescendant="true">10</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746896400000" role="gridcell" aria-label="11 May, 2025">11</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746982800000" role="gridcell" aria-label="12 May, 2025">12</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747069200000" role="gridcell" aria-label="13 May, 2025">13</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747155600000" role="gridcell" aria-label="14 May, 2025">14</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747242000000" role="gridcell" aria-label="15 May, 2025">15</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747328400000" role="gridcell" aria-label="16 May, 2025">16</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747414800000" role="gridcell" aria-label="17 May, 2025">17</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747501200000" role="gridcell" aria-label="18 May, 2025">18</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747587600000" role="gridcell" aria-label="19 May, 2025">19</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747674000000" role="gridcell" aria-label="20 May, 2025">20</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747760400000" role="gridcell" aria-label="21 May, 2025">21</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747846800000" role="gridcell" aria-label="22 May, 2025">22</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747933200000" role="gridcell" aria-label="23 May, 2025">23</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748019600000" role="gridcell" aria-label="24 May, 2025">24</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748106000000" role="gridcell" aria-label="25 May, 2025">25</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748192400000" role="gridcell" aria-label="26 May, 2025">26</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748278800000" role="gridcell" aria-label="27 May, 2025">27</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748365200000" role="gridcell" aria-label="28 May, 2025">28</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748451600000" role="gridcell" aria-label="29 May, 2025">29</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748538000000" role="gridcell" aria-label="30 May, 2025">30</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748624400000" role="gridcell" aria-label="31 May, 2025">31</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748710800000" role="gridcell" aria-label="1 June, 2025">1</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748797200000" role="gridcell" aria-label="2 June, 2025">2</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748883600000" role="gridcell" aria-label="3 June, 2025">3</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748970000000" role="gridcell" aria-label="4 June, 2025">4</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1749056400000" role="gridcell" aria-label="5 June, 2025">5</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1749142800000" role="gridcell" aria-label="6 June, 2025">6</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1749229200000" role="gridcell" aria-label="7 June, 2025">7</div></td></tr></tbody></table><div class="picker__footer"><button class="picker__button--today" type="button" data-pick="1746810000000" disabled="" aria-controls="flightTieDate">Today</button><button class="picker__button--clear" type="button" data-clear="1" disabled="" aria-controls="flightTieDate">Clear</button><button class="picker__button--close" type="button" data-close="true" disabled="" aria-controls="flightTieDate">Close</button></div></div></div></div></div></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 d-flex align-items-center mt-lg-0 mt-32">
+                                                        <button type="submit" class="cus-btn">
+                                                            Hiển thị chuyến bay
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="none">
+                                                                <g clip-path="url(#clip0_502_1331)">
+                                                                    <path d="M31.6933 0.544584C30.6572 -0.491824 27.1402 1.34503 26.1041 2.38143L21.9545 6.53127H3.07887C2.63024 6.53127 2.24462 6.85011 2.16055 7.29104C2.07669 7.73189 2.31798 8.16995 2.73524 8.3348L15.2174 13.2677L7.5633 20.9216H0.323909C0.168651 20.9221 0.0346723 21.0323 0.00576263 21.1852C-0.023357 21.3385 0.060152 21.4901 0.20498 21.5471L6.29687 23.9548C6.33201 24.1078 6.38108 24.2574 6.44394 24.4038L6.17745 24.6709C5.79778 25.0503 5.79778 25.6651 6.17745 26.045C6.55664 26.4247 7.17263 26.4247 7.55182 26.045L7.81194 25.785C7.95935 25.8501 8.11132 25.9014 8.26623 25.9382L10.6144 31.9561C10.6709 32.1013 10.8229 32.1851 10.976 32.1568C11.0419 32.145 11.1002 32.1123 11.1451 32.0673C11.2044 32.0087 11.2399 31.9274 11.2399 31.8382V24.7512L19.0155 16.976L23.9019 29.4993C24.0654 29.9177 24.5037 30.1608 24.9452 30.0781C25.136 30.0421 25.3038 29.9498 25.4333 29.8212C25.6038 29.6499 25.7071 29.4151 25.7077 29.1591V10.284L29.8573 6.13423C30.893 5.09789 32.7293 1.58085 31.6933 0.544584Z" fill="white"></path>
+                                                                </g>
+                                                                <defs>
+                                                                    <clipPath id="clip0_502_1321">
+                                                                        <rect width="32" height="32" fill="black"></rect>
+                                                                    </clipPath>
+                                                                </defs>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Flight Status tab End -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Booking Area End -->
+
+<!-- Benefits Start -->
+<section class="benefit p-40 sal-animate" data-sal="slide-up" data-sal-duration="800" data-sal-delay="100" data-sal-easing="ease-in-out">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-4 col-lg-6 col-md-6 mb-xl-0 mb-24">
+                <div class="benefit-block bg-white">
+                    <div class="image-box">
+                        <img src="assets/media/vector/benefit-1.png" alt="">
+                    </div>
+                    <div class="text-box">
+                        <h4 class="lightest-black mb-8">Phục vụ 24/7</h4>
+                        <p class="color-medium-gray">Gọi +84 868 102 111 để liên hệ với chúng tôi</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-6 col-md-6 mb-lg-0 mb-24">
+                <div class="benefit-block bg-white">
+                    <div class="image-box">
+                        <img src="assets/media/vector/benefit-2.png" alt="">
+                    </div>
+                    <div class="text-box">
+                        <h4 class="lightest-black mb-8">Chuyến bay trong nước</h4>
+                        <p class="color-medium-gray">Nhiều tuyến đường bay nối các tỉnh thành khác nhau</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-6 col-md-6 ">
+                <div class="benefit-block bg-white">
+                    <div class="image-box">
+                        <img src="assets/media/vector/benefit-3.png" alt="">
+                    </div>
+                    <div class="text-box">
+                        <h4 class="lightest-black mb-8">Đặt vé dễ dàng</h4>
+                        <p class="color-medium-gray">Tìm kiếm và thanh toán nhanh gọn</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Benefits End -->
+
+<!-- Flight Card Slider Start -->
+<section class="flight-card flight-slider p-40 mb-40 sal-animate" data-sal="slide-down" data-sal-duration="800" data-sal-delay="100" data-sal-easing="ease-in-out">
+    <div class="container-fluid">
+        <h3 class="lightest-black h3 bold mb-40">Chuyến bay nổi bật</h3>
+        <div class="flight-card-slider slick-initialized slick-slider">
+            <div class="slick-list draggable">
+                <div class="slick-track d-flex justify-content-center flex-wrap" style="opacity: 1; transform: translate3d(0px, 0px, 0px); transition: transform 500ms linear;">
+                    <div class="flight-deal-block bg-white p-24 slick-slide slick-cloned mb-3" style="width: 432px;" data-slick-index="-3" id="" aria-hidden="true" tabindex="-1">
+                        <div class="image-box mb-24">
+                            <a href="flight-booking.html" tabindex="-1"><img src="assets/media/images/flight-3.png" alt=""></a>
+                        </div>
+                        <div class="content-box">
+                            <h5 class="color-black mb-8"><a href="flight-booking.html" tabindex="-1">Dubai to Maldives</a></h5>
+                            <p class="light-black mb-24">14 Aug, 2023 - 20 Aug 2023</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="price">
+                                    <h6 class="light-black mb-8 fw-500">Business Class</h6>
+                                    <h5 class="lightest-black fw-500">$980</h5>
+                                </div>
+                                <a href="flight-booking.html" class="cus-btn small-pad" tabindex="-1">Đặt Vé Ngay</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flight-deal-block bg-white p-24 slick-slide slick-cloned" style="width: 432px;" data-slick-index="-2" id="" aria-hidden="true" tabindex="-1">
+                        <div class="image-box mb-24">
+                            <a href="flight-booking.html" tabindex="-1"><img src="assets/media/images/flight-4.png" alt=""></a>
+                        </div>
+                        <div class="content-box">
+                            <h5 class="color-black mb-8"><a href="flight-booking.html" tabindex="-1">Dubai to Canada</a></h5>
+                            <p class="light-black mb-24">14 Aug, 2023 - 20 Aug 2023</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="price">
+                                    <h6 class="light-black mb-8 fw-500">First Class</h6>
+                                    <h5 class="lightest-black fw-500">$5000</h5>
+                                </div>
+                                <a href="flight-booking.html" class="cus-btn small-pad" tabindex="-1">Đặt Vé Ngay</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flight-deal-block bg-white p-24 slick-slide slick-cloned" style="width: 432px;" data-slick-index="-1" id="" aria-hidden="true" tabindex="-1">
+                        <div class="image-box mb-24">
+                            <a href="flight-booking.html" tabindex="-1"><img src="assets/media/images/flight-2.png" alt=""></a>
+                        </div>
+                        <div class="content-box">
+                            <h5 class="color-black mb-8"><a href="flight-booking.html" tabindex="-1">Dubai to Dhaka</a></h5>
+                            <p class="light-black mb-24">14 Aug, 2023 - 20 Aug 2023</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="price">
+                                    <h6 class="light-black mb-8 fw-500">Economy Class</h6>
+                                    <h5 class="lightest-black fw-500">$400</h5>
+                                </div>
+                                <a href="flight-booking.html" class="cus-btn small-pad" tabindex="-1">Đặt Vé Ngay</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Flight Card Slider End -->
+
+<!-- Travel us sec Start -->
+<div class="travel-sec mb-40">
+    <div class="cloud-vector-block">
+        <img src="assets/media/vector/cloud-vector.png" alt="" class="cloud-vector">
+    </div>
+    <img src="assets/media/vector/vector-line.png" alt="" class="line-vector">
+    <div class="container-fluid">
+        <div class="row align-items-center justify-content-center row-gap-sm-5 row-gap-4">
+            <div class="col-xxl-3 col-lg-4 col-md-8 sal-animate" data-sal="slide-right" data-sal-duration="800" data-sal-delay="100" data-sal-easing="ease-in-out">
+                <div class="left-content">
+                    <img src="~/img/icons8-airplane-100.png" alt="" class="mb-40">
+                    <div class="text mb-40">
+                        <span class="h1 review-block bg-lightest-gray"> DU </span> <span class="h1 review-block bg-lightest-gray">LỊCH</span>
+                        <span class="h1 bg-lightest-gray"> KHẮP</span> <span class="h1 bg-lightest-gray color-primary">VIỆT</span>
+                        <span class="h1 bg-lightest-gray color-primary"> NAM</span>
+                    </div>
+                    <a href="#booking" class="cus-btn">Đặt Vé Ngay</a>
+                </div>
+            </div>
+            <div class="offset-xxl-1 col-xxl-8 col-lg-8 col-md-10">
+                <div class="right-images-block sal-animate" data-sal="slide-up" data-sal-duration="800" data-sal-delay="100" data-sal-easing="ease-in-out">
+                    <img src="assets/media/vector/border-line.png" alt="" class="border-image">
+                    <div class="row justify-content-center align-items-center">
+                        <div class="col-lg-3 col-md-3 col-3">
+                            <img src="~/img/hanoi.jpg" alt="" class="side-image">
+                        </div>
+                        <div class="col-lg-5 col-md-5 col-5">
+                            <img src="~/img/da-nang.jpg" alt="" class="center-image">
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-3">
+                            <img src="~/img/ho-chi-minh.png" alt="" class="side-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<!-- Travel us sec End -->
 
-<section class="section__container booking__container">
-    <div class="booking__nav">
-        <span>Economy Class</span>
-        <span>Business Class</span>
-        <span>First Class</span>
-    </div>
-    <form>
-        <div class="form__group">
-            <span><i class="ri-map-pin-line"></i></span>
-            <div class="input__content">
-                <div class="input__group">
-                    <input type="text" />
-                    <label>Location</label>
+<!-- Achievement Section Start -->
+<section class="achievement p-40">
+    <div class="container-fluid">
+        <div class="bg-white light-shadow br-20 achievements-block">
+            <div class="row align-items-center">
+                <div class="col-xl-6 col-lg-12 mb-xl-0 mb-24 sal-animate" data-sal="slide-up" data-sal-duration="800" data-sal-delay="100" data-sal-easing="ease-in-out">
+                    <h5 class="color-primary mb-16">Thành tựu</h5>
+                    <h3 class="h3 bold mb-8">Điểm đến của bạn đang chờ. Đặt vé ngay!</h3>
+                    <p class="dark-gray mb-24 w-90">Tuy tuổi đời còn thấp nhưng hãng hàng không chúng tôi đã được nhiều người tin tưởng chọn lựa.</p>
+                    <div class="counter-section mb-24">
+                        <div class="row row-gap-4">
+                            <div class="col-sm-6">
+                                <div class="counter-count bg-lightest-gray">
+                                    <div>
+                                        <span class="count h3 bold color-primary">12870</span>
+                                        <span class="h3 bold color-primary">+</span>
+                                        <h5 class="title white">Hành khách phản hồi tích cực</h5>
+                                    </div>
+                                    <img src="assets/media/icons/user.png" alt="">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="counter-count bg-lightest-gray">
+                                    <div>
+                                        <span class="count h3 bold color-primary">97</span>
+                                        <span class="h3 bold color-primary">%</span>
+                                        <h5 class="title white">Đánh giá hài lòng</h5>
+                                    </div>
+                                    <img src="assets/media/icons/user-2.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-md-flex gap-32 align-items-center">
+                        <h5 class="lightest-black mb-md-0 mb-16">
+                            Tìm Hiểu Nhiều Thông Tin Hơn
+                        </h5>
+                        <a href="contact-us.html" class="cus-btn">Kết nối</a>
+                    </div>
                 </div>
-                <p>Where are you goung?</p>
-            </div>
-        </div>
-        <div class="form__group">
-            <span><i class="ri-user-3-line"></i></span>
-            <div class="input__content">
-                <div class="input__group">
-                    <input type="number" />
-                    <label>Travellers</label>
+                <div class="col-xl-6 col-lg-12 sal-animate" data-sal="slide-down" data-sal-duration="800" data-sal-delay="100" data-sal-easing="ease-in-out">
+                    <img src="assets/media/images/achievement-image.png" alt="" class="achievement-image light-shadow br-20">
                 </div>
-                <p>Add guests</p>
-            </div>
-        </div>
-        <div class="form__group">
-            <span><i class="ri-calendar-line"></i></span>
-            <div class="input__content">
-                <div class="input__group">
-                    <input type="text" />
-                    <label>Departure</label>
-                </div>
-                <p>Add date</p>
-            </div>
-        </div>
-        <div class="form__group">
-            <span><i class="ri-calendar-line"></i></span>
-            <div class="input__content">
-                <div class="input__group">
-                    <input type="text" />
-                    <label>Return</label>
-                </div>
-                <p>Add date</p>
-            </div>
-        </div>
-        <button class="btn"><i class="ri-search-line"></i></button>
-    </form>
-</section>
-
-<section class="section__container plan__container">
-    <p class="subheader">TRAVEL SUPPORT</p>
-    <h2 class="section__header">Plan your travel with confidence</h2>
-    <p class="description">
-        Find help with your bookings and travel plans, and seee what to expect
-        along your journey.
-    </p>
-    <div class="plan__grid">
-        <div class="plan__content">
-            <span class="number">01</span>
-            <h4>Travel Requirements for Dubai</h4>
-            <p>
-                Stay informed and prepared for your trip to Dubai with essential
-                travel requirements, ensuring a smooth and hassle-free experience in
-                this vibrant and captivating city.
-            </p>
-            <span class="number">02</span>
-            <h4>Multi-risk travel insurance</h4>
-            <p>
-                Comprehensive protection for your peace of mind, covering a range of
-                potential travel risks and unexpected situations.
-            </p>
-            <span class="number">03</span>
-            <h4>Travel Requirements by destinations</h4>
-            <p>
-                Stay informed and plan your trip with ease, as we provide up-to-date
-                information on travel requirements specific to your desired
-                destinations.
-            </p>
-        </div>
-        <div class="plan__image">
-            <img src="~/img/plan-1.jpg" alt="plan" />
-            <img src="~/img/plan-2.jpg" alt="plan" />
-            <img src="~/img/plan-3.jpg" alt="plan" />
-        </div>
-    </div>
-</section>
-
-<section class="memories">
-    <div class="section__container memories__container">
-        <div class="memories__header">
-            <h2 class="section__header">
-                Travel to make memories all around the world
-            </h2>
-            <button class="view__all">View All</button>
-        </div>
-        <div class="memories__grid">
-            <div class="memories__card">
-                <span><i class="ri-calendar-2-line"></i></span>
-                <h4>Book & relax</h4>
-                <p>
-                    With "Book and Relax," you can sit back, unwind, and enjoy the
-                    journey while we take care of everything else.
-                </p>
-            </div>
-            <div class="memories__card">
-                <span><i class="ri-shield-check-line"></i></span>
-                <h4>Smart Checklist</h4>
-                <p>
-                    Introducing Smart Checklist with us, the innovative solution
-                    revolutionizing the way you travel with our airline.
-                </p>
-            </div>
-            <div class="memories__card">
-                <span><i class="ri-bookmark-2-line"></i></span>
-                <h4>Save More</h4>
-                <p>
-                    From discounted ticket prices to exclusive promotions and deals,
-                    we prioritize affordability without compromising on quality.
-                </p>
             </div>
         </div>
     </div>
 </section>
-
-<section class="section__container lounge__container">
-    <div class="lounge__image">
-        <img src="~/img/lounge-1.jpg" alt="lounge" />
-        <img src="~/img/lounge-2.jpg" alt="lounge" />
-    </div>
-    <div class="lounge__content">
-        <h2 class="section__header">Unaccompanied Minor Lounge</h2>
-        <div class="lounge__grid">
-            <div class="lounge__details">
-                <h4>Experience Tranquility</h4>
-                <p>
-                    Serenity Haven offers a tranquil escape, featuring comfortable
-                    seating, calming ambiance, and attentive service.
-                </p>
-            </div>
-            <div class="lounge__details">
-                <h4>Elevate Your Experience</h4>
-                <p>
-                    Designed for discerning travelers, this exclusive lounge offers
-                    premium amenities, assistance, and private workspaces.
-                </p>
-            </div>
-            <div class="lounge__details">
-                <h4>A Welcoming Space</h4>
-                <p>
-                    Creating a family-friendly atmosphere, The Family Zone is the
-                    perfect haven for parents and children.
-                </p>
-            </div>
-            <div class="lounge__details">
-                <h4>A Culinary Delight</h4>
-                <p>
-                    Immerse yourself in a world of flavors, offering international
-                    cuisines, gourmet dishes, and carefully curated beverages.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section__container travellers__container">
-    <h2 class="section__header">Best travellers of the month</h2>
-    <div class="travellers__grid">
-        <div class="travellers__card">
-            <img src="assets/traveller-1.jpg" alt="traveller" />
-            <div class="travellers__card__content">
-                <img src="~/img/client-1.jpg" alt="client" />
-                <h4>Emily Johnson</h4>
-                <p>Dubai</p>
-            </div>
-        </div>
-        <div class="travellers__card">
-            <img src="~/img/traveller-2.jpg" alt="traveller" />
-            <div class="travellers__card__content">
-                <img src="~/img/client-2.jpg" alt="client" />
-                <h4>David Smith</h4>
-                <p>Paris</p>
-            </div>
-        </div>
-        <div class="travellers__card">
-            <img src="~/img/traveller-3.jpg" alt="traveller" />
-            <div class="travellers__card__content">
-                <img src="~/img/client-3.jpg" alt="client" />
-                <h4>Olivia Brown</h4>
-                <p>Singapore</p>
-            </div>
-        </div>
-        <div class="travellers__card">
-            <img src="~/img/traveller-4.jpg" alt="traveller" />
-            <div class="travellers__card__content">
-                <img src="~/img/client-4.jpg" alt="client" />
-                <h4>Daniel Taylor</h4>
-                <p>Malaysia</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="subscribe">
-    <div class="section__container subscribe__container">
-        <h2 class="section__header">Subscribe newsletter & get latest news</h2>
-        <form class="subscribe__form">
-            <input type="text" placeholder="Enter your email here" />
-            <button class="btn">Subscribe</button>
-        </form>
-    </div>
-</section>
+<!-- Achievement Section End -->

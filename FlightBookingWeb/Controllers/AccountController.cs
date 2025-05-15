@@ -53,17 +53,26 @@ namespace FlightBookingWeb.Controllers
 
                 // Tạo Cookie
                 await HttpContext.SignInAsync("MyCookieAuth", new ClaimsPrincipal(claimsIdentity));
-
-
                 if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 {
                     return Redirect(returnUrl);
                 }
 
-                // Chuyển hướng đến trang chủ
-                return RedirectToAction("Index", "Home");
+                if(user.Role == "Employee")
+                {
+                    // Chuyển hướng đến trang quản lý nếu là Admin
+                    return RedirectToAction("Index", "Home", new { area = "Employee" });
+                }
+                else if (user.Role == "Admin")
+                {
+                    // Chuyển hướng đến trang quản lý nếu là Admin
+                    return RedirectToAction("Index", "Route", new { area = "Admin" });
+                }
+                else if (user.Role == "User")
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
-
 
             // Thông báo lỗi nếu đăng nhập thất bại
             ModelState.AddModelError("", "Invalid username or password.");

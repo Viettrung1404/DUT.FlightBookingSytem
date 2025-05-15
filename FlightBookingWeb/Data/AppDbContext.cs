@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using FlightBookingWeb.Models;
@@ -37,7 +37,7 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<Seat> Seats { get; set; }
 
     public virtual DbSet<SeatBooking> SeatBookings { get; set; }
-
+    
     public virtual DbSet<Ticket> Tickets { get; set; }
 
 //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -236,7 +236,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Status)
                 .HasMaxLength(10)
                 .IsUnicode(false);
-
+                
             entity.HasOne(d => d.ArrivalAirport).WithMany(p => p.RouteArrivalAirports)
                 .HasForeignKey(d => d.ArrivalAirportId)
                 .OnDelete(DeleteBehavior.ClientSetNull)

@@ -1,0 +1,159 @@
+﻿@model FlightBookingWeb.ViewModels.RouteViewModel
+
+@{
+    ViewData["Title"] = "Thêm tuyến bay";
+    var airports = ViewBag.Airports as SelectList;
+}
+
+<style>
+    /* Container chính */
+    .create-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 30px;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+    }
+
+    /* Tiêu đề chính */
+    h1 {
+        color: #1a3c87;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Nhóm form */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    /* Ô nhập liệu và dropdown */
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 12px;
+        border: 1px solid #ced4da;
+        transition: border-color 0.3s ease;
+    }
+
+        /* Hiệu ứng khi focus ô nhập liệu */
+        .form-control:focus, .form-select:focus {
+            border-color: #1a3c87;
+            box-shadow: 0 0 8px rgba(26, 60, 135, 0.2);
+        }
+
+    /* Nhãn của ô nhập liệu */
+    .control-label {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    /* Thông báo lỗi */
+    .text-danger {
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    /* Nút lưu */
+    .btn-primary--create {
+        color:aliceblue;
+        background: #1a3c87;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: background 0.3s ease;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+        .btn-primary--create:hover {
+            background: #153074;
+        }
+
+    /* Nút hủy */
+    .btn-secondary--create {
+        color: aliceblue;
+        background: #6c757d;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: background 0.3s ease;
+        width: 100%;
+    }
+
+        .btn-secondary--create:hover {
+            background: #5a6268;
+        }
+
+    /* Tiêu đề phụ */
+    .form-header {
+        color: #555;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    /* Đường kẻ ngang */
+    hr {
+        border: 0;
+        height: 1px;
+        background: #e9ecef;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="create-container">
+    <h1>Thêm tuyến bay</h1>
+    <h4 class="form-header">Thêm thông tin tuyến bay mới</h4>
+    <hr />
+    <div class="row">
+        <div class="col-12">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="form-group">
+                    <label asp-for="DepartureAirportId" class="control-label">Sân bay đi</label>
+                    <select asp-for="DepartureAirportId" class="form-select" asp-items="airports">
+                        <option value="">-- Chọn sân bay đi --</option>
+                    </select>
+                    <span asp-validation-for="DepartureAirportId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ArrivalAirportId" class="control-label">Sân bay đến</label>
+                    <select asp-for="ArrivalAirportId" class="form-select" asp-items="airports">
+                        <option value="">-- Chọn sân bay đến --</option>
+                    </select>
+                    <span asp-validation-for="ArrivalAirportId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Duration" class="control-label">Thời gian bay</label>
+                    <input asp-for="Duration" class="form-control" type="time" placeholder="Chọn thời gian bay (HH:mm)" />
+                    <span asp-validation-for="Duration" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="BasePrice" class="control-label">Giá cơ bản</label>
+                    <input asp-for="BasePrice" class="form-control" type="number" step="0.01" placeholder="Nhập giá cơ bản" />
+                    <span asp-validation-for="BasePrice" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary--create">Thêm tuyến bay</button>
+                    <a asp-action="Index" class="btn btn-secondary--create">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

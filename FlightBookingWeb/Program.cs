@@ -29,8 +29,11 @@ namespace FlightBookingWeb
             builder.Services.AddScoped<IPayPalService, PayPalService>();
 
             builder.Services.AddControllersWithViews();
-
+          
             builder.Services.AddSession();
+          
+            builder.Services.AddHostedService<FlightGeneratorService>();
+            builder.Services.AddHostedService<FlightStatusUpdater>();
 
             var app = builder.Build();
 

@@ -1,0 +1,195 @@
+﻿@model FlightBookingWeb.Areas.Admin.ViewModels.AirplaneViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa máy bay";
+}
+
+@section Styles {
+    <style>
+        /* Container chính */
+        .edit-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        /* Tiêu đề chính */
+        h1 {
+            color: #1a3c87;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Nhóm form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* Ô nhập liệu */
+        .form-control {
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s ease;
+        }
+
+            /* Hiệu ứng khi focus ô nhập liệu */
+            .form-control:focus {
+                border-color: #1a3c87;
+                box-shadow: 0 0 8px rgba(26, 60, 135, 0.2);
+            }
+
+        /* Nhãn của ô nhập liệu */
+        .control-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Thông báo lỗi */
+        .text-danger {
+            font-size: 0.875rem;
+            margin-top: 5px;
+        }
+
+        /* Nút lưu */
+        .btn-primary--edit {
+            background: #1a3c87;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+            /* Hiệu ứng hover cho nút lưu */
+            .btn-primary--edit:hover {
+                background: #153074;
+            }
+
+        /* Link quay lại */
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #1a3c87;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            /* Hiệu ứng hover cho link quay lại */
+            .back-link:hover {
+                text-decoration: underline;
+            }
+
+        /* Tiêu đề phụ */
+        .form-header {
+            color: #555;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Đường kẻ ngang */
+        hr {
+            border: 0;
+            height: 1px;
+            background: #e9ecef;
+            margin: 20px 0;
+        }
+    </style>
+}
+
+<div class="edit-container">
+    <h1>Chỉnh sửa máy bay</h1>
+    <h4 class="form-header">Cập nhật thông tin máy bay</h4>
+    <hr />
+    <div class="row">
+        <div class="col-12">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="AirplaneId" />
+
+                <div class="form-group">
+                    <label asp-for="AirplaneName" class="control-label">Tên máy bay</label>
+                    <input asp-for="AirplaneName" class="form-control" placeholder="Nhập tên máy bay" />
+                    <span asp-validation-for="AirplaneName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="AirplaneType" class="control-label">Loại máy bay</label>
+                    <input asp-for="AirplaneType" class="form-control" placeholder="Nhập loại máy bay" />
+                    <span asp-validation-for="AirplaneType" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="TotalSeats" class="control-label">Tổng số ghế</label>
+                    <input asp-for="TotalSeats" class="form-control" type="number" placeholder="Nhập tổng số ghế" />
+                    <span asp-validation-for="TotalSeats" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="EconomySeats" class="control-label">Số ghế phổ thông</label>
+                    <input asp-for="EconomySeats" class="form-control" type="number" placeholder="Nhập số ghế phổ thông" />
+                    <span asp-validation-for="EconomySeats" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="BusinessSeats" class="control-label">Số ghế thương gia</label>
+                    <input asp-for="BusinessSeats" class="form-control" type="number" placeholder="Nhập số ghế thương gia" />
+                    <span asp-validation-for="BusinessSeats" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ManufactureYear" class="control-label">Năm sản xuất</label>
+                    <input asp-for="ManufactureYear" class="form-control" type="number" placeholder="Nhập năm sản xuất" />
+                    <span asp-validation-for="ManufactureYear" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Status" class="control-label">Trạng thái</label>
+                    <select asp-for="Status" class="form-control">
+                        <option value="Active">Hoạt động</option>
+                        <option value="Deleted">Đã xóa</option>
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Lưu thay đổi" class="btn btn-primary--edit" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index" class="back-link">Quay lại danh sách</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Đặt giá trị selected cho dropdown dựa trên giá trị từ model
+            var currentStatus = '@Model.Status';
+            $('#statusSelect').val(currentStatus);
+
+            // Xử lý sự kiện thay đổi dropdown để đảm bảo giá trị được cập nhật
+            $('#statusSelect').on('change', function () {
+                var selectedValue = $(this).val();
+                $('#statusSelect option').removeAttr('selected');
+                $('#statusSelect option[value="' + selectedValue + '"]').attr('selected', 'selected');
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

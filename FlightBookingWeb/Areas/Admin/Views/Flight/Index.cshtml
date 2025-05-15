@@ -1,0 +1,282 @@
+﻿@model IEnumerable<FlightBookingWeb.Models.Flight>
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Quản lý chuyến bay";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* Container chính */
+        .container-fluid--flight {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #1a3c87;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Thẻ chứa bảng */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+        }
+
+        /* Tiêu đề thẻ */
+        .card-header {
+            background: #1a3c87;
+            color: #fff;
+            border-radius: 10px 10px 0 0;
+            padding: 20px;
+        }
+
+            .card-header h3 {
+                margin: 0;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+            }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Form tìm kiếm */
+        .search-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s ease;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #1a3c87;
+                box-shadow: 0 0 8px rgba(26, 60, 135, 0.2);
+            }
+
+        .btn-search {
+            background: #1a3c87;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+            .btn-search:hover {
+                background: #153074;
+            }
+
+        /* Bảng */
+        .table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+            .table thead th {
+                background: #1a3c87;
+                color: #fff;
+                border: none;
+                padding: 12px;
+                font-weight: 500;
+                text-align: center;
+                white-space: nowrap;
+            }
+
+            .table tbody tr {
+                transition: background 0.2s ease;
+            }
+
+                .table tbody tr:hover {
+                    background: #f1f3f5;
+                }
+
+            .table td {
+                vertical-align: middle;
+                padding: 12px;
+                border: none;
+                text-align: center;
+            }
+
+        /* Badge trạng thái */
+        .badge {
+            font-size: 0.875rem;
+            padding: 6px 12px;
+            border-radius: 12px;
+        }
+
+        /* Nút thao tác */
+        .table-actions {
+            white-space: nowrap;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            margin: 0 3px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            border: none;
+            color: #fff;
+        }
+
+            .btn-info:hover {
+                background: #138496;
+            }
+
+        .btn-warning {
+            background: #f39c12;
+            border: none;
+            color: #fff;
+        }
+
+            .btn-warning:hover {
+                background: #e08e0b;
+            }
+
+        .btn-danger {
+            background: #dc3545;
+            border: none;
+            color: #fff;
+        }
+
+            .btn-danger:hover {
+                background: #c82333;
+            }
+
+        /* Thông báo không có dữ liệu */
+        .no-data {
+            color: #555;
+            font-style: italic;
+        }
+    </style>
+}
+
+<div class="container-fluid--flight">
+    <h1>Danh sách chuyến bay</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="search-form row g-3">
+                <div class="col-md-3">
+                    <input type="text" name="search" value="@Context.Request.Query["search"]" class="form-control" placeholder="Tìm mã chuyến bay, sân bay..." />
+                </div>
+                <div class="col-md-2">
+                    <input type="date" name="fromDate" value="@Context.Request.Query["fromDate"]" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <input type="date" name="toDate" value="@Context.Request.Query["toDate"]" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <select name="scheduleId" class="form-select">
+                        <option value="">Chọn mã lịch trình</option>
+                        @foreach (var s in (SelectList)ViewBag.Schedules)
+                        {
+                            <option value="@s.Value" selected="@(Context.Request.Query["scheduleId"] == s.Value ? "selected" : null)">
+                                @s.Text
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button type="submit" class="btn btn-search">Tìm kiếm</button>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Mã chuyến bay</th>
+                            <th>Máy bay</th>
+                            <th>Tuyến bay</th>
+                            <th>Khởi hành</th>
+                            <th>Đến</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            @foreach (var flight in Model)
+                            {
+                                <tr>
+                                    <td class="text-center fw-semibold">@flight.FlightId</td>
+                                    <td>@flight.Schedule?.Airplane?.AirplaneName</td>
+                                    <td>@flight.Schedule?.Route?.DepartureAirport?.AirportName → @flight.Schedule?.Route?.ArrivalAirport?.AirportName</td>
+                                    <td>@flight.DepartureDateTime.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@flight.ArrivalDateTime.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-@(flight.Status == "Đang bay" ? "success" : flight.Status == "Hoãn" ? "warning" : "secondary")">
+                                            @(string.IsNullOrEmpty(flight.Status) ? "Chờ xử lý" : flight.Status)
+                                        </span>
+                                    </td>
+                                    <td class="text-center table-actions">
+                                        <a asp-action="Details" asp-route-id="@flight.FlightId" class="btn btn-info btn-sm" title="Chi tiết">
+                                            <i class="fas fa-eye"></i> Chi tiết
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@flight.FlightId" class="btn btn-warning btn-sm" title="Chỉnh sửa">
+                                            <i class="fas fa-edit"></i> Chỉnh sửa
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@flight.FlightId" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa chuyến bay này?');">
+                                            <i class="fas fa-trash-alt"></i> Xóa
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-4 no-data">
+                                    <i class="fas fa-info-circle me-2"></i>Chưa có chuyến bay nào
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.table').DataTable({
+                responsive: true,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json'
+                },
+                columnDefs: [
+                    { orderable: false, targets: 6 } // Vô hiệu hóa sắp xếp cột Hành động
+                ]
+            });
+        });
+    </script>
+}
