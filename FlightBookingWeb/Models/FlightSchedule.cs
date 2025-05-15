@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightBookingWeb.Models;
 
@@ -8,18 +7,19 @@ public partial class FlightSchedule
 {
     public int ScheduleId { get; set; }
 
-    [Column("AirplaneID")]
     public int? AirplaneId { get; set; }
 
     public int RouteId { get; set; }
 
-    public TimeOnly DepartureTime { get; set; }
+    public DateTime DepartureTime { get; set; }
 
     public TimeOnly ArrivalTime { get; set; }
 
-    public string Frequency { get; set; } = null!;
+    public int Frequency { get; set; }
 
     public bool? Active { get; set; }
+
+    public bool? Status { get; set; }
 
     public virtual Airplane? Airplane { get; set; }
 

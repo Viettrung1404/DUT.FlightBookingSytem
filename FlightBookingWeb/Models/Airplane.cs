@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightBookingWeb.Models;
 
 public partial class Airplane
 {
-    [Column("AirplaneID")]
     public int AirplaneId { get; set; }
 
     public string AirplaneName { get; set; } = null!;

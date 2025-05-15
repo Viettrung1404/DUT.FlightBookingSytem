@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightBookingWeb.Models;
 
 public partial class Seat
 {
-
     public int SeatId { get; set; }
 
-    [Column("AirplaneID")]
     public int AirplaneId { get; set; }
 
     public string SeatNumber { get; set; } = null!;
