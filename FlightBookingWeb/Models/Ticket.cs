@@ -12,7 +12,7 @@ public partial class Ticket
     public DateTime? BookingDate { get; set; }
     public string? Status { get; set; }
     public string TicketType { get; set; } = null!;
-    public int? RelatedTicketId { get; set; }
+    public int? RelatedTicketId { get; set; }   
     public virtual Account Account { get; set; } = null!;
     public virtual ICollection<Baggage> Baggages { get; set; } = new List<Baggage>();
     public virtual Flight Flight { get; set; } = null!;

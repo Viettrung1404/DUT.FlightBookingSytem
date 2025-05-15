@@ -415,14 +415,18 @@ namespace FlightBookingWeb.Controllers
                 var tickets = new List<Ticket>();
 
                 // Xử lý vé chiều đi
-                var airplaneOutboardId = checkoutData.OutboundFlight?.Schedule?.AirplaneId;
+                var airplaneOutboardId = _context.Flights
+                    .Include(f => f.Schedule)
+                    .Where(f => f.FlightId == checkoutData.OutboundFlight.FlightId)
+                    .Select(f => f.Schedule.AirplaneId)
+                    .FirstOrDefault();
                 if (airplaneOutboardId == null)
                     return BadRequest("Outbound airplane not found.");
 
                 foreach (var seatCode in checkoutData.SelectedOutboundSeats)
                 {
                     var seat = _context.Seats.FirstOrDefault(
-                        s => s.SeatNumber == seatCode && s.AirplaneId == airplaneOutboardId.Value);
+                        s => s.SeatNumber == seatCode && s.AirplaneId == airplaneOutboardId);
                     if (seat == null) continue;
 
                     var ticket = new Ticket
@@ -435,7 +439,8 @@ namespace FlightBookingWeb.Controllers
                         Status = "Confirmed",
                         TicketType = "Outbound"
                     };
-
+                    ticket.Flight = _context.Flights.Where(f => f.FlightId == ticket.FlightId).FirstOrDefault();
+                    ticket.Account = _context.Accounts.Where(f => f.AccountId == ticket.AccountId).FirstOrDefault();
                     tickets.Add(ticket);
 
                     var seatBooking = new SeatBooking
@@ -446,22 +451,26 @@ namespace FlightBookingWeb.Controllers
                         IsBooked = true,
                         BookingDate = DateTime.UtcNow
                     };
-
+                    seatBooking.Seat = _context.Seats.FirstOrDefault(f => f.SeatId == seatBooking.SeatId);
                     _context.SeatBookings.Add(seatBooking);
                 }
 
                 // Xử lý vé chiều về (nếu có)
                 if (checkoutData.ReturnFlight != null && checkoutData.SelectedReturnSeats != null)
                 {
-                    var returnAirplaneId = checkoutData.ReturnFlight?.Schedule?.AirplaneId;
+                    var returnAirplaneId = _context.Flights
+                        .Include(f => f.Schedule)
+                        .Where(f => f.FlightId == checkoutData.ReturnFlight.FlightId)
+                        .Select(f => f.Schedule.AirplaneId)
+                        .FirstOrDefault();
                     if (returnAirplaneId == null)
                         return BadRequest("Return airplane not found.");
 
                     foreach (var seatCode in checkoutData.SelectedReturnSeats)
                     {
                         var seat = _context.Seats.FirstOrDefault(
-                            s => s.SeatNumber == seatCode && s.AirplaneId == returnAirplaneId.Value);
-                        if (seat == null) continue;
+                            s => s.SeatNumber == seatCode && s.AirplaneId == returnAirplaneId);
+                        if (seat == null) continue; 
 
                         var ticket = new Ticket
                         {
@@ -533,7 +542,6 @@ namespace FlightBookingWeb.Controllers
                 return StatusCode(500, "An error occurred while capturing the order.");
             }
         }
-
 
 
 

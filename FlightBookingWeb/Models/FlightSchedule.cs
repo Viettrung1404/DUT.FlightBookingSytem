@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightBookingWeb.Models;
 
@@ -7,6 +8,7 @@ public partial class FlightSchedule
 {
     public int ScheduleId { get; set; }
 
+    [Column("AirplaneID")]
     public int? AirplaneId { get; set; }
 
     public int RouteId { get; set; }
