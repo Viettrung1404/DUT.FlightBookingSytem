@@ -20,6 +20,8 @@ public partial class FlightSchedule
     public bool Active { get; set; }
     public bool Status { get; set; } = true;
 
+    public bool? Status { get; set; }
+
     public virtual Airplane? Airplane { get; set; }
 
     public virtual ICollection<Flight> Flights { get; set; } = new List<Flight>();

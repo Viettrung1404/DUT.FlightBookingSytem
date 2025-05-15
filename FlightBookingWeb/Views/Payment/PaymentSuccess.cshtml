@@ -1,0 +1,15 @@
+﻿@model FlightBookingWeb.ViewModels.PaymentSuccessViewModel
+
+<div class="container mt-5">
+    <h2 class="text-center text-success">Payment Successful</h2>
+    <div class="card mt-4">
+        <div class="card-body">
+            <p><strong>Transaction ID:</strong> @Model.TransactionId</p>
+            <p><strong>Payment Method:</strong> @Model.PaymentMethod</p>
+            <p class="text-success">Thank you for your payment! Your booking has been confirmed.</p>
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <a href="/" class="btn btn-primary">Return to Home</a>
+    </div>
+</div>

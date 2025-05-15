@@ -1,4 +1,4 @@
-﻿@model FlightBookingWeb.Models.Account
+﻿@model FlightBookingWeb.Areas.Admin.ViewModels.AccountViewModel
 
 @{
     ViewData["Title"] = "Account Details";
@@ -6,23 +6,42 @@
 
 <div class="container py-4">
     <h2 class="mb-4">👤 Account Details</h2>
-
-    <dl class="row">
-        <dt class="col-sm-3">Username</dt>
-        <dd class="col-sm-9">@Model.Username</dd>
-
-        <dt class="col-sm-3">Email</dt>
-        <dd class="col-sm-9">@Model.Email</dd>
-
-        <dt class="col-sm-3">Phone Number</dt>
-        <dd class="col-sm-9">@Model.PhoneNumber</dd>
-
-        <dt class="col-sm-3">Role</dt>
-        <dd class="col-sm-9">@Model.Role</dd>
-    </dl>
-
-    <a asp-action="Edit" asp-route-id="@Model.AccountId" class="btn btn-warning"><i class="bi bi-pencil-square"></i> Edit</a>
-    <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back to List</a>
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Account Information</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Username</dt>
+                <dd class="col-sm-9">@Model.Username</dd>
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">@Model.Email</dd>
+                <dt class="col-sm-3">Phone Number</dt>
+                <dd class="col-sm-9">@Model.PhoneNumber</dd>
+                <dt class="col-sm-3">Role</dt>
+                <dd class="col-sm-9">@Model.Role</dd>
+                <dt class="col-sm-3">Gender</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Gender.HasValue)
+                    {
+                        @(Model.Gender.Value ? "Male" : "Female")
+                    }
+                    else
+                    {
+                        <span class="text-muted">Not specified</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <div class="mt-4">
+        <a asp-action="Edit" asp-route-id="@Model.AccountId" class="btn btn-warning me-2">
+            <i class="bi bi-pencil-square"></i> Edit
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
 </div>
 
 @section Scripts {

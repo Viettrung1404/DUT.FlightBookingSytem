@@ -17,7 +17,11 @@ public partial class Ticket
 
     public DateTime? BookingDate { get; set; }
 
+    public string? TicketType { get; set; }
+
     public string? Status { get; set; }
+
+    public int? RelatedTicketId { get; set; }
 
     public virtual Account Account { get; set; } = null!;
 
@@ -25,7 +29,11 @@ public partial class Ticket
 
     public virtual Flight Flight { get; set; } = null!;
 
+    public virtual ICollection<Ticket> InverseRelatedTicket { get; set; } = new List<Ticket>();
+
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+
+    public virtual Ticket? RelatedTicket { get; set; }
 
     public virtual Seat? Seat { get; set; }
 }

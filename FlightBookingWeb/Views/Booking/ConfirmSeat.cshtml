@@ -1,0 +1,107 @@
+﻿@model FlightBookingWeb.ViewModels.SeatConfirmViewModel
+
+@{
+    ViewData["Title"] = "Xác nhận ghế đã chọn";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center">Xác nhận ghế đã chọn</h2>
+
+    @if (Model.SelectedOutboundSeats == null || !Model.SelectedOutboundSeats.Any())
+    {
+        <div class="alert alert-danger">
+            Không có ghế nào được chọn cho chuyến bay đi. Vui lòng quay lại và chọn ghế.
+        </div>
+    }
+    else
+    {
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <h4>Chuyến bay đi</h4>
+                <p><strong>Flight ID:</strong> @Model.OutboundFlightId</p>
+                <ul class="list-group">
+                    @foreach (var seat in Model.SelectedOutboundSeats)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Ghế: <strong>@seat.SeatNumber</strong>
+                            <span class="badge bg-primary rounded-pill">@seat.SeatClass - @seat.SeatType</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+
+    @if (Model.IsRoundTrip)
+    {
+        if (Model.SelectedReturnSeats == null || !Model.SelectedReturnSeats.Any())
+        {
+            <div class="alert alert-danger mt-4">
+                Không có ghế nào được chọn cho chuyến bay về. Vui lòng quay lại và chọn ghế.
+            </div>
+        }
+        else
+        {
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <h4>Chuyến bay về</h4>
+                    <p><strong>Flight ID:</strong> @Model.ReturnFlightId</p>
+                    <ul class="list-group">
+                        @foreach (var seat in Model.SelectedReturnSeats)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Ghế: <strong>@seat.SeatNumber</strong>
+                                <span class="badge bg-success rounded-pill">@seat.SeatClass - @seat.SeatType</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+    }
+
+    @if ((Model.SelectedOutboundSeats != null && Model.SelectedOutboundSeats.Any()) &&
+    (!Model.IsRoundTrip || (Model.SelectedReturnSeats != null && Model.SelectedReturnSeats.Any())))
+    {
+        <form asp-action="Checkout" asp-controller="Booking" method="get">
+            <input type="hidden" name="outboundFlightId" value="@Model.OutboundFlightId" />
+            @if (Model.ReturnFlightId.HasValue)
+            {
+                <input type="hidden" name="returnFlightId" value="@Model.ReturnFlightId.Value" />
+            }
+            <input type="hidden" name="passengerCount" value="@Model.PassengerCount" />
+            @foreach (var seat in Model.SelectedOutboundSeats)
+            {
+                <input type="hidden" name="selectedSeatsOutBoard" value="@seat.SeatNumber" />
+            }
+
+            @if (Model.IsRoundTrip)
+            {
+                @foreach (var seat in Model.SelectedReturnSeats)
+                {
+                    <input type="hidden" name="selectedSeatsReturnBoard" value="@seat.SeatNumber" />
+                }
+            }
+
+            <div class="row mt-4">
+                <div class="col-md-12 text-center">
+                    <button type="submit" class="btn btn-success btn-lg">Tiếp tục thanh toán</button>
+                </div>
+            </div>
+        </form>
+    }
+    else
+    {
+        <div class="row mt-4">
+            <div class="col-md-12 text-center">
+                <a asp-action="SelectSeats" asp-controller="Booking"
+                   asp-route-outboundFlightId="@Model.OutboundFlightId"
+                   asp-route-returnFlightId="@Model.ReturnFlightId"
+                   asp-route-passengerCount="@Model.PassengerCount"
+                   class="btn btn-warning btn-lg">
+                    Quay lại chọn ghế
+                </a>
+            </div>
+        </div>
+    }
+</div>

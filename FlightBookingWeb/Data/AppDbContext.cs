@@ -36,6 +36,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Seat> Seats { get; set; }
 
+    public virtual DbSet<SeatBooking> SeatBookings { get; set; }
+    
     public virtual DbSet<Ticket> Tickets { get; set; }
 
 //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -136,8 +138,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.DepartureDateTime).HasColumnType("datetime");
             entity.Property(e => e.ScheduleId).HasColumnName("ScheduleID");
             entity.Property(e => e.Status)
-                .HasMaxLength(20)
-                .IsUnicode(false)
+                .HasMaxLength(50)
                 .HasDefaultValue("Scheduled");
 
             entity.HasOne(d => d.Schedule).WithMany(p => p.Flights)
@@ -155,9 +156,6 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.ScheduleId).HasColumnName("ScheduleID");
             entity.Property(e => e.Active).HasDefaultValue(true);
             entity.Property(e => e.AirplaneId).HasColumnName("AirplaneID");
-            entity.Property(e => e.Frequency)
-                .HasMaxLength(50)
-                .IsUnicode(false);
             entity.Property(e => e.RouteId).HasColumnName("RouteID");
 
             entity.HasOne(d => d.Airplane).WithMany(p => p.FlightSchedules)
@@ -238,6 +236,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Status)
                 .HasMaxLength(10)
                 .IsUnicode(false);
+                
             entity.HasOne(d => d.ArrivalAirport).WithMany(p => p.RouteArrivalAirports)
                 .HasForeignKey(d => d.ArrivalAirportId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -276,6 +275,32 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK__Seat__AirplaneID__619B8048");
         });
 
+        modelBuilder.Entity<SeatBooking>(entity =>
+        {
+            entity.HasKey(e => e.SeatBookingId).HasName("PK__SeatBook__7FC8032BF7A6E892");
+
+            entity.ToTable("SeatBooking");
+
+            entity.Property(e => e.AccountId).HasColumnName("AccountID");
+            entity.Property(e => e.BookingDate).HasColumnType("datetime");
+            entity.Property(e => e.FlightId).HasColumnName("FlightID");
+            entity.Property(e => e.SeatId).HasColumnName("SeatID");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.SeatBookings)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_SeatBooking_Account");
+
+            entity.HasOne(d => d.Flight).WithMany(p => p.SeatBookings)
+                .HasForeignKey(d => d.FlightId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SeatBooking_Flight");
+
+            entity.HasOne(d => d.Seat).WithMany(p => p.SeatBookings)
+                .HasForeignKey(d => d.SeatId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SeatBooking_Seat");
+        });
+
         modelBuilder.Entity<Ticket>(entity =>
         {
             entity.HasKey(e => e.TicketId).HasName("PK__Ticket__712CC62709E689B0");
@@ -294,6 +319,9 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasDefaultValue("Confirmed");
+            entity.Property(e => e.TicketType)
+                .HasMaxLength(10)
+                .IsFixedLength();
 
             entity.HasOne(d => d.Account).WithMany(p => p.Tickets)
                 .HasForeignKey(d => d.AccountId)
@@ -304,6 +332,10 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.FlightId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Ticket__FlightID__6383C8BA");
+
+            entity.HasOne(d => d.RelatedTicket).WithMany(p => p.InverseRelatedTicket)
+                .HasForeignKey(d => d.RelatedTicketId)
+                .HasConstraintName("FK_Ticket_Ticket");
 
             entity.HasOne(d => d.Seat).WithMany(p => p.Tickets)
                 .HasForeignKey(d => d.SeatId)

@@ -19,5 +19,7 @@ public partial class Account
 
     public string Role { get; set; } = null!;
 
+    public virtual ICollection<SeatBooking> SeatBookings { get; set; } = new List<SeatBooking>();
+
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }

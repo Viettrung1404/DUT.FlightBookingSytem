@@ -1,4 +1,5 @@
 ﻿using FlightBookingWeb.Data;
+using FlightBookingWeb.Service;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlightBookingWeb
@@ -25,13 +26,20 @@ namespace FlightBookingWeb
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // Đăng ký các dịch vụ khác
+            builder.Services.AddScoped<IPayPalService, PayPalService>();
+
             builder.Services.AddControllersWithViews();
+          
+            builder.Services.AddSession();
+          
             builder.Services.AddHostedService<FlightGeneratorService>();
             builder.Services.AddHostedService<FlightStatusUpdater>();
+
             var app = builder.Build();
 
-            // Sử dụng session
+
+            
+            app.UseSession();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
