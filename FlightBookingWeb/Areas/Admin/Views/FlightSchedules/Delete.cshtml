@@ -184,7 +184,7 @@
         <dt class="col-sm-4">Tần suất</dt>
         <dd class="col-sm-8">@Model.Frequency</dd>
         <dt class="col-sm-4">Trạng thái</dt>
-        <dd class="col-sm-8">@(Model.Active ? "Kích hoạt" : "Không kích hoạt")</dd>
+        <dd class="col-sm-8">@(Model.Active == true ? "Kích hoạt" : "Không kích hoạt")</dd>
     </dl>
 
     <form asp-action="Delete" class="action-buttons" method="post">

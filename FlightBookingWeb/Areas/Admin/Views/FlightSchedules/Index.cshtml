@@ -260,7 +260,7 @@
                                     <td>@item.Airplane?.AirplaneName</td>
                                     <td>@item.DepartureTime.ToString("dd/MM/yyyy HH:mm")</td>
                                     <td>@item.Frequency</td>
-                                    <td>@(item.Active ? "Kích hoạt" : "Không kích hoạt")</td>
+                                    <td>@(item.Active == true ? "Kích hoạt" : "Không kích hoạt")</td>
                                     <td class="table-actions">
                                         <a asp-action="Edit" asp-route-id="@item.ScheduleId" class="btn btn-warning btn-sm" title="Sửa">
                                             <i class="fas fa-edit"></i> Sửa

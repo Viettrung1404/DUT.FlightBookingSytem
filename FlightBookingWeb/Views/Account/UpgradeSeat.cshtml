@@ -1,0 +1,73 @@
+﻿@{
+    var ticket = ViewBag.Ticket as FlightBookingWeb.Models.Ticket;
+    var flight = ViewBag.Flight as FlightBookingWeb.Models.Flight;
+    var seat = ViewBag.Seat as FlightBookingWeb.Models.Seat;
+    var upgradeOptions = ViewBag.UpgradeOptions as List<string>;
+    var departureAirportName = flight?.Schedule?.Route?.DepartureAirport?.AirportName ?? $"ID: {flight?.Schedule?.Route?.DepartureAirportId}";
+    var arrivalAirportName = flight?.Schedule?.Route?.ArrivalAirport?.AirportName ?? $"ID: {flight?.Schedule?.Route?.ArrivalAirportId}";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4 border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="bi bi-arrow-up-circle me-2"></i>Upgrade Your Seat</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <h5 class="text-secondary"><i class="bi bi-airplane"></i> Flight Information</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <b>Flight ID:</b> <span class="badge bg-info">@flight?.FlightId</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Departure:</b> <span class="badge bg-success">@departureAirportName</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Departure Time:</b> @flight?.DepartureDateTime.ToString("g")
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-secondary"><i class="bi bi-person-bounding-box"></i> Current Seat</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <b>Seat Number:</b> <span class="badge bg-primary">@seat?.SeatNumber</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Seat Class:</b> <span class="badge bg-warning text-dark">@seat?.SeatClass</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Seat Type:</b> <span class="badge bg-secondary">@seat?.SeatType</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <form asp-action="UpgradeSeat" method="post" class="mt-4">
+                        <input type="hidden" name="ticketId" value="@ticket?.TicketId" />
+                        <div class="mb-3">
+                            <label for="targetSeatClass" class="form-label fw-bold">Select Seat Class to Upgrade</label>
+                            <select name="targetSeatClass" class="form-select" required>
+                                <option value="">-- Select --</option>
+                                @foreach (var option in upgradeOptions)
+                                {
+                                    <option value="@option">@option</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-arrow-up-right-circle"></i> Upgrade Now
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Icons CDN (nếu chưa có) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">

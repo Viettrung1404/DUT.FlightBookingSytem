@@ -344,11 +344,18 @@
             @if (hasOutboundFlight)
             {
                 <input type="hidden" name="OutboundFlight.FlightId" value="@Model.OutboundFlight.FlightId" />
+                <input type="hidden" name="OutboundFlight.DepartureDateTime" value="@Model.OutboundFlight.DepartureDateTime.ToString("o")" />
+                <input type="hidden" name="OutboundFlight.ArrivalDateTime" value="@Model.OutboundFlight.ArrivalDateTime.ToString("o")" />
+                <!-- Thêm các trường khác nếu cần -->
             }
             @if (hasReturnFlight)
             {
                 <input type="hidden" name="ReturnFlight.FlightId" value="@Model.ReturnFlight.FlightId" />
+                <input type="hidden" name="ReturnFlight.DepartureDateTime" value="@Model.ReturnFlight.DepartureDateTime.ToString("o")" />
+                <input type="hidden" name="ReturnFlight.ArrivalDateTime" value="@Model.ReturnFlight.ArrivalDateTime.ToString("o")" />
+                <!-- Thêm các trường khác nếu cần -->
             }
+
 
             @foreach (var seat in Model.SelectedOutboundSeats ?? Enumerable.Empty<string>())
             {
