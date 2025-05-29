@@ -61,7 +61,7 @@
                                     <li class="current"><a asp-action="Index" asp-controller="Home" class="active">Trang chủ</a></li>
                                     <li class="current"><a asp-action="Index" asp-controller="Booking">Chuyến bay</a></li>
                                     @if(User.Identity.IsAuthenticated) {
-                                        <li class="current"><a asp-action="ThongTin" asp-controller="Booking">Thông tin của bạn</a></li>
+                                        <li class="current"><a asp-action="profile" asp-controller="Account">Thông tin của bạn</a></li>
                                     }
                                     @if (User.IsInRole("Admin"))
                                     {

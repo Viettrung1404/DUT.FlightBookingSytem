@@ -200,105 +200,66 @@ namespace FlightBookingWeb.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //[HttpGet]
-        //[Authorize] // Chỉ cho phép người dùng đã đăng nhập
-        //public IActionResult Profile()
-        //{
-        //    // Lấy thông tin người dùng hiện tại
-        //    var username = User.Identity.Name;
-        //    var user = _context.Accounts.FirstOrDefault(u => u.Username == username);
-        //    if (user == null)
-        //    {
-        //        return NotFound("User not found.");
-        //    }
-        //    return View(user);
-        //}
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var username = User.Identity.Name;
+            var user = await _context.Accounts.FirstOrDefaultAsync(u => u.Username == username);
+            if (user == null)
+                return NotFound("User not found.");
 
-        //[HttpGet]
-        //[Authorize] // Chỉ cho phép người dùng đã đăng nhập
-        //public async Task<IActionResult> Profile()
-        //{
-        //    // Lấy thông tin người dùng hiện tại
-        //    var username = User.Identity.Name;
-        //    var user = await _context.Accounts
-        //        .Include(a => a.Invoices) // Bao gồm hóa đơn
-        //        .ThenInclude(i => i.Ticket) // Bao gồm vé trong hóa đơn
-        //        .ThenInclude(t => t.Flight) // Bao gồm thông tin chuyến bay
-        //        .ThenInclude(f => f.Route) // Bao gồm thông tin tuyến bay
-        //        .ThenInclude(r => r.DepartureAirport) // Bao gồm sân bay khởi hành
-        //        .Include(a => a.Invoices)
-        //        .ThenInclude(i => i.Ticket.Flight.Route.ArrivalAirport) // Bao gồm sân bay đến
-        //        .FirstOrDefaultAsync(u => u.Username == username);
+            return View(user);
+        }
 
-        //    if (user == null)
-        //    {
-        //        return NotFound("User not found.");
-        //    }
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Profile(Account model, string? newPassword)
+        {
+            // Kiểm tra rỗng
+            if (string.IsNullOrWhiteSpace(model.Email) ||
+                string.IsNullOrWhiteSpace(model.PhoneNumber) ||
+                model.Gender == null)
+            {
+                ViewBag.ErrorMessage = "All fields are required.";
+                return View(model);
+            }
 
-        //    return View(user);
-        //}
+            // Kiểm tra số điện thoại: chỉ số, 8-14 ký tự
+            if (!System.Text.RegularExpressions.Regex.IsMatch(model.PhoneNumber, @"^\d{8,14}$"))
+            {
+                ViewBag.ErrorMessage = "Phone number must be 8-14 digits.";
+                return View(model);
+            }
 
-        //[HttpPost]
-        //[Authorize] // Chỉ cho phép người dùng đã đăng nhập
-        //public async Task<IActionResult> Profile(Account model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(model);
-        //    }
+            // Kiểm tra email hợp lệ
+            if (!System.Text.RegularExpressions.Regex.IsMatch(model.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                ViewBag.ErrorMessage = "Invalid email address.";
+                return View(model);
+            }
 
-        //    // Lấy thông tin người dùng hiện tại
-        //    var username = User.Identity.Name;
-        //    var user = await _context.Accounts.FirstOrDefaultAsync(u => u.Username == username);
+            var username = User.Identity.Name;
+            var user = await _context.Accounts.FirstOrDefaultAsync(u => u.Username == username);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = "User not found.";
+                return View(model);
+            }
 
-        //    if (user == null)
-        //    {
-        //        return NotFound("User not found.");
-        //    }
+            user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Gender = model.Gender;
 
-        //    // Cập nhật thông tin cá nhân
-        //    user.Email = model.Email;
-        //    user.PhoneNumber = model.PhoneNumber;
-        //    user.Gender = model.Gender;
+            if (!string.IsNullOrWhiteSpace(newPassword))
+                user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
 
-        //    _context.Accounts.Update(user);
-        //    await _context.SaveChangesAsync();
+            _context.Accounts.Update(user);
+            await _context.SaveChangesAsync();
 
-        //    TempData["SuccessMessage"] = "Your profile has been updated successfully.";
-        //    return RedirectToAction(nameof(Profile));
-        //}
-
-        //[HttpGet]
-        //[Authorize]
-        //public async Task<IActionResult> Profile()
-        //{
-        //    // Lấy userId từ claim
-        //    var userIdStr = User.FindFirst("UserId")?.Value;
-        //    if (!int.TryParse(userIdStr, out int userId))
-        //        return NotFound("User not found.");
-
-        //    // Lấy thông tin account
-        //    var user = await _context.Accounts.FirstOrDefaultAsync(u => u.AccountId == userId);
-        //    if (user == null)
-        //        return NotFound("User not found.");
-
-        //    // Lấy lịch sử đặt vé (bao gồm chuyến bay, ghế, v.v.)
-        //    var tickets = await _context.Tickets
-        //        .Where(t => t.AccountId == userId)
-        //        .Include(t => t.Flight)
-        //            .ThenInclude(f => f.Schedule)
-        //                .ThenInclude(s => s.Route)
-        //        .Include(t => t.Seat)
-        //        .Include(t => t.Payments)
-        //        .Include(t => t.Baggages)
-        //        .ToListAsync();
-
-        //    // Truyền dữ liệu qua ViewBag
-        //    ViewBag.Account = user;
-        //    ViewBag.Tickets = tickets;
-
-        //    return View();
-        //}
+            TempData["SuccessMessage"] = "Your profile has been updated successfully.";
+            return RedirectToAction(nameof(Profile));
+        }
 
 
         [HttpGet]
