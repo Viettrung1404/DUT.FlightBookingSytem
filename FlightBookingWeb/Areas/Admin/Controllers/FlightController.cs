@@ -96,7 +96,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
             // Đổ danh sách Schedule vào dropdown nếu cần chỉnh sửa
             ViewBag.Schedules = new SelectList(
                 _context.FlightSchedules
-                    .Where(fs => fs.Status && fs.Active)
+                    .Where(fs => fs.Status == true && fs.Active == true)
                     .Include(fs => fs.Route)
                         .ThenInclude(r => r.DepartureAirport)
                     .Include(fs => fs.Route)
@@ -187,7 +187,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
             }
 
             // Nếu có lỗi, hiển thị lại thông tin chuyến bay và các lựa chọn lịch trình
-            ViewBag.Schedules = new SelectList(_context.FlightSchedules.Where(fs => fs.Status && fs.Active), "ScheduleId", "ScheduleId", flight.ScheduleId);
+            ViewBag.Schedules = new SelectList(_context.FlightSchedules.Where(fs => fs.Status == true && fs.Active == true), "ScheduleId", "ScheduleId", flight.ScheduleId);
             return View(flight);
         }
 

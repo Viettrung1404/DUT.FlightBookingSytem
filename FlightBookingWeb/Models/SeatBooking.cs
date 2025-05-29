@@ -17,6 +17,20 @@ public partial class SeatBooking
 
     public int? AccountId { get; set; }
 
+    public string? FullName { get; set; }
+
+    public string? Email { get; set; }
+
+    public string? PhoneNumber { get; set; }
+
+    public string? CountryCode { get; set; }
+
+    public string? PassportNumber { get; set; }
+
+    public string? Cccd { get; set; }
+
+    public DateOnly? DateOfBirth { get; set; }
+
     public virtual Account? Account { get; set; }
 
     public virtual Flight Flight { get; set; } = null!;

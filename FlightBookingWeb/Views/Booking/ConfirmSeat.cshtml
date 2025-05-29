@@ -4,6 +4,54 @@
     ViewData["Title"] = "Xác nhận ghế đã chọn";
 }
 
+@section CSS {
+    <style>
+        /* Custom Radio Button Styling */
+        input.custom-radio {
+            appearance: none; /* Remove default browser styling */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #007bff; /* Blue border */
+            border-radius: 50%; /* Circular shape */
+            background-color: #fff;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+            input.custom-radio:checked {
+                background-color: #007bff; /* Blue fill when checked */
+                border-color: #0056b3; /* Darker blue border */
+            }
+
+                input.custom-radio:checked::after {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 8px;
+                    height: 8px;
+                    background-color: #fff; /* White dot in center */
+                    border-radius: 50%;
+                    transform: translate(-50%, -50%);
+                }
+
+            input.custom-radio:hover {
+                border-color: #0056b3; /* Darker blue on hover */
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+            }
+
+            input.custom-radio:focus {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Blue focus ring */
+            }
+    </style>
+}
+
 <div class="container mt-5">
     <h2 class="text-center">Xác nhận ghế đã chọn</h2>
 

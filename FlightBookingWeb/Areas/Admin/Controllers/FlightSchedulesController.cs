@@ -28,7 +28,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
                     .ThenInclude(r => r.DepartureAirport)
                 .Include(fs => fs.Route)
                     .ThenInclude(r => r.ArrivalAirport)
-                .Where(fs => fs.Status) // chỉ lấy các bản ghi có Status == true
+                .Where(fs => (bool)fs.Status) // chỉ lấy các bản ghi có Status == true
                 .AsQueryable();
 
             // Tạo dropdown danh sách Schedule
@@ -73,7 +73,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
             if (flightSchedule == null)
                 return NotFound();
 
-            if (!flightSchedule.Status)
+            if ((bool)!flightSchedule.Status)
             {
                 TempData["Message"] = "Lịch trình này đã bị hủy.";
                 return RedirectToAction(nameof(Index));
