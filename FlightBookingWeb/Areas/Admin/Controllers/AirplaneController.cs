@@ -141,8 +141,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         // POST: Admin/Airplane/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> Edit(int id, AirplaneViewModel model)
         {
             if (id != model.AirplaneId) return NotFound();
@@ -232,9 +231,29 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
                 airplane.Status = "Deleted";
                 _context.Update(airplane);
             }
+            CancelFlightsByAirplaneId(id);
             DeleteSeats(id);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+        private void CancelFlightsByAirplaneId(int airplaneId)
+        {
+            var relatedFlights = _context.Flights
+                .Where(f => f.FlightId == airplaneId);
+
+            foreach (var flight in relatedFlights)
+            {
+                flight.Status = "Đã hủy";
+                _context.Update(flight);
+            }
+            var relatedSchedules = _context.FlightSchedules
+                .Where(s => s.AirplaneId == airplaneId);
+            foreach (var schedule in relatedSchedules)
+            {
+                schedule.Status = false; 
+                _context.Update(schedule);
+            }    
+
         }
 
         private bool AirplaneExists(int id)
