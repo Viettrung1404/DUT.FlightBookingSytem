@@ -158,6 +158,11 @@ namespace FlightBookingWeb.Controllers
             };
             return View(viewModel);
         }
+        [HttpGet]
+        public IActionResult Success()
+        {
+            return View();
+        }
 
         [HttpPost]
         public IActionResult ConfirmSeat(SeatSelectionViewModel model)
@@ -213,6 +218,7 @@ namespace FlightBookingWeb.Controllers
 
             return View("ConfirmSeat", viewModel);
         }
+
         [HttpGet]
         public IActionResult Checkout(int outboundFlightId, int? returnFlightId, int passengerCount, List<string> selectedSeatsOutBoard, List<string>? selectedSeatsReturnBoard)
         {
@@ -353,19 +359,35 @@ namespace FlightBookingWeb.Controllers
                 return View(model);
             }
 
+            // Tính tổng tiền vé
+            decimal totalAmount = model.TotalAmount;
+
+            // Tính tiền hành lý
+            decimal baggageTotal = 0;
+            foreach (var passenger in model.Passengers)
+            {
+                if (passenger.ExtraBaggageKg == 5)
+                    baggageTotal += 20; // Giá 5kg
+                else if (passenger.ExtraBaggageKg == 10)
+                    baggageTotal += 35; // Giá 10kg
+            }
+
+            totalAmount += baggageTotal;
+            model.TotalAmount = totalAmount;
+
             // Lưu vào session
             var settings = new JsonSerializerSettings
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore, // hoặc .Serialize
-                PreserveReferencesHandling = PreserveReferencesHandling.Objects // nếu muốn giữ reference
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
             };
             string jsonData = JsonConvert.SerializeObject(model, settings);
             HttpContext.Session.SetString("CheckoutData", jsonData);
 
-            // Hiển thị lại view với nút PayPal 
             ViewBag.ShowPayPalButton = true;
             return View(model);
         }
+
 
         #region PayPal payment
 
@@ -577,6 +599,28 @@ namespace FlightBookingWeb.Controllers
 
                 await _context.SaveChangesAsync();
 
+                // Gán hành lý cho từng vé nếu có
+                if (checkoutData.Passengers != null)
+                {
+                    for (int i = 0; i < tickets.Count && i < checkoutData.Passengers.Count; i++)
+                    {
+                        var ticket = tickets[i];
+                        var passenger = checkoutData.Passengers[i];
+                        if (passenger != null && passenger.ExtraBaggageKg > 0)
+                        {
+                            var baggage = new Baggage
+                            {
+                                TicketId = ticket.TicketId,
+                                Weight = passenger.ExtraBaggageKg,
+                                Status = "Booked",
+                            };
+                            _context.Baggages.Add(baggage);
+                        }
+                    }
+                    await _context.SaveChangesAsync();
+                }
+
+
                 // Xóa session
                 HttpContext.Session.Remove("CheckoutData");
 
@@ -592,7 +636,6 @@ namespace FlightBookingWeb.Controllers
 
 
         #endregion
-
 
 
     }

@@ -1,4 +1,12 @@
-﻿@{
+﻿@if (TempData["UpgradeError"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        @TempData["UpgradeError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@{
     var ticket = ViewBag.Ticket as FlightBookingWeb.Models.Ticket;
     var flight = ViewBag.Flight as FlightBookingWeb.Models.Flight;
     var seat = ViewBag.Seat as FlightBookingWeb.Models.Seat;
