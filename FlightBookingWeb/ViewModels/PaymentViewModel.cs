@@ -35,7 +35,6 @@
         public string PassportNumber { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string CCCD { get; set; }
-
         public int ExtraBaggageKg { get; set; }
     }
 }
