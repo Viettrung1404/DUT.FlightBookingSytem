@@ -3,12 +3,26 @@
     var pastTickets = ViewBag.PastTickets as List<FlightBookingWeb.Models.Ticket>;
     var futureTickets = ViewBag.FutureTickets as List<FlightBookingWeb.Models.Ticket>;
 }
+
 @if (TempData["BaggageError"] != null)
 {
     <div class="alert alert-danger text-center">
         @TempData["BaggageError"]
     </div>
 }
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["ErrorMessage"]
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success text-center">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
 <div class="container py-4">
     <h2 class="mb-4 text-primary">
         <i class="bi bi-clock-history"></i> Lịch sử đặt vé
@@ -34,6 +48,7 @@
                                 <th>Ghế</th>
                                 <th>Hạng ghế</th>
                                 <th>Hành lý</th>
+                                <th>Trạng thái</th>
                                 <th class="text-center">Thao tác</th>
                             </tr>
                         </thead>
@@ -78,19 +93,43 @@
                                             </span>
                                         }
                                     </td>
+                                    <td>
+                                        @if (ticket.Status == "Cancelled")
+                                        {
+                                            <span class="badge bg-danger">Đã hủy</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">Đang hiệu lực</span>
+                                        }
+                                    </td>
                                     <td class="d-flex gap-2 justify-content-center">
-                                        <a asp-action="UpgradeSeat"
-                                           asp-route-ticketId="@ticket.TicketId"
-                                           class="btn btn-warning btn-sm"
-                                           title="Nâng hạng ghế">
-                                            <i class="bi bi-arrow-up-circle"></i> Nâng hạng
-                                        </a>
-                                        <a asp-action="BuyExtraBaggage"
-                                           asp-route-ticketId="@ticket.TicketId"
-                                           class="btn btn-info btn-sm"
-                                           title="Mua thêm hành lý">
-                                            <i class="bi bi-bag-plus"></i> Mua hành lý
-                                        </a>
+                                        @if (ticket.Status != "Cancelled")
+                                        {
+                                            <a asp-action="UpgradeSeat"
+                                               asp-route-ticketId="@ticket.TicketId"
+                                               class="btn btn-warning btn-sm"
+                                               title="Nâng hạng ghế">
+                                                <i class="bi bi-arrow-up-circle"></i> Nâng hạng
+                                            </a>
+                                            <a asp-action="BuyExtraBaggage"
+                                               asp-route-ticketId="@ticket.TicketId"
+                                               class="btn btn-info btn-sm"
+                                               title="Mua thêm hành lý">
+                                                <i class="bi bi-bag-plus"></i> Mua hành lý
+                                            </a>
+                                            <a asp-action="CancelTicket"
+                                               asp-route-ticketId="@ticket.TicketId"
+                                               class="btn btn-danger btn-sm"
+                                               title="Hủy vé"
+                                               onclick="return confirm('Bạn có chắc chắn muốn hủy vé này? Lưu ý: Vé đã hủy sẽ không được hoàn tiền.')">
+                                                <i class="bi bi-x-circle"></i> Hủy vé
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Không có thao tác</span>
+                                        }
                                     </td>
                                 </tr>
                             }
@@ -127,6 +166,7 @@
                                 <th>Ghế</th>
                                 <th>Hạng ghế</th>
                                 <th>Hành lý</th>
+                                <th>Trạng thái</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -170,6 +210,16 @@
                                             </span>
                                         }
                                     </td>
+                                    <td>
+                                        @if (ticket.Status == "Cancelled")
+                                        {
+                                            <span class="badge bg-danger">Đã hủy</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">Đã hoàn thành</span>
+                                        }
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -186,5 +236,19 @@
     </div>
 </div>
 
-<!-- Bootstrap Icons CDN (nếu chưa có) -->
+<!-- Bootstrap Icons CDN -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+    .table th, .table td {
+        vertical-align: middle;
+    }
+    .badge {
+        font-size: 0.9em;
+        padding: 0.35em 0.65em;
+    }
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+</style>

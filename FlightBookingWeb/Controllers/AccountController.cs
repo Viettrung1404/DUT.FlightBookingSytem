@@ -494,7 +494,120 @@ namespace FlightBookingWeb.Controllers
             return View();
         }
 
+        #region Cancel Ticket
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> CancelTicket(int ticketId)
+        {
+            // Lấy thông tin vé
+            var ticket = await _context.Tickets
+                .Include(t => t.Flight)
+                .Include(t => t.Seat)
+                .Include(t => t.Baggages)
+                .FirstOrDefaultAsync(t => t.TicketId == ticketId);
 
+            if (ticket == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy vé.";
+                return RedirectToAction("BookingHistory");
+            }
+
+            // Kiểm tra người dùng hiện tại có phải chủ vé không
+            var userIdStr = User.FindFirst("UserId")?.Value;
+            if (!int.TryParse(userIdStr, out int userId) || ticket.AccountId != userId)
+            {
+                TempData["ErrorMessage"] = "Bạn không có quyền hủy vé này.";
+                return RedirectToAction("BookingHistory");
+            }
+
+            // Kiểm tra xem vé đã bị hủy chưa
+            if (ticket.Status == "Cancelled")
+            {
+                TempData["ErrorMessage"] = "Vé này đã được hủy trước đó.";
+                return RedirectToAction("BookingHistory");
+            }
+
+            // Kiểm tra thời gian hủy vé (ít nhất 24h trước giờ bay)
+            var timeUntilFlight = ticket.Flight.DepartureDateTime - DateTime.UtcNow;
+            if (timeUntilFlight <= TimeSpan.FromHours(24))
+            {
+                TempData["ErrorMessage"] = "Chỉ có thể hủy vé trước giờ bay ít nhất 24 giờ.";
+                return RedirectToAction("BookingHistory");
+            }
+
+            return View(ticket);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ActionName("CancelTicket")]
+        public async Task<IActionResult> CancelTicketConfirmed(int ticketId)
+        {
+            // Lấy thông tin vé
+            var ticket = await _context.Tickets
+                .Include(t => t.Flight)
+                .Include(t => t.Seat)
+                .Include(t => t.Baggages)
+                .FirstOrDefaultAsync(t => t.TicketId == ticketId);
+
+            if (ticket == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy vé.";
+                return RedirectToAction("BookingHistory");
+            }
+
+            // Kiểm tra người dùng hiện tại có phải chủ vé không
+            var userIdStr = User.FindFirst("UserId")?.Value;
+            if (!int.TryParse(userIdStr, out int userId) || ticket.AccountId != userId)
+            {
+                TempData["ErrorMessage"] = "Bạn không có quyền hủy vé này.";
+                return RedirectToAction("BookingHistory");
+            }
+
+            // Kiểm tra xem vé đã bị hủy chưa
+            if (ticket.Status == "Cancelled")
+            {
+                TempData["ErrorMessage"] = "Vé này đã được hủy trước đó.";
+                return RedirectToAction("BookingHistory");
+            }
+
+            // Kiểm tra thời gian hủy vé (ít nhất 24h trước giờ bay)
+            var timeUntilFlight = ticket.Flight.DepartureDateTime - DateTime.UtcNow;
+            if (timeUntilFlight <= TimeSpan.FromHours(24))
+            {
+                TempData["ErrorMessage"] = "Chỉ có thể hủy vé trước giờ bay ít nhất 24 giờ.";
+                return RedirectToAction("BookingHistory");
+            }
+
+            // 1. Đánh dấu vé là đã hủy
+            ticket.Status = "Cancelled";
+            _context.Tickets.Update(ticket);
+
+            // 2. Giải phóng ghế
+            var seatBooking = await _context.SeatBookings
+                .FirstOrDefaultAsync(sb => sb.FlightId == ticket.FlightId && sb.SeatId == ticket.SeatId);
+            if (seatBooking != null)
+            {
+                seatBooking.IsBooked = false;
+                _context.SeatBookings.Update(seatBooking);
+            }
+
+            // 3. Nếu có hành lý, đánh dấu là hủy
+            if (ticket.Baggages != null && ticket.Baggages.Any())
+            {
+                foreach (var baggage in ticket.Baggages)
+                {
+                    baggage.Status = "Cancelled";
+                    _context.Baggages.Update(baggage);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Đã hủy vé thành công. Lưu ý: Vé đã hủy sẽ không được hoàn tiền.";
+            return RedirectToAction("BookingHistory");
+        }
+        #endregion
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> UpgradeSeat(int ticketId, string targetSeatClass)
