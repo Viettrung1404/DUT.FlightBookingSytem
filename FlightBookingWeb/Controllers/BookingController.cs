@@ -21,6 +21,7 @@ namespace FlightBookingWeb.Controllers
         }
         public IActionResult Search()
         {
+
             var cities = _context.Airports
                 .Select(a => a.City)
                 .Distinct()
@@ -39,6 +40,15 @@ namespace FlightBookingWeb.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    model.Cities = _context.Airports
+                        .Select(a => a.City)
+                        .Distinct()
+                        .OrderBy(c => c)
+                        .ToList();
+                    return View("Search", model);
+                }
                 var outboundFlights = _context.Flights
                     .Include(f => f.Schedule)
                     .ThenInclude(s => s.Route)
@@ -61,9 +71,11 @@ namespace FlightBookingWeb.Controllers
                 List<FlightViewModel> returnFlights = null;
                 if (model.IsRoundTrip && model.DepartureReturnDate.HasValue)
                 {
+                    var returnDate = model.DepartureReturnDate.Value.Date;
                     returnFlights = _context.Flights
                         .Include(f => f.Schedule)
-                        .ThenInclude(s => s.Route)
+                            .ThenInclude(s => s.Route)
+                        .Where(f => f.DepartureDateTime.Date == returnDate)
                         .Select(f => new FlightViewModel
                         {
                             FlightId = f.FlightId,
@@ -444,30 +456,28 @@ namespace FlightBookingWeb.Controllers
         {
             try
             {
-                // Gọi service để capture (hoàn tất thanh toán)
+                // Capture PayPal payment
                 var result = await _payPalService.CapturePaymentAsync(orderId);
                 if (!result)
-                {
                     return BadRequest("Failed to capture PayPal order.");
-                }
 
-                // Lấy dữ liệu từ session
+                // Get checkout data from session
                 var sessionData = HttpContext.Session.GetString("CheckoutData");
                 if (string.IsNullOrEmpty(sessionData))
-                {
                     return BadRequest("No checkout data found in session.");
-                }
 
                 var checkoutData = JsonConvert.DeserializeObject<CheckoutViewModel>(sessionData);
                 if (checkoutData == null)
-                {
                     return BadRequest("Invalid checkout data.");
-                }
 
                 var accountId = int.Parse(User.FindFirst("UserId")?.Value ?? "0");
-                var tickets = new List<Ticket>();
 
-                // Xử lý vé chiều đi
+                // Prepare ticket lists for outbound and return
+                var outboundTickets = new List<Ticket>();
+                var returnTickets = new List<Ticket>();
+                var allTickets = new List<Ticket>();
+
+                // Outbound airplane
                 var airplaneOutboardId = _context.Flights
                     .Include(f => f.Schedule)
                     .Where(f => f.FlightId == checkoutData.OutboundFlight.FlightId)
@@ -476,16 +486,16 @@ namespace FlightBookingWeb.Controllers
                 if (airplaneOutboardId == null)
                     return BadRequest("Outbound airplane not found.");
 
-                foreach (var seatCode in checkoutData.SelectedOutboundSeats)
+                // Create outbound tickets and seat bookings
+                for (int i = 0; i < checkoutData.SelectedOutboundSeats.Count; i++)
                 {
+                    var seatCode = checkoutData.SelectedOutboundSeats[i];
                     var seat = _context.Seats.FirstOrDefault(
                         s => s.SeatNumber == seatCode && s.AirplaneId == airplaneOutboardId);
                     if (seat == null) continue;
 
-                    // Thay đổi ở đây: lấy thông tin khách tương ứng
-                    var passengerIndex = checkoutData.SelectedOutboundSeats.IndexOf(seatCode);
-                    var passenger = (checkoutData.Passengers != null && passengerIndex < checkoutData.Passengers.Count)
-                        ? checkoutData.Passengers[passengerIndex]
+                    var passenger = (checkoutData.Passengers != null && i < checkoutData.Passengers.Count)
+                        ? checkoutData.Passengers[i]
                         : null;
 
                     var ticket = new Ticket
@@ -498,9 +508,8 @@ namespace FlightBookingWeb.Controllers
                         Status = "Confirmed",
                         TicketType = "Outbound"
                     };
-                    ticket.Flight = _context.Flights.Where(f => f.FlightId == ticket.FlightId).FirstOrDefault();
-                    ticket.Account = _context.Accounts.Where(f => f.AccountId == ticket.AccountId).FirstOrDefault();
-                    tickets.Add(ticket);
+                    outboundTickets.Add(ticket);
+                    allTickets.Add(ticket);
 
                     var seatBooking = new SeatBooking
                     {
@@ -509,7 +518,6 @@ namespace FlightBookingWeb.Controllers
                         AccountId = accountId,
                         IsBooked = true,
                         BookingDate = DateTime.UtcNow,
-                        // Thêm thông tin khách
                         FullName = passenger?.FullName,
                         Email = passenger?.Email,
                         PhoneNumber = passenger?.PhoneNumber,
@@ -518,13 +526,12 @@ namespace FlightBookingWeb.Controllers
                         Cccd = passenger?.CCCD,
                         DateOfBirth = passenger?.DateOfBirth != null
                             ? DateOnly.FromDateTime(passenger.DateOfBirth)
-                            : (DateOnly?) null
+                            : (DateOnly?)null
                     };
-                    seatBooking.Seat = _context.Seats.FirstOrDefault(f => f.SeatId == seatBooking.SeatId);
                     _context.SeatBookings.Add(seatBooking);
                 }
 
-                // Xử lý vé chiều về (nếu có)
+                // Create return tickets and seat bookings (if any)
                 if (checkoutData.ReturnFlight != null && checkoutData.SelectedReturnSeats != null)
                 {
                     var returnAirplaneId = _context.Flights
@@ -542,7 +549,6 @@ namespace FlightBookingWeb.Controllers
                             s => s.SeatNumber == seatCode && s.AirplaneId == returnAirplaneId);
                         if (seat == null) continue;
 
-                        // Lấy thông tin khách tương ứng
                         var passenger = (checkoutData.Passengers != null && i < checkoutData.Passengers.Count)
                             ? checkoutData.Passengers[i]
                             : null;
@@ -557,8 +563,8 @@ namespace FlightBookingWeb.Controllers
                             Status = "Confirmed",
                             TicketType = "Return"
                         };
-
-                        tickets.Add(ticket);
+                        returnTickets.Add(ticket);
+                        allTickets.Add(ticket);
 
                         var seatBooking = new SeatBooking
                         {
@@ -567,7 +573,6 @@ namespace FlightBookingWeb.Controllers
                             AccountId = accountId,
                             IsBooked = true,
                             BookingDate = DateTime.UtcNow,
-                            // Thêm thông tin khách
                             FullName = passenger?.FullName,
                             Email = passenger?.Email,
                             PhoneNumber = passenger?.PhoneNumber,
@@ -578,16 +583,29 @@ namespace FlightBookingWeb.Controllers
                                 ? DateOnly.FromDateTime(passenger.DateOfBirth)
                                 : (DateOnly?)null
                         };
-
                         _context.SeatBookings.Add(seatBooking);
                     }
                 }
 
-                // Lưu các vé vào DB
-                _context.Tickets.AddRange(tickets);
+                // Save all tickets to DB to get TicketId
+                _context.Tickets.AddRange(allTickets);
                 await _context.SaveChangesAsync();
 
-                foreach (var ticket in tickets)
+                // Link outbound and return tickets by RelatedTicketId
+                if (outboundTickets.Count == returnTickets.Count && outboundTickets.Count > 0)
+                {
+                    for (int i = 0; i < outboundTickets.Count; i++)
+                    {
+                        outboundTickets[i].RelatedTicketId = returnTickets[i].TicketId;
+                        returnTickets[i].RelatedTicketId = outboundTickets[i].TicketId;
+                    }
+                    _context.Tickets.UpdateRange(outboundTickets);
+                    _context.Tickets.UpdateRange(returnTickets);
+                    await _context.SaveChangesAsync();
+                }
+
+                // Save payment and invoice for each ticket
+                foreach (var ticket in allTickets)
                 {
                     var payment = new Payment
                     {
@@ -600,7 +618,7 @@ namespace FlightBookingWeb.Controllers
                     };
 
                     _context.Payments.Add(payment);
-                    await _context.SaveChangesAsync(); // Lưu để lấy PaymentId
+                    await _context.SaveChangesAsync(); // Save to get PaymentId
 
                     var invoice = new Invoice
                     {
@@ -616,12 +634,12 @@ namespace FlightBookingWeb.Controllers
 
                 await _context.SaveChangesAsync();
 
-                // Gán hành lý cho từng vé nếu có
+                // Assign baggage for each ticket if any
                 if (checkoutData.Passengers != null)
                 {
-                    for (int i = 0; i < tickets.Count && i < checkoutData.Passengers.Count; i++)
+                    for (int i = 0; i < allTickets.Count && i < checkoutData.Passengers.Count; i++)
                     {
-                        var ticket = tickets[i];
+                        var ticket = allTickets[i];
                         var passenger = checkoutData.Passengers[i];
                         if (passenger != null && passenger.ExtraBaggageKg > 0)
                         {
@@ -637,8 +655,7 @@ namespace FlightBookingWeb.Controllers
                     await _context.SaveChangesAsync();
                 }
 
-
-                // Xóa session
+                // Clear session
                 HttpContext.Session.Remove("CheckoutData");
 
                 return Ok(new { message = "Payment captured and booking completed successfully." });
@@ -649,6 +666,7 @@ namespace FlightBookingWeb.Controllers
                 return StatusCode(500, "An error occurred while capturing the order.");
             }
         }
+
 
 
 

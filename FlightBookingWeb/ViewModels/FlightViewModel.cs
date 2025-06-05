@@ -2,6 +2,7 @@
 
 namespace FlightBookingWeb.ViewModels
 {
+    [DepartureBeforeReturnDate]
     public class FlightViewModel
     {
         public int FlightId { get; set; }
@@ -56,6 +57,23 @@ namespace FlightBookingWeb.ViewModels
                 return new ValidationResult(ErrorMessage);
             }
 
+            return ValidationResult.Success;
+        }
+    }
+
+
+    public class DepartureBeforeReturnDateAttribute : ValidationAttribute
+    {
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        {
+            var model = (FlightViewModel)validationContext.ObjectInstance;
+            if (model.DepartureReturnDate.HasValue)
+            {
+                if (model.DepartureOutBoardDate > model.DepartureReturnDate.Value)
+                {
+                    return new ValidationResult("Departure date must be before or equal to return date.");
+                }
+            }
             return ValidationResult.Success;
         }
     }
