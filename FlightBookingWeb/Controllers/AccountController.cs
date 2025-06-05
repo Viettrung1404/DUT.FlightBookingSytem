@@ -45,31 +45,60 @@ namespace FlightBookingWeb.Controllers
             {
                 // Tạo Claims
                 var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.Username),
-                    new Claim(ClaimTypes.Role, user.Role ?? "User"),
-                    new Claim("UserId", user.AccountId.ToString())
-                };
+        {
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user.Role ?? "User"),
+            new Claim("UserId", user.AccountId.ToString())
+        };
 
                 // Tạo ClaimsIdentity
                 var claimsIdentity = new ClaimsIdentity(claims, "MyCookieAuth");
 
                 // Tạo Cookie
                 await HttpContext.SignInAsync("MyCookieAuth", new ClaimsPrincipal(claimsIdentity));
+
+                // Xử lý quay lại trang Checkout nếu có cookie lưu trạng thái trước đăng nhập
+                if (Request.Cookies.ContainsKey("PreLoginCheckoutData"))
+                {
+                    var checkoutDataJson = Request.Cookies["PreLoginCheckoutData"];
+                    if (!string.IsNullOrEmpty(checkoutDataJson))
+                    {
+                        // Xóa cookie sau khi dùng
+                        Response.Cookies.Delete("PreLoginCheckoutData");
+
+                        // Deserialize lại dữ liệu
+                        dynamic checkoutData = Newtonsoft.Json.JsonConvert.DeserializeObject(checkoutDataJson);
+
+                        // Chuyển hướng về lại trang Checkout với dữ liệu đã chọn
+                        return RedirectToAction(
+                            "Checkout",
+                            "Booking",
+                            new
+                            {
+                                outboundFlightId = (int)checkoutData.outboundFlightId,
+                                returnFlightId = checkoutData.returnFlightId == null ? (int?)null : (int)checkoutData.returnFlightId,
+                                passengerCount = (int)checkoutData.passengerCount,
+                                selectedSeatsOutBoard = ((Newtonsoft.Json.Linq.JArray)checkoutData.selectedSeatsOutBoard).ToObject<List<string>>(),
+                                selectedSeatsReturnBoard = checkoutData.selectedSeatsReturnBoard == null ? null :
+                                    ((Newtonsoft.Json.Linq.JArray)checkoutData.selectedSeatsReturnBoard).ToObject<List<string>>()
+                            }
+                        );
+                    }
+                }
+                // Nếu có ReturnUrl (ví dụ: ConfirmSeat), ưu tiên redirect về đó
                 if (Url.IsLocalUrl(ReturnUrl))
                     return Redirect(ReturnUrl);
 
+                // Xử lý role như cũ
                 if (user.Role == "Employee")
                 {
-                    // Chuyển hướng đến trang quản lý nếu là Admin
                     return RedirectToAction("Index", "Home", new { area = "Employee" });
                 }
                 else if (user.Role == "Admin")
                 {
-                    // Chuyển hướng đến trang quản lý nếu là Admin
                     return RedirectToAction("Index", "Home", new { area = "Admin" });
                 }
-                else if (user.Role == "User")
+                else // User
                 {
                     return RedirectToAction("Index", "Home");
                 }
@@ -273,12 +302,13 @@ namespace FlightBookingWeb.Controllers
 
             var now = DateTime.UtcNow;
 
-            // Lấy tất cả vé của user, bao gồm thông tin chuyến bay và ghế
+            // Lấy tất cả vé của user, bao gồm thông tin chuyến bay, ghế và hành lý
             var tickets = await _context.Tickets
                 .Where(t => t.AccountId == userId)
                 .Include(t => t.Flight)
                     .ThenInclude(f => f.Schedule)
                 .Include(t => t.Seat)
+                .Include(t => t.Baggages) // Lấy luôn hành lý
                 .ToListAsync();
 
             // Vé đã bay (chuyến bay đã khởi hành)
@@ -299,6 +329,137 @@ namespace FlightBookingWeb.Controllers
             return View();
         }
 
+
+        #region BuyExtraLuggage
+
+        [HttpGet]
+        public async Task<IActionResult> BuyExtraBaggage(int ticketId)
+        {
+            var ticket = await _context.Tickets
+                .Include(t => t.Baggages)
+                .Include(t => t.Flight)
+                    .ThenInclude(f => f.Schedule)
+                        .ThenInclude(s => s.Route)
+                            .ThenInclude(r => r.DepartureAirport)
+                .Include(t => t.Flight)
+                    .ThenInclude(f => f.Schedule)
+                        .ThenInclude(s => s.Route)
+                            .ThenInclude(r => r.ArrivalAirport)
+                .Include(t => t.Seat)
+                .FirstOrDefaultAsync(t => t.TicketId == ticketId);
+
+            if (ticket == null)
+                return NotFound("Ticket not found.");
+
+            // Tính tổng số kg hành lý đã mua
+            int totalBaggageKg = ticket.Baggages?.Sum(b => (int)b.Weight) ?? 0;
+
+            if (totalBaggageKg >= 10)
+            {
+                TempData["BaggageError"] = "Bạn đã mua đủ 10kg hành lý cho vé này. Không thể mua thêm.";
+                return RedirectToAction("BookingHistory");
+            }
+
+            // Xác định các lựa chọn hợp lệ cho droplist
+            List<int> baggageOptions = new List<int>();
+            if (totalBaggageKg == 0)
+            {
+                baggageOptions.Add(5);
+                baggageOptions.Add(10);
+            }
+            else if (totalBaggageKg == 5)
+            {
+                baggageOptions.Add(5);
+            }
+
+            ViewBag.BaggageOptions = baggageOptions;
+
+            var model = new BuyBaggageViewModel
+            {
+                TicketId = ticket.TicketId,
+                ExtraBaggageKg = 0,
+                Fee = 0,
+                FlightId = ticket.Flight.FlightId,
+                DepartureAirport = ticket.Flight.Schedule.Route.DepartureAirport?.AirportName,
+                ArrivalAirport = ticket.Flight.Schedule.Route.ArrivalAirport?.AirportName,
+                DepartureDateTime = ticket.Flight.DepartureDateTime,
+                SeatNumber = ticket.Seat?.SeatNumber
+            };
+
+            return View(model);
+        }
+
+
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> CreateBaggagePayPalOrder([FromBody] BuyBaggageViewModel model)
+        {
+            if (model.ExtraBaggageKg != 5 && model.ExtraBaggageKg != 10)
+                return BadRequest("Chỉ được mua thêm 5kg hoặc 10kg.");
+
+            decimal fee = model.ExtraBaggageKg == 5 ? 20 : 35;
+            model.Fee = fee;
+
+            // Tạo order PayPal
+            var currency = "USD";
+            var description = $"Buy extra {model.ExtraBaggageKg}kg baggage for ticket #{model.TicketId}";
+            var payPalService = HttpContext.RequestServices.GetRequiredService<IPayPalService>();
+            var orderId = await payPalService.CreateOrderAsync(fee, currency, description);
+
+            // Lưu thông tin vào session để dùng khi capture
+            HttpContext.Session.SetString("BaggageOrderInfo", Newtonsoft.Json.JsonConvert.SerializeObject(model));
+
+            return Ok(new { id = orderId, amount = fee });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> CaptureBaggagePayPalOrder([FromQuery] string orderId)
+        {
+            var payPalService = HttpContext.RequestServices.GetRequiredService<IPayPalService>();
+            var result = await payPalService.CapturePaymentAsync(orderId);
+            if (!result)
+                return BadRequest("Failed to capture PayPal order.");
+
+            var orderInfoJson = HttpContext.Session.GetString("BaggageOrderInfo");
+            if (string.IsNullOrEmpty(orderInfoJson))
+                return BadRequest("No baggage order info found in session.");
+
+            var model = Newtonsoft.Json.JsonConvert.DeserializeObject<BuyBaggageViewModel>(orderInfoJson);
+
+            // Lưu hành lý vào DB
+            var baggage = new Baggage
+            {
+                TicketId = model.TicketId,
+                Weight = model.ExtraBaggageKg,
+                Status = "Booked"
+            };
+            _context.Baggages.Add(baggage);
+
+            // Lưu payment
+            var payment = new Payment
+            {
+                TicketId = model.TicketId,
+                Amount = model.Fee,
+                PaymentMethod = "Paypal Baggage",
+                PaymentDate = DateTime.UtcNow,
+                Status = "Completed",
+                TransactionId = orderId
+            };
+            _context.Payments.Add(payment);
+
+            await _context.SaveChangesAsync();
+
+            HttpContext.Session.Remove("BaggageOrderInfo");
+
+            TempData["SuccessMessage"] = $"Đã mua thêm {model.ExtraBaggageKg}kg hành lý thành công.";
+            return Ok(new { message = "Baggage purchased and payment completed successfully." });
+        }
+
+
+        #endregion
+
         #region Update TicketSeat
         [HttpGet]
         [Authorize]
@@ -316,7 +477,7 @@ namespace FlightBookingWeb.Controllers
                 return NotFound("Ticket or seat not found.");
 
             // Danh sách hạng ghế theo thứ tự
-            var seatClassOrder = new List<string> { "Economy", "Business", "First" };
+            var seatClassOrder = new List<string> { "Economy", "Business" };
             var currentClassIndex = seatClassOrder.IndexOf(ticket.Seat.SeatClass);
 
             // Lấy các hạng ghế cao hơn hạng hiện tại
@@ -346,22 +507,31 @@ namespace FlightBookingWeb.Controllers
                 .FirstOrDefaultAsync(t => t.TicketId == ticketId);
 
             if (ticket == null || ticket.SeatId == null)
-                return NotFound("Ticket or seat not found.");
+            {
+                TempData["UpgradeError"] = "Ticket or seat not found.";
+                return RedirectToAction("UpgradeSeat", new { ticketId });
+            }
 
             var seatBooking = await _context.SeatBookings
                 .FirstOrDefaultAsync(sb => sb.FlightId == ticket.FlightId && sb.SeatId == ticket.SeatId);
 
             if (seatBooking == null)
-                return NotFound("Seat booking not found.");
+            {
+                TempData["UpgradeError"] = "Seat booking not found.";
+                return RedirectToAction("UpgradeSeat", new { ticketId });
+            }
 
             // Xác định thứ tự hạng ghế
-            var seatClassOrder = new List<string> { "Economy", "Business", "First" };
+            var seatClassOrder = new List<string> { "Economy", "Business" };
             var currentClassIndex = seatClassOrder.IndexOf(ticket.Seat.SeatClass);
             var targetClassIndex = seatClassOrder.IndexOf(targetSeatClass);
 
             // Chỉ cho nâng hạng (không cho hạ hạng hoặc giữ nguyên)
             if (targetClassIndex <= currentClassIndex)
-                return BadRequest("You can only upgrade to a higher class.");
+            {
+                TempData["UpgradeError"] = "You can only upgrade to a higher class.";
+                return RedirectToAction("UpgradeSeat", new { ticketId });
+            }
 
             // Tìm ghế trống thuộc hạng cao hơn trên cùng chuyến bay (máy bay)
             var airplaneId = ticket.Flight.Schedule.AirplaneId;
@@ -377,11 +547,15 @@ namespace FlightBookingWeb.Controllers
                 .FirstOrDefaultAsync();
 
             if (availableSeat == null)
-                return BadRequest("No available seat in the requested class.");
+            {
+                TempData["UpgradeError"] = "No available seat in the requested class.";
+                return RedirectToAction("UpgradeSeat", new { ticketId });
+            }
 
-            // Thay đổi: Redirect sang trang checkout nâng hạng, truyền ticketId và targetSeatId
+            // Redirect sang trang checkout nâng hạng, truyền ticketId và targetSeatId
             return RedirectToAction("CheckoutUpgradeSeat", new { ticketId = ticket.TicketId, targetSeatId = availableSeat.SeatId });
         }
+
 
 
         [HttpGet]

@@ -1,4 +1,6 @@
-﻿namespace FlightBookingWeb.Service
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace FlightBookingWeb.Service
 {
     public static class SeatPricingHelper
     {
@@ -32,9 +34,8 @@
                     // Không thay đổi
                     break;
             }
-
             return Math.Round(price, 2);
         }
-    }
 
+    }
 }
