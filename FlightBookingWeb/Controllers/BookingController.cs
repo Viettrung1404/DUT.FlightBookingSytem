@@ -75,7 +75,7 @@ namespace FlightBookingWeb.Controllers
                     returnFlights = _context.Flights
                         .Include(f => f.Schedule)
                             .ThenInclude(s => s.Route)
-                        .Where(f => f.DepartureDateTime.Date == returnDate)
+                        .Where(f => f.DepartureDateTime.Date == returnDate && f.Schedule.Route.DepartureAirport.City == model.DepartureAirport && f.Schedule.Route.ArrivalAirport.City == model.ArrivalAirport)
                         .Select(f => new FlightViewModel
                         {
                             FlightId = f.FlightId,
@@ -660,10 +660,18 @@ namespace FlightBookingWeb.Controllers
 
                 return Ok(new { message = "Payment captured and booking completed successfully." });
             }
+            catch (DbUpdateException dbEx)
+            {
+                // Log full details for debugging
+                Console.WriteLine("DbUpdateException: " + dbEx.ToString());
+                if (dbEx.InnerException != null)
+                    Console.WriteLine("InnerException: " + dbEx.InnerException.ToString());
+                return StatusCode(500, "Database error when saving tickets. Please check required fields and constraints.");
+            }
             catch (Exception ex)
             {
-                Console.WriteLine($"Capture error: {ex.Message}");
-                return StatusCode(500, "An error occurred while capturing the order.");
+                Console.WriteLine("Exception: " + ex.ToString());
+                return StatusCode(500, "Unknown error when saving tickets.");
             }
         }
 
