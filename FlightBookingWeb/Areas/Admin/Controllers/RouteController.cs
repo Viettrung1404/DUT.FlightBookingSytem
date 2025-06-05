@@ -133,9 +133,37 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
             {
                 route.Status = "Delete"; // Đánh dấu đã xóa
                 _context.Routes.Update(route);
+                CancelFlightsByRouteId(id);
                 await _context.SaveChangesAsync();
             }
+            
             return RedirectToAction("Index");
         }
+        private void CancelFlightsByRouteId(int routeId)
+        {
+            // 1. Lấy tất cả lịch trình liên quan đến routeId
+            var relatedSchedules = _context.FlightSchedules
+                .Include(s => s.Flights)
+                .Where(s => s.RouteId == routeId)
+                .ToList();
+
+            // 2. Với mỗi lịch trình:
+            foreach (var schedule in relatedSchedules)
+            {
+                // Hủy lịch trình
+                schedule.Status = false;
+                _context.Update(schedule);
+
+                // Hủy các chuyến bay của lịch trình này
+                foreach (var flight in schedule.Flights)
+                {
+                    flight.Status = "Đã hủy";
+                    _context.Update(flight);
+                }
+            }
+        }
+
+
+
     }
 }

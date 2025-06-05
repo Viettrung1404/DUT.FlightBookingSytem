@@ -86,6 +86,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         {
             // Lấy tất cả các máy bay
             var availableAirplanes = _context.Airplanes
+                .Where(a => a.Status == "Active")
                 .Select(a => new { a.AirplaneId, a.AirplaneName })
                 .ToList();
 
@@ -270,9 +271,12 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
 
         private void LoadDropdowns(FlightSchedule flightSchedule)
         {
-            ViewBag.Airplanes = new SelectList(_context.Airplanes, "AirplaneId", "AirplaneName", flightSchedule.AirplaneId);
+            ViewBag.Airplanes = new SelectList(_context.Airplanes
+    .Where(a => a.Status != "Deleted"), "AirplaneId", "AirplaneName", flightSchedule.AirplaneId);
+
 
             var routes = _context.Routes
+                .Where(r => r.Status != "Delete")
                 .Include(r => r.DepartureAirport)
                 .Include(r => r.ArrivalAirport)
                 .Select(r => new

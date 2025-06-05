@@ -152,9 +152,10 @@
 
                 <div class="form-group">
                     <label asp-for="Frequency" class="control-label">Tần suất</label>
-                    <input asp-for="Frequency" class="form-control" placeholder="Nhập tần suất (VD: Hàng ngày, Hàng tuần)" />
+                    <input asp-for="Frequency" class="form-control" type="number" min="0" placeholder="Nhập tần suất (VD: 1 = Hàng ngày)" />
                     <span asp-validation-for="Frequency" class="text-danger"></span>
                 </div>
+
 
                 <div class="form-group form-check">
                     <input type="checkbox" class="form-check-input" id="Active" name="Active" value="true" @(Model?.Active == true ? "checked" : "") />
