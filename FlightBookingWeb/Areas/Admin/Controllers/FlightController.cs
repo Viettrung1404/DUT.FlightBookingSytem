@@ -93,19 +93,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
                 ViewBag.ScheduleName = "Không rõ lịch trình";
             }
 
-            // Đổ danh sách Schedule vào dropdown nếu cần chỉnh sửa
-            ViewBag.Schedules = new SelectList(
-                _context.FlightSchedules
-                    .Where(fs => fs.Status && fs.Active)
-                    .Include(fs => fs.Route)
-                        .ThenInclude(r => r.DepartureAirport)
-                    .Include(fs => fs.Route)
-                        .ThenInclude(r => r.ArrivalAirport)
-                    .ToList(),
-                "ScheduleId",
-                "ScheduleId", // Có thể thay bằng tên lịch trình chi tiết nếu cần
-                flight.ScheduleId
-            );
+        
 
             return View(flight);
         }
@@ -118,7 +106,6 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
             // Ghi log ModelState để kiểm tra các lỗi nếu có
             foreach (var state in ModelState)
             {
@@ -186,8 +173,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
                 }
             }
 
-            // Nếu có lỗi, hiển thị lại thông tin chuyến bay và các lựa chọn lịch trình
-            ViewBag.Schedules = new SelectList(_context.FlightSchedules.Where(fs => fs.Status && fs.Active), "ScheduleId", "ScheduleId", flight.ScheduleId);
+           
             return View(flight);
         }
 
