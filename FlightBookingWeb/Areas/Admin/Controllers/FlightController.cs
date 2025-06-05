@@ -93,8 +93,6 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
                 ViewBag.ScheduleName = "Không rõ lịch trình";
             }
 
-        
-
             return View(flight);
         }
 
@@ -173,7 +171,6 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
                 }
             }
 
-           
             return View(flight);
         }
 

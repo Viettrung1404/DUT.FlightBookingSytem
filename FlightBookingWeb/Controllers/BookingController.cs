@@ -44,7 +44,7 @@ namespace FlightBookingWeb.Controllers
                     .ThenInclude(s => s.Route)
                     .Where(f => f.Schedule.Route.DepartureAirport.City.Contains(model.DepartureAirport)
                              && f.Schedule.Route.ArrivalAirport.City.Contains(model.ArrivalAirport)
-                             && f.DepartureDateTime.Date == model.DepartureOutBoardDate)
+                             && f.DepartureDateTime.Date == model.DepartureOutBoardDate.Date)
                     .Select(f => new FlightViewModel
                     {
                         FlightId = f.FlightId,
@@ -64,9 +64,6 @@ namespace FlightBookingWeb.Controllers
                     returnFlights = _context.Flights
                         .Include(f => f.Schedule)
                         .ThenInclude(s => s.Route)
-                        .Where(f => f.Schedule.Route.DepartureAirport.City.Contains(model.ArrivalAirport)
-                                 && f.Schedule.Route.ArrivalAirport.City.Contains(model.DepartureAirport)
-                                 && f.DepartureDateTime.Date == model.DepartureReturnDate.Value.Date)
                         .Select(f => new FlightViewModel
                         {
                             FlightId = f.FlightId,
@@ -92,7 +89,6 @@ namespace FlightBookingWeb.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception (use a logging framework like Serilog, NLog, etc.)
                 Console.WriteLine($"Error: {ex.Message}");
                 return StatusCode(500, "An error occurred while processing your request.");
             }
@@ -162,6 +158,11 @@ namespace FlightBookingWeb.Controllers
             };
             return View(viewModel);
         }
+        [HttpGet]
+        public IActionResult Success()
+        {
+            return View();
+        }
 
         [HttpPost]
         public IActionResult ConfirmSeat(SeatSelectionViewModel model)
@@ -218,7 +219,6 @@ namespace FlightBookingWeb.Controllers
             return View("ConfirmSeat", viewModel);
         }
 
-
         [HttpGet]
         public IActionResult Checkout(int outboundFlightId, int? returnFlightId, int passengerCount, List<string> selectedSeatsOutBoard, List<string>? selectedSeatsReturnBoard)
         {
@@ -238,7 +238,7 @@ namespace FlightBookingWeb.Controllers
 
                     var cookieOptions = new CookieOptions
                     {
-                        Expires = DateTimeOffset.UtcNow.AddMinutes(30), // Set expiration as needed
+                        Expires = DateTimeOffset.UtcNow.AddMinutes(30),
                         IsEssential = true,
                         HttpOnly = true,
                         Secure = true // Set to true in production
@@ -252,6 +252,7 @@ namespace FlightBookingWeb.Controllers
                     var Urlreturn = Url.Action("Checkout", "Booking");
                     return RedirectToAction("Login", "Account", Urlreturn);
                 }
+
                 // Lấy thông tin chuyến bay đi
                 var outboundFlight = _context.Flights
                     .Include(f => f.Schedule)
@@ -268,19 +269,31 @@ namespace FlightBookingWeb.Controllers
                 var departureAirport = _context.Airports.FirstOrDefault(a => a.AirportId == outboundFlight.Schedule.Route.DepartureAirportId);
                 var arrivalAirport = _context.Airports.FirstOrDefault(a => a.AirportId == outboundFlight.Schedule.Route.ArrivalAirportId);
 
-                // Tính giá chuyến bay đi
-                var outboundPrice = _context.Routes
+                // Tính giá từng ghế chiều đi
+                var outboundBasePrice = _context.Routes
                     .Where(r => r.RouteId == outboundFlight.Schedule.RouteId)
                     .Select(r => r.BasePrice)
                     .FirstOrDefault();
 
-                decimal totalAmount = outboundPrice * (selectedSeatsOutBoard?.Count ?? 0);
-                decimal returnPrice = 0;
+                decimal totalAmount = 0;
+
+                if (selectedSeatsOutBoard != null)
+                {
+                    foreach (var seatNumber in selectedSeatsOutBoard)
+                    {
+                        var seat = _context.Seats.FirstOrDefault(s => s.SeatNumber == seatNumber && s.AirplaneId == outboundFlight.Schedule.AirplaneId);
+                        if (seat != null)
+                        {
+                            totalAmount += SeatPricingHelper.CalculateSeatPrice(outboundBasePrice, seat.SeatClass, seat.SeatType);
+                        }
+                    }
+                }
+
+                // Xử lý chiều về (nếu có)
                 Flight? returnFlight = null;
                 string? returnDepartureCity = null;
                 string? returnArrivalCity = null;
 
-                // Nếu có chuyến bay về, xử lý tương tự
                 if (returnFlightId.HasValue)
                 {
                     returnFlight = _context.Flights
@@ -288,14 +301,21 @@ namespace FlightBookingWeb.Controllers
                             .ThenInclude(s => s.Route)
                         .FirstOrDefault(f => f.FlightId == returnFlightId);
 
-                    if (returnFlight != null)
+                    if (returnFlight != null && selectedSeatsReturnBoard != null)
                     {
-                        returnPrice = _context.Routes
+                        var returnBasePrice = _context.Routes
                             .Where(r => r.RouteId == returnFlight.Schedule.RouteId)
                             .Select(r => r.BasePrice)
                             .FirstOrDefault();
 
-                        totalAmount += returnPrice * (selectedSeatsReturnBoard?.Count ?? 0);
+                        foreach (var seatNumber in selectedSeatsReturnBoard)
+                        {
+                            var seat = _context.Seats.FirstOrDefault(s => s.SeatNumber == seatNumber && s.AirplaneId == returnFlight.Schedule.AirplaneId);
+                            if (seat != null)
+                            {
+                                totalAmount += SeatPricingHelper.CalculateSeatPrice(returnBasePrice, seat.SeatClass, seat.SeatType);
+                            }
+                        }
 
                         // Lấy thông tin sân bay cho chuyến về
                         var returnDepAirport = _context.Airports.FirstOrDefault(a => a.AirportId == returnFlight.Schedule.Route.DepartureAirportId);
@@ -339,19 +359,35 @@ namespace FlightBookingWeb.Controllers
                 return View(model);
             }
 
+            // Tính tổng tiền vé
+            decimal totalAmount = model.TotalAmount;
+
+            // Tính tiền hành lý
+            decimal baggageTotal = 0;
+            foreach (var passenger in model.Passengers)
+            {
+                if (passenger.ExtraBaggageKg == 5)
+                    baggageTotal += 20; // Giá 5kg
+                else if (passenger.ExtraBaggageKg == 10)
+                    baggageTotal += 35; // Giá 10kg
+            }
+
+            totalAmount += baggageTotal;
+            model.TotalAmount = totalAmount;
+
             // Lưu vào session
             var settings = new JsonSerializerSettings
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore, // hoặc .Serialize
-                PreserveReferencesHandling = PreserveReferencesHandling.Objects // nếu muốn giữ reference
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
             };
             string jsonData = JsonConvert.SerializeObject(model, settings);
             HttpContext.Session.SetString("CheckoutData", jsonData);
 
-            // Hiển thị lại view với nút PayPal 
             ViewBag.ShowPayPalButton = true;
             return View(model);
         }
+
 
         #region PayPal payment
 
@@ -429,6 +465,12 @@ namespace FlightBookingWeb.Controllers
                         s => s.SeatNumber == seatCode && s.AirplaneId == airplaneOutboardId);
                     if (seat == null) continue;
 
+                    // Thay đổi ở đây: lấy thông tin khách tương ứng
+                    var passengerIndex = checkoutData.SelectedOutboundSeats.IndexOf(seatCode);
+                    var passenger = (checkoutData.Passengers != null && passengerIndex < checkoutData.Passengers.Count)
+                        ? checkoutData.Passengers[passengerIndex]
+                        : null;
+
                     var ticket = new Ticket
                     {
                         FlightId = checkoutData.OutboundFlight.FlightId,
@@ -449,7 +491,17 @@ namespace FlightBookingWeb.Controllers
                         SeatId = seat.SeatId,
                         AccountId = accountId,
                         IsBooked = true,
-                        BookingDate = DateTime.UtcNow
+                        BookingDate = DateTime.UtcNow,
+                        // Thêm thông tin khách
+                        FullName = passenger?.FullName,
+                        Email = passenger?.Email,
+                        PhoneNumber = passenger?.PhoneNumber,
+                        CountryCode = passenger?.CountryCode,
+                        PassportNumber = passenger?.PassportNumber,
+                        Cccd = passenger?.CCCD,
+                        DateOfBirth = passenger?.DateOfBirth != null
+                            ? DateOnly.FromDateTime(passenger.DateOfBirth)
+                            : (DateOnly?) null
                     };
                     seatBooking.Seat = _context.Seats.FirstOrDefault(f => f.SeatId == seatBooking.SeatId);
                     _context.SeatBookings.Add(seatBooking);
@@ -466,11 +518,17 @@ namespace FlightBookingWeb.Controllers
                     if (returnAirplaneId == null)
                         return BadRequest("Return airplane not found.");
 
-                    foreach (var seatCode in checkoutData.SelectedReturnSeats)
+                    for (int i = 0; i < checkoutData.SelectedReturnSeats.Count; i++)
                     {
+                        var seatCode = checkoutData.SelectedReturnSeats[i];
                         var seat = _context.Seats.FirstOrDefault(
                             s => s.SeatNumber == seatCode && s.AirplaneId == returnAirplaneId);
-                        if (seat == null) continue; 
+                        if (seat == null) continue;
+
+                        // Lấy thông tin khách tương ứng
+                        var passenger = (checkoutData.Passengers != null && i < checkoutData.Passengers.Count)
+                            ? checkoutData.Passengers[i]
+                            : null;
 
                         var ticket = new Ticket
                         {
@@ -491,7 +549,17 @@ namespace FlightBookingWeb.Controllers
                             SeatId = seat.SeatId,
                             AccountId = accountId,
                             IsBooked = true,
-                            BookingDate = DateTime.UtcNow
+                            BookingDate = DateTime.UtcNow,
+                            // Thêm thông tin khách
+                            FullName = passenger?.FullName,
+                            Email = passenger?.Email,
+                            PhoneNumber = passenger?.PhoneNumber,
+                            CountryCode = passenger?.CountryCode,
+                            PassportNumber = passenger?.PassportNumber,
+                            Cccd = passenger?.CCCD,
+                            DateOfBirth = passenger?.DateOfBirth != null
+                                ? DateOnly.FromDateTime(passenger.DateOfBirth)
+                                : (DateOnly?)null
                         };
 
                         _context.SeatBookings.Add(seatBooking);
@@ -531,6 +599,28 @@ namespace FlightBookingWeb.Controllers
 
                 await _context.SaveChangesAsync();
 
+                // Gán hành lý cho từng vé nếu có
+                if (checkoutData.Passengers != null)
+                {
+                    for (int i = 0; i < tickets.Count && i < checkoutData.Passengers.Count; i++)
+                    {
+                        var ticket = tickets[i];
+                        var passenger = checkoutData.Passengers[i];
+                        if (passenger != null && passenger.ExtraBaggageKg > 0)
+                        {
+                            var baggage = new Baggage
+                            {
+                                TicketId = ticket.TicketId,
+                                Weight = passenger.ExtraBaggageKg,
+                                Status = "Booked",
+                            };
+                            _context.Baggages.Add(baggage);
+                        }
+                    }
+                    await _context.SaveChangesAsync();
+                }
+
+
                 // Xóa session
                 HttpContext.Session.Remove("CheckoutData");
 
@@ -546,79 +636,6 @@ namespace FlightBookingWeb.Controllers
 
 
         #endregion
-        //[HttpGet]
-        //public IActionResult Payment(int flightId, int? returnFlightId, SeatSelectionViewModel Model)
-        //{
-        //    try
-        //    {
-        //        // Lấy thông tin chuyến bay
-        //        var outboundFlight = _context.Flights
-        //            .Include(f => f.Schedule)
-        //            .ThenInclude(s => s.Route)
-        //            .FirstOrDefault(f => f.FlightId == flightId);
-
-        //        if (outboundFlight == null)
-        //        {
-        //            return NotFound("Không tìm thấy chuyến bay");
-        //        }
-
-        //        var outboundPrice = _context.Routes
-        //            .Where(r => r.RouteId == outboundFlight.Schedule.RouteId)
-        //            .Select(r => r.BasePrice)
-        //            .FirstOrDefault();
-
-        //        decimal totalAmount = outboundPrice * Model.SelectedSeatsOutBoard.Count;
-        //        decimal returnPrice = 0;
-
-        //        if (returnFlightId.HasValue)
-        //        {
-        //            var returnFlight = _context.Flights
-        //                .Include(f => f.Schedule)
-        //                .ThenInclude(s => s.Route)
-        //                .FirstOrDefault(f => f.FlightId == returnFlightId);
-
-        //            if (returnFlight != null)
-        //            {
-        //                returnPrice = _context.Routes
-        //                    .Where(r => r.RouteId == returnFlight.Schedule.RouteId)
-        //                    .Select(r => r.BasePrice)
-        //                    .FirstOrDefault();
-
-        //                totalAmount += returnPrice * Model.SelectedSeatsReturnBoard.Count;
-        //            }
-        //        }
-
-        //        // Tạo view model
-        //        var viewModel = new PaymentViewModel
-        //        {
-        //            OutboundFlightId = flightId,
-        //            ReturnFlightId = returnFlightId,
-        //            IsRoundTrip = returnFlightId.HasValue,
-        //            PassengerCount = Model.SelectedSeatsOutBoard.Count,
-        //            SelectedOutboundSeats = Model.SelectedSeatsOutBoard,
-        //            SelectedReturnSeats = Model.SelectedSeatsReturnBoard,
-        //            TotalAmount = totalAmount,
-        //            TaxAmount = totalAmount * 0.1m, // VAT 10%
-
-        //            // Khởi tạo thông tin hành khách
-        //            Passengers = Enumerable.Range(0, Model.SelectedSeatsOutBoard.Count)
-        //                .Select(_ => new PassengerInfo())
-        //                .ToList()
-        //        };
-
-        //        return RedirectToAction("CreatePayPalOrder", "Payment", new
-        //        {
-        //            amount = viewModel.TotalAmount,
-        //            currency = "USD",
-        //            description = "Flight Booking Payment"
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //_logger.LogError(ex, "Lỗi khi tải trang thanh toán");
-        //        return StatusCode(500, "Đã xảy ra lỗi khi tải trang thanh toán");
-        //    }
-        //}
 
 
     }

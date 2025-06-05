@@ -1,14 +1,52 @@
 ﻿@model FlightBookingWeb.ViewModels.CheckoutViewModel
+@{
+    var baggageOptions = new List<(int Value, string Text)>
+                        {
+                        (0, "No extra"),
+                        (5, "+5kg (+$20)"),
+                        (10, "+10kg (+$35)")
+                        };
+}
 
 @{
     ViewData["Title"] = "Checkout";
     var hasOutboundFlight = Model?.OutboundFlight != null;
     var hasReturnFlight = Model?.ReturnFlight != null;
     var showPayPalButton = ViewBag.ShowPayPalButton as bool? ?? false;
+
+    // Tính tổng tiền hành lý (chỉ để hiển thị, tổng thực tế đã cộng vào Model.TotalAmount)
+    decimal baggageTotal = 0;
+    if (Model?.Passengers != null)
+    {
+        foreach (var p in Model.Passengers)
+        {
+            if (p.ExtraBaggageKg == 5)
+                baggageTotal += 20;
+            else if (p.ExtraBaggageKg == 10)
+                baggageTotal += 35;
+        }
+    }
 }
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Checkout</h2>
+<!-- Title-Banner Start -->
+<div class="title-banner mb-20">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="banner-area">
+                <img src="~/assets/media/banner/vacation.png" alt="" class="left-image">
+                <div class="content-box">
+                    <h1 class="fw-700 lightest-black">Nhập thông tin<br class="title-break"> hành khách</h1>
+                </div>
+                <img src="~/assets/media/banner/plane-2.png" alt="" class="right-image">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Title-Banner End -->
+
+
+<!-- Main Content Start -->
+<div class="page-content m-0">
 
     @if (Model == null)
     {
@@ -25,6 +63,234 @@
     }
     else
     {
+        <!-- Flight-Booking Start -->
+        <section class="flight-booking sal-animate" data-sal="slide-up" data-sal-duration="800" data-sal-delay="100" data-sal-easing="ease-in-out">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-8">
+                        <div class="booking-form">
+                            <form asp-action="Checkout" method="post" id="checkout-form" role="form" class="contact-form form-wizard" novalidate="novalidate">
+                                <div class="form-wizard-header">
+                                    <ul class="nav list-unstyled form-wizard-steps clearfix">
+                                        <li class="nav-item activated">
+                                            <button class="nav-link">
+                                                <span class="number">1</span><i class="fal fa-check"></i>
+                                            </button>
+                                            <h5 class="color-black">Lựa chọn chuyến bay</h5>
+                                        </li>
+                                        <li class="nav-item active">
+                                            <button class="nav-link">
+                                                <span class="number">2</span><i class="fal fa-check"></i>
+                                            </button>
+                                            <h5 class="color-black">Thông tin của bạn</h5>
+                                        </li>
+                                        <li class="nav-item">
+                                            <button class="nav-link">
+                                                <span class="number">3</span><i class="fal fa-check"></i>
+                                            </button>
+                                            <h5 class="color-black">Bước cuối cùng</h5>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Truyền lại tất cả các trường của model -->
+                                <input type="hidden" name="DepartureCity" value="@Model.DepartureCity" />
+                                <input type="hidden" name="ArrivalCity" value="@Model.ArrivalCity" />
+                                <input type="hidden" name="ReturnDepartureCity" value="@Model.ReturnDepartureCity" />
+                                <input type="hidden" name="ReturnArrivalCity" value="@Model.ReturnArrivalCity" />
+                                <input type="hidden" name="PassengerCount" value="@Model.PassengerCount" />
+                                <input type="hidden" name="TotalAmount" value="@Model.TotalAmount" />
+                                <input type="hidden" name="PaymentMethod" value="@Model.PaymentMethod" />
+                                <input type="hidden" name="IsRoundTrip" value="@(Model.IsRoundTrip ? "true" : "false")" />
+
+                                @if (hasOutboundFlight)
+                                {
+                                    <input type="hidden" name="OutboundFlight.FlightId" value="@Model.OutboundFlight.FlightId" />
+                                }
+                                @if (hasReturnFlight)
+                                {
+                                    <input type="hidden" name="ReturnFlight.FlightId" value="@Model.ReturnFlight.FlightId" />
+                                }
+
+                                @foreach (var seat in Model.SelectedOutboundSeats ?? Enumerable.Empty<string>())
+                                {
+                                    <input type="hidden" name="SelectedOutboundSeats" value="@seat" />
+                                }
+                                @if (hasReturnFlight)
+                                {
+                                    foreach (var seat in Model.SelectedReturnSeats ?? Enumerable.Empty<string>())
+                                    {
+                                        <input type="hidden" name="SelectedReturnSeats" value="@seat" />
+                                    }
+                                }
+                                @if (!showPayPalButton)
+                                {
+                                    @for (int i = 0; i < Model.PassengerCount; i++)
+                                    {
+                                        var passenger = Model.Passengers != null && Model.Passengers.Count > i ? Model.Passengers[i] : null;
+                                        <h6 class="text-dark">Passenger @(i + 1)</h6>
+                                        <div class="wizard-content overflow-visible mb-24">
+                                            <fieldset id="step-2" class="tab-pane show wizard-fieldset p-0">
+                                                <div id="wizardValidator">
+                                                    <div class="detail-form mb-32">
+                                                        <h4 class="black p-0 mb-40">Nhập thông tin</h4>
+                                                        <div class="row ">
+                                                            <div class="col-sm-6 mb-40">
+                                                                <input type="text" class="form-control wizard-required" name="Passengers[@i].FullName" value="@(passenger?.FullName ?? "")" required placeholder="Họ tên">
+                                                                <div class="wizard-form-error"></div>
+                                                            </div>
+                                                            <div class="col-sm-6 mb-40">
+                                                                <input type="email" class="form-control wizard-required" name="Passengers[@i].Email" value="@(passenger?.Email ?? "")" placeholder="Email">
+                                                                <div class="wizard-form-error"></div>
+                                                            </div>
+                                                            <div class="col-sm-6 mb-40">
+                                                                <input type="tel" class="form-control wizard-required" name="Passengers[@i].PhoneNumber" value="@(passenger?.PhoneNumber ?? "")" placeholder="Số điện thoại">
+                                                                <div class="wizard-form-error"></div>
+                                                            </div>
+                                                            <div class="col-sm-6 mb-40">
+                                                                <input class="form-control wizard-required" name="Passengers[@i].CountryCode" value="@(passenger?.CountryCode ?? "")" placeholder="Mã quốc gia">
+                                                                <div class="wizard-form-error"></div>
+                                                            </div>
+                                                            <div class="col-sm-6 mb-40">
+                                                                <input class="form-control wizard-required" name="Passengers[@i].PassportNumber" value="@(passenger?.PassportNumber ?? "")" placeholder="Passport">
+                                                                <div class="wizard-form-error"></div>
+                                                            </div>
+                                                            <div class="col-sm-6 mb-40">
+                                                                <input type="text" class="form-control wizard-required" name="Passengers[@i].CCCD" value="@(passenger?.CCCD ?? "")" placeholder="Căn cước công dân">
+                                                                <div class="wizard-form-error"></div>
+                                                            </div>
+                                                            <div class="col-sm-12 mb-40">
+                                                                <div class="input-date-picker">
+                                                                    @* <input type="text" class="sel-input date_from form-control wizard-required picker__input" id="flightDep" placeholder="Date of Birth" readonly="" aria-haspopup="true" aria-expanded="false" aria-readonly="false" aria-owns="flightDep_root"><div class="picker" id="flightDep_root" aria-hidden="true"><div class="picker__holder" tabindex="-1"><div class="picker__frame"><div class="picker__wrap"><div class="picker__box"><div class="picker__header"><div class="picker__month">May</div><div class="picker__year">2025</div><div class="picker__nav--prev" data-nav="-1" role="button" aria-controls="flightDep_table" title="Previous month"> </div><div class="picker__nav--next" data-nav="1" role="button" aria-controls="flightDep_table" title="Next month"> </div></div><table class="picker__table" id="flightDep_table" role="grid" aria-controls="flightDep" aria-readonly="true"><thead><tr><th class="picker__weekday" scope="col" title="Sunday">Sun</th><th class="picker__weekday" scope="col" title="Monday">Mon</th><th class="picker__weekday" scope="col" title="Tuesday">Tue</th><th class="picker__weekday" scope="col" title="Wednesday">Wed</th><th class="picker__weekday" scope="col" title="Thursday">Thu</th><th class="picker__weekday" scope="col" title="Friday">Fri</th><th class="picker__weekday" scope="col" title="Saturday">Sat</th></tr></thead><tbody><tr><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745686800000" role="gridcell" aria-label="27 April, 2025">27</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745773200000" role="gridcell" aria-label="28 April, 2025">28</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745859600000" role="gridcell" aria-label="29 April, 2025">29</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1745946000000" role="gridcell" aria-label="30 April, 2025">30</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746032400000" role="gridcell" aria-label="1 May, 2025">1</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746118800000" role="gridcell" aria-label="2 May, 2025">2</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746205200000" role="gridcell" aria-label="3 May, 2025">3</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746291600000" role="gridcell" aria-label="4 May, 2025">4</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746378000000" role="gridcell" aria-label="5 May, 2025">5</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746464400000" role="gridcell" aria-label="6 May, 2025">6</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746550800000" role="gridcell" aria-label="7 May, 2025">7</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746637200000" role="gridcell" aria-label="8 May, 2025">8</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746723600000" role="gridcell" aria-label="9 May, 2025">9</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746810000000" role="gridcell" aria-label="10 May, 2025">10</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1746896400000" role="gridcell" aria-label="11 May, 2025">11</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--today picker__day--highlighted" data-pick="1746982800000" role="gridcell" aria-label="12 May, 2025" aria-activedescendant="true">12</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747069200000" role="gridcell" aria-label="13 May, 2025">13</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747155600000" role="gridcell" aria-label="14 May, 2025">14</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747242000000" role="gridcell" aria-label="15 May, 2025">15</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747328400000" role="gridcell" aria-label="16 May, 2025">16</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747414800000" role="gridcell" aria-label="17 May, 2025">17</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747501200000" role="gridcell" aria-label="18 May, 2025">18</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747587600000" role="gridcell" aria-label="19 May, 2025">19</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747674000000" role="gridcell" aria-label="20 May, 2025">20</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747760400000" role="gridcell" aria-label="21 May, 2025">21</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747846800000" role="gridcell" aria-label="22 May, 2025">22</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1747933200000" role="gridcell" aria-label="23 May, 2025">23</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748019600000" role="gridcell" aria-label="24 May, 2025">24</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748106000000" role="gridcell" aria-label="25 May, 2025">25</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748192400000" role="gridcell" aria-label="26 May, 2025">26</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748278800000" role="gridcell" aria-label="27 May, 2025">27</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748365200000" role="gridcell" aria-label="28 May, 2025">28</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748451600000" role="gridcell" aria-label="29 May, 2025">29</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748538000000" role="gridcell" aria-label="30 May, 2025">30</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1748624400000" role="gridcell" aria-label="31 May, 2025">31</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748710800000" role="gridcell" aria-label="1 June, 2025">1</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748797200000" role="gridcell" aria-label="2 June, 2025">2</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748883600000" role="gridcell" aria-label="3 June, 2025">3</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1748970000000" role="gridcell" aria-label="4 June, 2025">4</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1749056400000" role="gridcell" aria-label="5 June, 2025">5</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1749142800000" role="gridcell" aria-label="6 June, 2025">6</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1749229200000" role="gridcell" aria-label="7 June, 2025">7</div></td></tr></tbody></table><div class="picker__footer"><button class="picker__button--today" type="button" data-pick="1746982800000" disabled="" aria-controls="flightDep">Today</button><button class="picker__button--clear" type="button" data-clear="1" disabled="" aria-controls="flightDep">Clear</button><button class="picker__button--close" type="button" data-close="true" disabled="" aria-controls="flightDep">Close</button></div></div></div></div></div></div> *@
+                                                                    <input class="form-control wizard-required picker__input" type="date" name="Passengers[@i].DateOfBirth" value="@(passenger?.DateOfBirth.ToString("yyyy-MM-dd") ?? "")" required placeholder="Ngày" />
+                                                                    <div class="wizard-form-error"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex gap-24">
+                                                    <a href="javascript:;" class="form-wizard-next-btn cus-btn w-100">
+                                                        Next
+                                                    </a>
+                                                </div>
+                                            </fieldset>
+                                        </div>
+                                    }
+                                }
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 mb-lg-0 mb-32">
+                        <div class="flight-booking-detail light-shadow mb-32">
+                            <div class="flight-title">
+                                <h4 class="color-black">Your Booking Detail</h4>
+                            </div>
+                            <div class="box bg-white p-24">
+                                <div class="flight-detail mb-32">
+                                    <div class="flight-departure">
+                                        <h5 class="color-black">12:00</h5>
+                                        <h5 class="dark-gray text-end">DUB</h5>
+                                    </div>
+                                    <div class="d-inline-flex align-items-center gap-8">
+                                        <span class="">From</span>
+                                        <div class="from-to text-center">
+                                            <h5 class="dark-gray">0h 50m</h5>
+                                            <img src="assets/media/icons/route-plan.png" alt="">
+                                            <h6 class="color-black">1 Stop</h6>
+                                        </div>
+                                        <span class="">To</span>
+                                    </div>
+                                    <div class="flight-departure">
+                                        <h5 class="color-black">12:50</h5>
+                                        <h5 class="dark-gray">SHJ</h5>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-around mb-32">
+                                    <div class="flight-departure">
+                                        <h6 class="dark-gray">Departure</h6>
+                                        <h5 class="color-black">14 Aug, 2023</h5>
+                                    </div>
+                                    <div class="vr-line"></div>
+                                    <div class="flight-departure">
+                                        <h6 class="dark-gray">Arrival</h6>
+                                        <h5 class="color-black">14 Aug, 2023</h5>
+                                    </div>
+                                </div>
+                                <hr class="bg-medium-gray mb-32">
+                                <div class="text">
+                                    <h6 class="color-medium-gray">Tpm Line</h6>
+                                    <h6 class="color-medium-gray">Operated by Feel Dubai Airlines</h6>
+                                    <h6 class="color-medium-gray">Economy | Flight FK234 | Aircraft BOEING 777-90</h6>
+                                    <h6 class="color-medium-gray">Adult(s): 25KG luggage free</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flight-booking-detail light-shadow">
+                            <div class="flight-title">
+                                <h4 class="color-black">Price Summary</h4>
+                            </div>
+                            <div class="box bg-white p-24">
+                                <div class="d-flex align-items-center justify-content-between mb-24">
+                                    <div>
+                                        <h5 class="color-black">Adult x 1</h5>
+                                        <p class="dark-gray">Lorem ipsum dolor sit amet consectetur.</p>
+                                    </div>
+                                    <h5 class="color-black">$540</h5>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-24">
+                                    <div>
+                                        <h5 class="color-black">Room Service</h5>
+                                        <p class="dark-gray">Lorem ipsum dolor sit amet consectetur.</p>
+                                    </div>
+                                    <h5 class="color-black">$50</h5>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-24">
+                                    <div>
+                                        <h5 class="color-black">Gym Fee</h5>
+                                        <p class="dark-gray">Lorem ipsum dolor sit amet consectetur.</p>
+                                    </div>
+                                    <h5 class="color-black">$30</h5>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-24">
+                                    <div>
+                                        <h5 class="color-black">Service Charges</h5>
+                                        <p class="dark-gray">Lorem ipsum dolor sit amet consectetur.</p>
+                                    </div>
+                                    <h5 class="color-black">$20</h5>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-24">
+                                    <div>
+                                        <h5 class="color-black">Sub Total</h5>
+                                        <p class="dark-gray">Lorem ipsum dolor sit amet consectetur.</p>
+                                    </div>
+                                    <h5 class="color-black">$640</h5>
+                                </div>
+                                <hr class="bg-medium-gray mb-24">
+                                <div class="d-flex align-items-center justify-content-between mb-24">
+                                    <div>
+                                        <h4 class="color-black">Deal / Discount</h4>
+                                    </div>
+                                    <h4 class="color-black">$40</h4>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h4 class="color-black">Total</h4>
+                                    </div>
+                                    <h4 class="color-black">$600</h4>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Flight-Booking End -->
+
+
+
+
         <!-- Flight Details -->
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-primary text-white">
@@ -78,7 +344,9 @@
         <!-- Total Summary -->
         <div class="card mb-4">
             <div class="card-body">
-                <h5>Total Amount: <span class="text-success">@Model.TotalAmount.ToString("C")</span></h5>
+                <h5>Ticket Total: <span class="text-info">@((Model.TotalAmount - baggageTotal).ToString("C"))</span></h5>
+                <h5>Baggage Total: <span class="text-warning">@baggageTotal.ToString("C")</span></h5>
+                <h4 class="mt-3">Grand Total: <span class="text-success">@Model.TotalAmount.ToString("C")</span></h4>
                 <p><strong>Passenger Count:</strong> @Model.PassengerCount</p>
                 <p><strong>Payment Method:</strong> @Model.PaymentMethod</p>
             </div>
@@ -99,10 +367,14 @@
             @if (hasOutboundFlight)
             {
                 <input type="hidden" name="OutboundFlight.FlightId" value="@Model.OutboundFlight.FlightId" />
+                <input type="hidden" name="OutboundFlight.DepartureDateTime" value="@Model.OutboundFlight.DepartureDateTime.ToString("o")" />
+                <input type="hidden" name="OutboundFlight.ArrivalDateTime" value="@Model.OutboundFlight.ArrivalDateTime.ToString("o")" />
             }
             @if (hasReturnFlight)
             {
                 <input type="hidden" name="ReturnFlight.FlightId" value="@Model.ReturnFlight.FlightId" />
+                <input type="hidden" name="ReturnFlight.DepartureDateTime" value="@Model.ReturnFlight.DepartureDateTime.ToString("o")" />
+                <input type="hidden" name="ReturnFlight.ArrivalDateTime" value="@Model.ReturnFlight.ArrivalDateTime.ToString("o")" />
             }
 
             @foreach (var seat in Model.SelectedOutboundSeats ?? Enumerable.Empty<string>())
@@ -128,6 +400,9 @@
                         @for (int i = 0; i < Model.PassengerCount; i++)
                         {
                             var passenger = Model.Passengers != null && Model.Passengers.Count > i ? Model.Passengers[i] : null;
+                            var selected0 = passenger?.ExtraBaggageKg == 0 ? "selected" : "";
+                            var selected5 = passenger?.ExtraBaggageKg == 5 ? "selected" : "";
+                            var selected10 = passenger?.ExtraBaggageKg == 10 ? "selected" : "";
                             <div class="border p-3 mb-3 rounded bg-light">
                                 <h6 class="text-dark">Passenger @(i + 1)</h6>
                                 <div class="form-group mb-2">
@@ -158,12 +433,27 @@
                                     <label>Date of Birth</label>
                                     <input class="form-control" type="date" name="Passengers[@i].DateOfBirth" value="@(passenger?.DateOfBirth.ToString("yyyy-MM-dd") ?? "")" required />
                                 </div>
+                                <div class="form-group mb-2">
+                                    <label>Extra Baggage</label>
+                                    <select class="form-select" name="Passengers[@i].ExtraBaggageKg">
+                                        @foreach (var opt in baggageOptions)
+                                        {
+                                            if (passenger?.ExtraBaggageKg == opt.Value)
+                                            {
+                                                <option value="@opt.Value" selected>@opt.Text</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@opt.Value">@opt.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
                             </div>
                         }
                     </div>
                 </div>
             }
-
 
             <!-- Submit Button -->
             <div class="text-center">
@@ -184,3 +474,5 @@
         }
     }
 </div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<!-- Main Content End -->

@@ -46,8 +46,8 @@
 
         <!-- Header Area Start -->
         <header>
-            <nav class="main-menu">
-                <div class="container-fluid">
+            <nav class="main-menu pt-0">
+                <div class="container-fluid shadow">
                     <div class="main-menu__block">
                         <div class="main-menu__left">
                             <div>
@@ -61,7 +61,7 @@
                                     <li class="current"><a asp-action="Index" asp-controller="Home" class="active">Trang chủ</a></li>
                                     <li class="current"><a asp-action="Index" asp-controller="Booking">Chuyến bay</a></li>
                                     @if(User.Identity.IsAuthenticated) {
-                                        <li class="current"><a asp-action="ThongTin" asp-controller="Booking">Thông tin của bạn</a></li>
+                                        <li class="current"><a asp-action="profile" asp-controller="Account">Thông tin của bạn</a></li>
                                     }
                                     @if (User.IsInRole("Admin"))
                                     {
@@ -106,7 +106,7 @@
         <!-- Header Area end -->
 
         <!-- Render Body Start -->
-		<section class="content" style="min-height: auto">
+		<section class="content" style="min-height: 100vh">
 			@RenderBody()
 		</section>
 		<!-- Render Body End -->
