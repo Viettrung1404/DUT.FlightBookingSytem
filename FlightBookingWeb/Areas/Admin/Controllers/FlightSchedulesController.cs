@@ -125,7 +125,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
             var route = _context.Routes
                 .Include(r => r.DepartureAirport)
                 .Include(r => r.ArrivalAirport)
-                .FirstOrDefault(r => r.RouteId == flightSchedule.RouteId);
+                .FirstOrDefault(r => r.RouteId == flightSchedule.RouteId && r.Status == "Active");
 
             if (route == null)
             {
@@ -161,6 +161,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
             var allRoutes = _context.Routes
                 .Include(r => r.DepartureAirport)
                 .Include(r => r.ArrivalAirport)
+                .Where(r => r.Status == "Active")
                 .Select(r => new
                 {
                     r.RouteId,
