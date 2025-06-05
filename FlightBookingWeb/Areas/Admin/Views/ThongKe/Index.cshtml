@@ -1,15 +1,17 @@
 ﻿@{
-    ViewData["Title"] = "Thống kê doanh thu theo tháng";
+    ViewData["Title"] = "Thống kê doanh thu & lưu lượng hành khách";
     var doanhThu = ViewBag.DoanhThu;
+    var luuLuong = ViewBag.LuuLuong;
 }
 
 <h2>@ViewData["Title"]</h2>
 
+<h4>📊 Doanh thu theo tháng</h4>
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
             <th>Tháng/Năm</th>
-            <th>Tổng số hóa đơn</th>
+            <th>Tổng hóa đơn</th>
             <th>Thuế (VNĐ)</th>
             <th>Doanh thu (VNĐ)</th>
         </tr>
@@ -29,9 +31,33 @@
         }
         else
         {
-            <tr>
-                <td colspan="4">Không có dữ liệu thống kê.</td>
-            </tr>
+            <tr><td colspan="4">Không có dữ liệu thống kê.</td></tr>
+        }
+    </tbody>
+</table>
+
+<h4>👥 Lưu lượng hành khách theo tháng</h4>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Tháng/Năm</th>
+            <th>Số hành khách</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (luuLuong != null && ((IEnumerable<dynamic>)luuLuong).Any())
+        {
+            foreach (var item in luuLuong)
+            {
+                <tr>
+                    <td>@item.ThangNam</td>
+                    <td>@item.SoLuongHanhKhach</td> <!-- 👈 tên phải trùng với controller -->
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="2">Không có dữ liệu hành khách.</td></tr>
         }
     </tbody>
 </table>
