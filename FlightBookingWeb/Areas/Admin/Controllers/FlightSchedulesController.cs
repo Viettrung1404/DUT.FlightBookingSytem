@@ -207,7 +207,6 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
 
             flightSchedule.ArrivalTime = route.Duration;
 
-            // 👉 Tự dời DepartureTime nếu updateFlights == false và có Frequency > 0
             if (flightSchedule.Frequency > 0 && !updateFlights && oldSchedule.DepartureTime != flightSchedule.DepartureTime)
             {
                 var freqDays = flightSchedule.Frequency;
@@ -229,39 +228,95 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
             _context.Update(flightSchedule);
             _context.SaveChanges();
 
-            // 👉 Nếu người dùng muốn cập nhật chuyến bay con
-            if (updateFlights && oldSchedule.DepartureTime != flightSchedule.DepartureTime)
+            if (updateFlights)
             {
+                TimeSpan targetTime = oldSchedule.DepartureTime.TimeOfDay;
+                TimeSpan duration = oldSchedule.ArrivalTime.ToTimeSpan();
+
                 var flights = _context.Flights
                     .Where(f => f.ScheduleId == flightSchedule.ScheduleId
                              && f.DepartureDateTime > DateTime.Now
                              && f.Status == "Chưa cất cánh")
-                    .OrderBy(f => f.DepartureDateTime)
+                    .ToList() // tải xuống sớm
+                    .Where(f => f.DepartureDateTime.TimeOfDay == targetTime
+                             && f.ArrivalDateTime == f.DepartureDateTime + duration)
                     .ToList();
 
                 DateTime newDeparture = flightSchedule.DepartureTime;
-                TimeSpan duration = flightSchedule.ArrivalTime.ToTimeSpan();
 
-                if (flightSchedule.Frequency == 0)
+                if (flightSchedule.Frequency == 0 && oldSchedule.Frequency==0)
                 {
-                    // Không lặp: chỉ cập nhật chuyến đầu tiên nếu có
-                    if (flights.Count > 0)
+                    
+                    if (flights.Count ==1)
                     {
                         flights[0].DepartureDateTime = newDeparture;
                         flights[0].ArrivalDateTime = newDeparture + duration;
                     }
+                    else if(flights.Count > 1)
+                    {
+                        TimeSpan t = flightSchedule.DepartureTime - oldSchedule.DepartureTime;
+                        for (int i = 0; i < flights.Count; i++)
+                        {
+                            
+                            flights[i].DepartureDateTime = flights[i].DepartureDateTime+ t;
+                            flights[i].ArrivalDateTime = flights[i].DepartureDateTime + duration;
+                        }
+                    }
                 }
-                else
+                else if (flightSchedule.Frequency != 0 && oldSchedule.Frequency == 0)
                 {
-                    // Lặp: cập nhật toàn bộ
-                    TimeSpan freq = TimeSpan.FromDays(flightSchedule.Frequency);
+                    
+                    TimeSpan t = flightSchedule.DepartureTime - oldSchedule.DepartureTime;
                     for (int i = 0; i < flights.Count; i++)
                     {
-                        flights[i].DepartureDateTime = newDeparture + freq * i;
+                        flights[i].DepartureDateTime = flights[i].DepartureDateTime + t;
+                        flights[i].ArrivalDateTime = flights[i].DepartureDateTime + duration;
+                    }
+                    if(flights.Count>1)
+                    {
+                        var freqDays = flightSchedule.Frequency;
+                        var oldTime = flightSchedule.DepartureTime;
+                        var nowtime = DateTime.Now;
+                        var minTarget = nowtime.AddDays(60);
+                        int n = (int)Math.Ceiling((minTarget - oldTime).TotalDays / freqDays);
+                        flightSchedule.DepartureTime = oldTime.AddDays(n * freqDays);
+                    }
+                }
+                else if (flightSchedule.Frequency == 0 && oldSchedule.Frequency != 0)
+                {
+
+                    TimeSpan t = oldSchedule.DepartureTime - flightSchedule.DepartureTime;
+                    for (int i = 0; i < flights.Count; i++)
+                    {
+                        flights[i].DepartureDateTime = flights[i].DepartureDateTime + t;
                         flights[i].ArrivalDateTime = flights[i].DepartureDateTime + duration;
                     }
                 }
+                else if (flightSchedule.Frequency != 0 && oldSchedule.Frequency != 0 &&(flightSchedule.Frequency!= oldSchedule.Frequency))
+                {
+                    TimeSpan t = flightSchedule.DepartureTime - oldSchedule.DepartureTime;
+                    for (int i = 0; i < flights.Count; i++)
+                    {
+                        flights[i].DepartureDateTime = flights[i].DepartureDateTime + t;
+                        flights[i].ArrivalDateTime = flights[i].DepartureDateTime + duration;
+                    }
+                    var freqDays = flightSchedule.Frequency;
+                    var oldTime = flightSchedule.DepartureTime;
+                    var nowtime = DateTime.Now;
+                    var minTarget = nowtime.AddDays(60);
 
+                    int n = (int)Math.Ceiling((minTarget - oldTime).TotalDays / freqDays);
+                    flightSchedule.DepartureTime = oldTime.AddDays(n * freqDays);
+                }
+                else if (flightSchedule.Frequency != 0 && oldSchedule.Frequency != 0 && (flightSchedule.Frequency == oldSchedule.Frequency))
+                {
+                    TimeSpan t = flightSchedule.DepartureTime - oldSchedule.DepartureTime;
+                    for (int i = 0; i < flights.Count; i++)
+                    {
+                        flights[i].DepartureDateTime = flights[i].DepartureDateTime + t;
+                        flights[i].ArrivalDateTime = flights[i].DepartureDateTime + duration;
+                    }
+                }
                 _context.SaveChanges();
             }
 
@@ -404,7 +459,6 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
                 }
             }
 
-            // 🛫 Kiểm tra trùng với các chuyến bay đã được tạo
             var flights = _context.Flights
     .Where(f => f.Schedule.AirplaneId == newSchedule.AirplaneId
              && f.ScheduleId != newSchedule.ScheduleId  // ✅ Khác lịch trình

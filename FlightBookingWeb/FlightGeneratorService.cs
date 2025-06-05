@@ -1,5 +1,6 @@
 ﻿using FlightBookingWeb.Data;
 using FlightBookingWeb.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
@@ -116,9 +117,25 @@ public class FlightGeneratorService : BackgroundService
                     {
                         var arrival = ngay + schedule.ArrivalTime.ToTimeSpan();
 
-                        bool existed = context.Flights.Any(f =>
-                            f.ScheduleId == schedule.ScheduleId &&
-                            f.DepartureDateTime == ngay);
+                        TimeSpan departureTime = schedule.DepartureTime.TimeOfDay;
+                        TimeSpan duration = schedule.ArrivalTime.ToTimeSpan();
+
+                        DateTime newDeparture = ngay.Date + departureTime;
+                        DateTime newArrival = newDeparture + duration;
+
+                        bool existed = context.Flights
+                            .Where(f => f.ScheduleId == schedule.ScheduleId
+                                     && f.Status == "Chưa cất cánh"
+                                     && f.DepartureDateTime.Date == ngay.Date)
+                            .AsEnumerable()
+                            .Any(f =>
+                            {
+                                DateTime existingDeparture = f.DepartureDateTime;
+                                DateTime existingArrival = f.ArrivalDateTime;
+
+                                // Kiểm tra xem có giao thời gian không
+                                return newDeparture < existingArrival && existingDeparture < newArrival;
+                            });
 
                         if (!existed)
                         {

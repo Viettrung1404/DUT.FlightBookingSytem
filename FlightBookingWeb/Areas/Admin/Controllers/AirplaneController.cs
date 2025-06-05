@@ -239,7 +239,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         private void CancelFlightsByAirplaneId(int airplaneId)
         {
             var relatedFlights = _context.Flights
-                .Where(f => f.FlightId == airplaneId);
+                .Where(f => f.Schedule.AirplaneId == airplaneId);
 
             foreach (var flight in relatedFlights)
             {
