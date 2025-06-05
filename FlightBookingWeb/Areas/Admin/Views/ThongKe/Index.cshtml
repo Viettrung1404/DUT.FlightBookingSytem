@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Thống kê doanh thu theo tháng";
+    var doanhThu = ViewBag.DoanhThu;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Tháng/Năm</th>
+            <th>Tổng số hóa đơn</th>
+            <th>Thuế (VNĐ)</th>
+            <th>Doanh thu (VNĐ)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (doanhThu != null && ((IEnumerable<dynamic>)doanhThu).Any())
+        {
+            foreach (var item in doanhThu)
+            {
+                <tr>
+                    <td>@item.ThangNam</td>
+                    <td>@item.TongHoaDon</td>
+                    <td>@item.Thue.ToString("N0")</td>
+                    <td>@item.TongTien.ToString("N0")</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">Không có dữ liệu thống kê.</td>
+            </tr>
+        }
+    </tbody>
+</table>
