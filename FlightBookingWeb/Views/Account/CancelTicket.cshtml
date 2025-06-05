@@ -1,0 +1,134 @@
+﻿@model FlightBookingWeb.Models.Ticket
+
+@{
+    ViewData["Title"] = "Hủy vé";
+}
+
+<div class="container py-4">
+    <div class="card shadow">
+        <div class="card-header bg-danger text-white">
+            <h3 class="mb-0">
+                <i class="bi bi-x-circle"></i> Xác nhận hủy vé
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <h5 class="alert-heading">
+                    <i class="bi bi-exclamation-triangle"></i> Lưu ý quan trọng
+                </h5>
+                <p class="mb-0">Vé đã hủy sẽ không được hoàn tiền theo chính sách của chúng tôi.</p>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5>Thông tin vé</h5>
+                    <dl class="row">
+                        <dt class="col-sm-4">Mã vé:</dt>
+                        <dd class="col-sm-8">@Model.TicketId</dd>
+
+                        <dt class="col-sm-4">Chuyến bay:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-info text-dark">
+                                <i class="bi bi-airplane"></i> #@Model.Flight.FlightId
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4">Khởi hành:</dt>
+                        <dd class="col-sm-8">
+                            <i class="bi bi-calendar3"></i>
+                            @Model.Flight.DepartureDateTime.ToString("dd/MM/yyyy HH:mm")
+                        </dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <h5>Thông tin chỗ ngồi</h5>
+                    <dl class="row">
+                        <dt class="col-sm-4">Số ghế:</dt>
+                        <dd class="col-sm-8">
+                            <span class="fw-bold">
+                                <i class="bi bi-person-seat"></i> @Model.Seat?.SeatNumber
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4">Hạng ghế:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-secondary">
+                                @Model.Seat?.SeatClass
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4">Hành lý:</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.Baggages != null && Model.Baggages.Any())
+                            {
+                                @foreach (var baggage in Model.Baggages)
+                                {
+                                    <span class="badge bg-success me-1">
+                                        <i class="bi bi-bag"></i> @baggage.Weight kg
+                                    </span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="badge bg-light text-muted">
+                                    <i class="bi bi-bag"></i> Không có
+                                </span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <form asp-action="CancelTicket" method="post">
+                <input type="hidden" asp-for="TicketId" />
+
+                <div class="form-group mb-3">
+                    <label class="form-label">
+                        <input type="checkbox" id="confirmCheck" required />
+                        Tôi hiểu rằng vé đã hủy sẽ không được hoàn tiền
+                    </label>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="BookingHistory" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                    <button type="submit" class="btn btn-danger" id="submitBtn" disabled>
+                        <i class="bi bi-x-circle"></i> Xác nhận hủy vé
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Icons CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+@section Scripts {
+    <script>
+        document.getElementById('confirmCheck').addEventListener('change', function() {
+            document.getElementById('submitBtn').disabled = !this.checked;
+        });
+    </script>
+}
+
+<style>
+    .card {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        font-weight: 600;
+    }
+
+    dt {
+        font-weight: 500;
+    }
+
+    .badge {
+        font-size: 0.9em;
+        padding: 0.35em 0.65em;
+    }
+</style>
