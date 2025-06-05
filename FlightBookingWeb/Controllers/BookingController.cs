@@ -179,9 +179,25 @@ namespace FlightBookingWeb.Controllers
                 });
             }
 
-            // Truy vấn chi tiết các ghế
+            // Lấy AirplaneId của chuyến bay đi
+            var outboundFlight = _context.Flights
+                .Include(f => f.Schedule)
+                .FirstOrDefault(f => f.FlightId == model.OutboundFlightId);
+            int? outboundAirplaneId = outboundFlight?.Schedule.AirplaneId;
+
+            // Lấy AirplaneId của chuyến bay về (nếu có)
+            int? returnAirplaneId = null;
+            if (model.IsRoundTrip && model.ReturnFlightId.HasValue)
+            {
+                var returnFlight = _context.Flights
+                    .Include(f => f.Schedule)
+                    .FirstOrDefault(f => f.FlightId == model.ReturnFlightId.Value);
+                returnAirplaneId = returnFlight?.Schedule.AirplaneId;
+            }
+
+            // Truy vấn chi tiết các ghế chiều đi
             var outboundSeats = _context.Seats
-                .Where(s => model.SelectedSeatsOutBoard.Contains(s.SeatNumber))
+                .Where(s => s.AirplaneId == outboundAirplaneId && model.SelectedSeatsOutBoard.Contains(s.SeatNumber))
                 .Select(s => new SeatViewModel
                 {
                     SeatId = s.SeatId,
@@ -191,11 +207,12 @@ namespace FlightBookingWeb.Controllers
                     IsBooked = true
                 }).ToList();
 
+            // Truy vấn chi tiết các ghế chiều về (nếu có)
             List<SeatViewModel> returnSeats = new();
-            if (model.IsRoundTrip)
+            if (model.IsRoundTrip && model.SelectedSeatsReturnBoard != null && returnAirplaneId.HasValue)
             {
                 returnSeats = _context.Seats
-                    .Where(s => model.SelectedSeatsReturnBoard.Contains(s.SeatNumber))
+                    .Where(s => s.AirplaneId == returnAirplaneId && model.SelectedSeatsReturnBoard.Contains(s.SeatNumber))
                     .Select(s => new SeatViewModel
                     {
                         SeatId = s.SeatId,
