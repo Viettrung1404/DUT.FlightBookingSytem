@@ -17,8 +17,7 @@ namespace FlightBookingWeb.ViewModels
         public string ArrivalAirportName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Thoi gian bay la bat buoc")]
-        [RegularExpression(@"^([01]?[0-9]|2[0-3]):[0-5][0-9]$", ErrorMessage = "Thoi gian phai dung dinh dang HH:mm")]
-        public string Duration { get; set; } = null!;
+        public int Duration { get; set; }
 
         [Range(0.01, double.MaxValue, ErrorMessage = "Gia co ban phai lon hon 0")]
         public decimal BasePrice { get; set; }
