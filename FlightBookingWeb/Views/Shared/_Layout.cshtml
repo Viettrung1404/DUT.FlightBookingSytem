@@ -59,18 +59,20 @@
                             <div class="main-menu__nav">
                                 <ul class="main-menu__list">
                                     <li class="current"><a asp-action="Index" asp-controller="Home" class="active">Trang chủ</a></li>
-                                    <li class="current"><a asp-action="Index" asp-controller="Booking">Chuyến bay</a></li>
+                                    @if (!User.IsInRole("Employee"))
+                                    {
+                                        <li class="current"><a asp-action="BookingHistory" asp-controller="Account">Chuyến bay</a></li>
+                                    }
+                                    @* <li class="current"><a asp-action="BookingHistory" asp-controller="Account">Chuyến bay</a></li> *@
                                     @if(User.Identity.IsAuthenticated) {
-                                        <li class="current"><a asp-action="profile" asp-controller="Account">Thông tin của bạn</a></li>
+                                        <li class="current"><a href="/Account/Profile">Thông tin của bạn</a></li>
+                                        //<li class="current"><a asp-action="profile" asp-controller="Account">Thông tin của bạn</a></li>
                                     }
                                     @if (User.IsInRole("Admin"))
                                     {
                                         <li class="current"><a asp-action="Index" asp-controller="Admin">Chuyển sang giao diện quản lý</a></li>
                                     }
-                                    @if (User.IsInRole("Employee"))
-                                    {
-                                        <li class="current"><a asp-action="Index" asp-controller="Employee">Chuyển sang giao diện nhân viên</a></li>
-                                    }
+                                    
                                 </ul>
                             </div>
                         </div>
@@ -90,9 +92,12 @@
                             @if (User.Identity.IsAuthenticated)
                             {
                                 <div class="main-menu-signup__login d-xl-flex d-none">
-                                    <a asp-action="Logout" asp-controller="Account" class="main-menu__login">
+                                    <a href="/Account/Logout" class="main-menu__login">
                                         Đăng xuất
                                     </a>
+                                    @* <a asp-action="Logout" asp-controller="Account" class="main-menu__login"> *@
+                                    @*     Đăng xuất *@
+                                    @* </a> *@
                                 </div>
                             }
                             <a href="#" class="main-menu__toggler mobile-nav__toggler">
