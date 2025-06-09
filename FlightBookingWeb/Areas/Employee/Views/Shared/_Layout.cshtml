@@ -45,6 +45,18 @@
             .btn i {
                 margin-right: 6px;
             }
+
+        input.form-control {
+            color: #fff;
+        }
+
+            input.form-control::placeholder {
+                color: rgba(255, 255, 255, 0.6);
+            }
+
+            input.form-control:focus {
+                background-color: #212529;
+                color: #fff;
     </style>
 </head>
 <body>
@@ -83,7 +95,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>     
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

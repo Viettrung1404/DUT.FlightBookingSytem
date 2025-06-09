@@ -30,7 +30,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
                 DepartureAirportName = r.DepartureAirport.AirportName,
                 ArrivalAirportId = r.ArrivalAirportId,
                 ArrivalAirportName = r.ArrivalAirport.AirportName,
-                Duration = r.Duration.ToString("HH:mm"),
+                Duration = r.Duration.Hour*60+ r.Duration.Minute,
                 BasePrice = r.BasePrice
             })
             .ToListAsync();
@@ -46,7 +46,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(RouteViewModel model)
         {
-            TimeOnly duration = default; // Khởi tạo giá trị mặc định cho 'duration'
+            //TimeOnly duration = default; // Khởi tạo giá trị mặc định cho 'duration'
             ViewBag.Airports = new SelectList(_context.Airports, "AirportId", "AirportName");
 
             if (model.DepartureAirportId == model.ArrivalAirportId)
@@ -63,7 +63,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
             {
                 DepartureAirportId = model.DepartureAirportId,
                 ArrivalAirportId = model.ArrivalAirportId,
-                Duration = duration,
+                Duration = TimeOnly.FromTimeSpan(TimeSpan.FromMinutes(model.Duration)),
                 BasePrice = model.BasePrice,
                 Status = "Active"
             };
@@ -83,7 +83,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
                 RouteId = route.RouteId,
                 DepartureAirportId = route.DepartureAirportId,
                 ArrivalAirportId = route.ArrivalAirportId,
-                Duration = route.Duration.ToString("HH:mm"),  // Chuyển đổi Duration thành string để hiển thị
+                Duration = route.Duration.Hour * 60 + route.Duration.Minute,  // Chuyển đổi Duration thành string để hiển thị
                 BasePrice = route.BasePrice
             };
 
@@ -111,7 +111,7 @@ namespace FlightBookingWeb.Areas.Admin.Controllers
                 // Chuyển đổi Duration từ string thành TimeOnly
                 route.DepartureAirportId = model.DepartureAirportId;
                 route.ArrivalAirportId = model.ArrivalAirportId;
-                route.Duration = TimeOnly.Parse(model.Duration);  // Chuyển đổi Duration từ string thành TimeOnly
+                route.Duration = TimeOnly.FromTimeSpan(TimeSpan.FromMinutes(model.Duration));  // Chuyển đổi Duration từ string thành TimeOnly
                 route.BasePrice = model.BasePrice;
 
                 _context.Routes.Update(route);
