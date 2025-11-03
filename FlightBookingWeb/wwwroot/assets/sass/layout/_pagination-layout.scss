@@ -1,0 +1,59 @@
+// Paginations
+@use "../basic/variables" as var;
+@use "../helpers/mixin" as mix;
+
+.paginations{
+    display: flex;
+    justify-content: center;
+    ul{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        li{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 47px;
+            height: 40px;
+            padding: 8px 0;
+            border-radius: 10px;
+            background: rgba(77, 115, 252, 0.10);
+            transition: var.$transition;
+            a{
+                color: var.$black;
+            }
+            &:hover{
+                transition: var.$transition;
+                background: var.$accent-1;
+                color: var.$white;
+                cursor: pointer;
+            }
+            &:hover a{
+                transition: var.$transition;
+                color: var.$white;
+            }
+            &.active{
+                background: var.$accent-1;
+                color: var.$white;
+                a{
+                    color: var.$white;
+                }
+            }
+            &.arrow{
+                a{
+                    i{
+                        color: var.$accent-1;
+                    }
+                }
+                &:hover{
+                    a{
+                        i{
+                            color: var.$white;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,54 @@
+﻿@model List<FlightBookingWeb.ViewModels.SearchViewModel>
+
+<div class="table-responsive flex-grow-1">
+    <table class="table table-bordered table-hover mb-0">
+        <thead class="table-success">
+            <tr>
+                <th>Mã TK</th>
+                <th>Tên</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Vai trò</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model?.Any() == true)
+            {
+                foreach (var acc in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@acc.AccountId</td>
+                        <td>@acc.Username</td>
+                        <td>@acc.Email</td>
+                        <td>@acc.PhoneNumber</td>
+                        <td>
+                            <span class="badge @GetRoleBadgeClass(acc.Role)">
+                                @acc.Role
+                            </span>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">
+                        Không tìm thấy tài khoản
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@functions {
+    string GetRoleBadgeClass(string role)
+    {
+        return role switch
+        {
+            "Admin" => "bg-purple-light",
+            "Staff" => "bg-info",
+            _ => "bg-primary"
+        };
+    }
+}

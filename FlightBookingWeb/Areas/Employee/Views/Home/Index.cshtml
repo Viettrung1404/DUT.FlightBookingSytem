@@ -1,0 +1,118 @@
+﻿@model FlightBookingWeb.ViewModels.EmployeeSearchIndexViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Tra cứu vé và tài khoản";
+    var tickets = ViewBag.Tickets as List<FlightBookingWeb.ViewModels.SearchViewModel>;
+    var accounts = ViewBag.Accounts as List<FlightBookingWeb.ViewModels.SearchViewModel>;
+}
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold text-primary border-bottom pb-2">
+                <i class="fas fa-search me-2"></i>Hệ thống tra cứu
+            </h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Vé -->
+        <div class="col-md-6 mb-4 mb-md-0">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h3 class="h5 mb-0 fw-bold text-primary">
+                        <i class="fas fa-ticket-alt me-2"></i>Tra cứu vé máy bay
+                    </h3>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <form id="ticket-form" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" name="ticketKeyword" class="form-control"
+                                   placeholder="Nhập tên,ID chuyến bay hoặc ngày đặt...">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search me-1"></i> Tìm kiếm
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="ticket-results">
+                        @await Html.PartialAsync("_TicketSearch", Model.Tickets)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tài khoản -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h3 class="h5 mb-0 fw-bold text-success">
+                        <i class="fas fa-users me-2"></i>Tra cứu tài khoản
+                    </h3>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <form id="account-form" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" name="accountKeyword" class="form-control"
+                                   placeholder="Nhập tên, email hoặc số điện thoại...">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-search me-1"></i> Tìm kiếm
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="account-results">
+                        @await Html.PartialAsync("_AccountSearch", Model.Accounts)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Confirmed" => "bg-success-light",
+            "Pending" => "bg-warning-light",
+            "Cancelled" => "bg-danger-light",
+            _ => "bg-secondary"
+        };
+    }
+
+    string GetRoleBadgeClass(string role)
+    {
+        return role switch
+        {
+            "Admin" => "bg-purple-light",
+            "Staff" => "bg-info",
+            _ => "bg-primary"
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#ticket-form").on("submit", function (e) {
+                e.preventDefault();
+                var keyword = $("input[name='ticketKeyword']").val();
+                $.get("/Employee/Home/SearchTickets", { ticketKeyword: keyword }, function (data) {
+                    $("#ticket-results").html(data);
+                });
+            });
+
+            $("#account-form").on("submit", function (e) {
+                e.preventDefault();
+                var keyword = $("input[name='accountKeyword']").val();
+                $.get("/Employee/Home/SearchAccounts", { accountKeyword: keyword }, function (data) {
+                    $("#account-results").html(data);
+                });
+            });
+        });
+    </script>
+}

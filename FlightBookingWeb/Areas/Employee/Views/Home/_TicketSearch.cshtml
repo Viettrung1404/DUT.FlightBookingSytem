@@ -1,0 +1,57 @@
+﻿@model List<FlightBookingWeb.ViewModels.SearchViewModel>
+
+<div class="table-responsive flex-grow-1">
+    <table class="table table-bordered table-hover mb-0">
+        <thead class="table-primary">
+            <tr>
+                <th>Mã vé</th>
+                <th>ID chuyến bay</th>
+                <th>Khách hàng</th>
+                <th>Ngày đặt</th>
+                <th>Giá (VNĐ)</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model?.Any() == true)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@item.TicketId</td>
+                        <td>@item.FlightID</td>
+                        <td>@item.Username</td>
+                        <td>@item.BookingDate?.ToString("dd/MM/yyyy")</td>
+                        <td class="text-end fw-bold text-success">@item.Price.ToString("N0")</td>
+                        <td>
+                            <span class="badge @GetStatusBadgeClass(item.Status)">
+                                @item.Status
+                            </span>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-muted">
+                        Không tìm thấy vé nào
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@functions {
+    string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Confirmed" => "bg-success-light",
+            "Pending" => "bg-warning-light",
+            "Cancelled" => "bg-danger-light",
+            _ => "bg-secondary"
+        };
+    }
+}

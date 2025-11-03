@@ -1,0 +1,199 @@
+﻿@model FlightBookingWeb.Areas.Admin.ViewModels.AccountViewModel
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Xóa tài khoản";
+}
+
+@section Styles {
+    <style>
+        /* Container chính */
+        .delete-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        /* Tiêu đề chính */
+        h1 {
+            color: #1a3c87;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Câu hỏi xác nhận */
+        h3 {
+            color: #dc3545;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        /* Tiêu đề phụ */
+        .delete-header {
+            color: #555;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Đường kẻ ngang */
+        hr {
+            border: 0;
+            height: 1px;
+            background: #e9ecef;
+            margin: 20px 0;
+        }
+
+        /* Định dạng danh sách chi tiết */
+        .dl-delete {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+            .dl-delete dt {
+                font-weight: 500;
+                color: #333;
+                padding: 10px 0;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .dl-delete dd {
+                color: #555;
+                padding: 10px 0;
+                margin-bottom: 0;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+        /* Thông báo cảnh báo */
+        .alert-warning {
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* Nút hành động */
+        .action-buttons {
+            text-align: center;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            margin: 0 10px;
+        }
+
+            .btn-danger:hover {
+                background: #c82333;
+            }
+
+        .back-link {
+            color: #1a3c87;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 12px 30px;
+            border-radius: 8px;
+            transition: background 0.3s ease, color 0.3s ease;
+            margin: 0 10px;
+            display: inline-block;
+        }
+
+            .back-link:hover {
+                background: #e9ecef;
+                text-decoration: none;
+            }
+
+        /* Văn bản không xác định */
+        .text-muted {
+            font-style: italic;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .delete-container
+            {
+                padding: 20px;
+            }
+
+            .dl-delete dt, .dl-delete dd {
+                font-size: 0.875rem;
+            }
+
+            .action-buttons .btn-danger, .action-buttons .back-link {
+                display: block;
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+}
+
+<div class="delete-container">
+    <h1>Xóa tài khoản</h1>
+    <h3>Bạn có chắc muốn xóa tài khoản này?</h3>
+    <div class="alert alert-warning" role="alert">
+        <strong>Lưu ý:</strong> Hành động này sẽ đánh dấu tài khoản là đã xóa nhưng không xóa hoàn toàn khỏi cơ sở dữ liệu!
+    </div>
+    <h4 class="delete-header">Thông tin tài khoản</h4>
+    <hr />
+    <dl class="dl-delete row">
+        <dt class="col-sm-4">Tên đăng nhập</dt>
+        <dd class="col-sm-8">@(Model.Username ?? "Không xác định")</dd>
+        <dt class="col-sm-4">Email</dt>
+        <dd class="col-sm-8">@(Model.Email ?? "Không xác định")</dd>
+        <dt class="col-sm-4">Số điện thoại</dt>
+        <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.PhoneNumber) ? "Không xác định" : Model.PhoneNumber)</dd>
+        <dt class="col-sm-4">Vai trò</dt>
+        <dd class="col-sm-8">@(Model.Role == "Admin" ? "Quản trị viên" : Model.Role == "User" ? "Người dùng" : Model.Role ?? "Không xác định")</dd>
+        <dt class="col-sm-4">Giới tính</dt>
+        <dd class="col-sm-8">
+            @if (Model.Gender.HasValue)
+            {
+                @(Model.Gender.Value ? "Nam" : "Nữ")
+            }
+            else
+            {
+                <span class="text-muted">Không xác định</span>
+            }
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" class="action-buttons" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="AccountId" />
+        <button type="submit" class="btn btn-danger">
+            <i class="fas fa-trash-alt"></i> Xác nhận xóa
+        </button>
+        <a asp-action="Index" class="back-link">
+            <i class="fas fa-arrow-left"></i> Hủy
+        </a>
+    </form>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('form').on('submit', function (e) {
+                if (!confirm('Bạn có chắc muốn xóa tài khoản này? Hành động này sẽ đánh dấu tài khoản là đã xóa!')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

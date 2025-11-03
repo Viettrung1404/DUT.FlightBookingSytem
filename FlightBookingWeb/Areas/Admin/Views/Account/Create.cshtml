@@ -1,0 +1,187 @@
+﻿@model FlightBookingWeb.Areas.Admin.ViewModels.AccountViewModel
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Thêm tài khoản mới";
+}
+
+@section Styles {
+    <style>
+        /* Container chính */
+        .create-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        /* Tiêu đề chính */
+        h1 {
+            color: #1a3c87;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Nhóm form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* Ô nhập liệu và dropdown */
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s ease;
+        }
+
+            /* Hiệu ứng khi focus ô nhập liệu */
+            .form-control:focus, .form-select:focus {
+                border-color: #1a3c87;
+                box-shadow: 0 0 8px rgba(26, 60, 135, 0.2);
+            }
+
+        /* Nhãn của ô nhập liệu */
+        .control-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Thông báo lỗi */
+        .text-danger {
+            font-size: 0.875rem;
+            margin-top: 5px;
+        }
+
+        /* Nút lưu */
+        .btn-primary--create {
+            background: #1a3c87;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+            .btn-primary--create:hover {
+                background: #153074;
+            }
+
+        /* Nút hủy */
+        .btn-secondary--create {
+            background: #6c757d;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+            .btn-secondary--create:hover {
+                background: #5a6268;
+            }
+
+        /* Tiêu đề phụ */
+        .form-header {
+            color: #555;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Đường kẻ ngang */
+        hr {
+            border: 0;
+            height: 1px;
+            background: #e9ecef;
+            margin: 20px 0;
+        }
+    </style>
+}
+
+<div class="create-container">
+    <h1>Thêm tài khoản mới</h1>
+    <h4 class="form-header">Nhập thông tin tài khoản</h4>
+    <hr />
+    <div class="row">
+        <div class="col-12">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="form-group">
+                    <label asp-for="Username" class="control-label">Tên đăng nhập</label>
+                    <input asp-for="Username" class="form-control" placeholder="Nhập tên đăng nhập" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label">Email</label>
+                    <input asp-for="Email" type="email" class="form-control" placeholder="Nhập địa chỉ email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label">Mật khẩu</label>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Role" class="control-label">Vai trò</label>
+                    <select asp-for="Role" class="form-select">
+                        <option value="">-- Chọn vai trò --</option>
+                        <option value="User">Người dùng</option>
+                        <option value="Admin">Quản trị viên</option>
+                    </select>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="control-label">Số điện thoại</label>
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="Nhập số điện thoại" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Gender" class="control-label">Giới tính</label>
+                    <select asp-for="Gender" class="form-select">
+                        <option value="">-- Chọn giới tính --</option>
+                        <option value="true">Nam</option>
+                        <option value="false">Nữ</option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary--create">Thêm tài khoản</button>
+                    <a asp-action="Index" class="btn btn-secondary--create">Quay lại danh sách</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Đảm bảo dropdown Role và Gender gửi giá trị
+            $('select').on('change', function () {
+                var selectedValue = $(this).val();
+                $(this).find('option').removeAttr('selected');
+                $(this).find('option[value="' + selectedValue + '"]').attr('selected', 'selected');
+            });
+        });
+    </script>
+}
